@@ -23,6 +23,17 @@ use Dobee\Database\Repository\Repository;
 interface ConnectionInterface
 {
     /**
+     * @param string $connection
+     * @return $this
+     */
+    public function setConnectionName($connection);
+
+    /**
+     * @return string
+     */
+    public function getConnectionName();
+
+    /**
      * @param        $table
      * @param array  $where
      * @param string $field

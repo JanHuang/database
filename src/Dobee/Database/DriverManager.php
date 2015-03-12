@@ -99,6 +99,10 @@ class DriverManager
 
         $config = $this->config[$connection];
 
-        return new $this->mapping[$config['database_type']?:'mysql']($config);
+        $connection = new $this->mapping[$config['database_type']?:'mysql']($config);
+
+        $connection->setConnectionName($connection);
+
+        return $connection;
     }
 }

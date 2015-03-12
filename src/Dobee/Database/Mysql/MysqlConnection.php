@@ -43,6 +43,11 @@ class MysqlConnection extends \medoo implements ConnectionInterface
     private $repositories = array();
 
     /**
+     * @var string
+     */
+    private $connectionName;
+
+    /**
      * @param array $options
      * @throws \Exception
      */
@@ -265,5 +270,24 @@ class MysqlConnection extends \medoo implements ConnectionInterface
     public function getLastQuery()
     {
         return parent::last_query();
+    }
+
+    /**
+     * @param string $connection
+     * @return $this
+     */
+    public function setConnectionName($connection)
+    {
+        $this->connectionName = $connection;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConnectionName()
+    {
+        return $this->connectionName;
     }
 }
