@@ -1,0 +1,20 @@
+{
+    "name": "dobee/database",
+    "description": "dobee php simple framework database driver component",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "janhuang",
+            "email": "384099566@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Examples\\Repository\\": "examples/repository",
+            "Dobee\\": "src/Dobee"
+        }
+    }
+
+}
