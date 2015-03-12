@@ -163,11 +163,14 @@ class MysqlConnection extends \medoo implements ConnectionInterface
 
         $repository = new $repository();
 
-        $repository->setConnection($this);
+        if ($repository instanceof Repository) {
+            
+            $repository->setConnection($this);
 
-        $repository->setPrefix($this->getPrefix());
+            $repository->setPrefix($this->getPrefix());
 
-        $repository->setTable($this->parseTableName($name));
+            $repository->setTable($this->parseTableName($name));
+        }
 
         return $repository;
     }
