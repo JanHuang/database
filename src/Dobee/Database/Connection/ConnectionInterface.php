@@ -39,7 +39,7 @@ interface ConnectionInterface
      * @param string $field
      * @return array
      */
-    public function find($table, array $where, $field = '*');
+    public function find($table, $where, $field = '*');
 
     /**
      * @param        $table
@@ -47,7 +47,7 @@ interface ConnectionInterface
      * @param string $field
      * @return array
      */
-    public function findAll($table, array $where = array(), $field = '*');
+    public function findAll($table, $where = array(), $field = '*');
 
     /**
      * @param $dql
@@ -83,7 +83,7 @@ interface ConnectionInterface
      * @param array $data
      * @return int|bool
      */
-    public function insert($table, array $data = array());
+    public function insert($table, $data = array());
 
     /**
      * @param       $table
@@ -91,28 +91,28 @@ interface ConnectionInterface
      * @param array $where
      * @return int|bool
      */
-    public function update($table, array $data = array(), $where = array());
+    public function update($table, $data = array(), $where = array());
 
     /**
      * @param       $table
      * @param array $where
      * @return int|bool
      */
-    public function delete($table, array $where = array());
+    public function delete($table, $where = array());
 
     /**
      * @param       $table
      * @param array $where
      * @return int|bool
      */
-    public function count($table, array $where = array());
+    public function count($table, $where = array());
 
     /**
      * @param       $table
      * @param array $where
      * @return int|bool
      */
-    public function has($table, array $where = array());
+    public function has($table, $where = array());
 
     /**
      * @return array|bool

@@ -45,7 +45,7 @@ class DriverManager
     /**
      * @param array $config
      */
-    public function __construct(array $config = array())
+    public function __construct($config = array())
     {
         $this->config = $config;
     }

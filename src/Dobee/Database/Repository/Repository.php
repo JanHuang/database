@@ -156,4 +156,78 @@ class Repository
 
         return call_user_func_array(array($this->connection, $method), $arguments);
     }
+
+    /**
+     * @return array|bool
+     */
+    public function logs()
+    {
+        return $this->connection->logs();
+    }
+
+    /**
+     * @param array $data
+     * @return int|bool
+     */
+    public function insert(array $data = array())
+    {
+        return $this->connection->insert($this->table, $data);
+    }
+
+    /**
+     * @param array $data
+     * @param array $where
+     * @return int|bool
+     */
+    public function update(array $data = array(), $where = array())
+    {
+        return $this->connection->update($this->table, $data, $where);
+    }
+
+    /**
+     * @param array $where
+     * @return int|bool
+     */
+    public function delete(array $where = array())
+    {
+        if (empty($where)) {
+            return false;
+        }
+
+        return $this->connection->delete($this->table, $where);
+    }
+
+    /**
+     * @param array $where
+     * @return int|bool
+     */
+    public function count(array $where = array())
+    {
+        return $this->connection->count($this->table, $where);
+    }
+
+    /**
+     * @param array $where
+     * @return int|bool
+     */
+    public function has(array $where = array())
+    {
+        return $this->connection->has($this->table, $where);
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->connection->error();
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastQuery()
+    {
+        return $this->connection->getLastQuery();
+    }
 }

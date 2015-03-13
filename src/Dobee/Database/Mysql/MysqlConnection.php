@@ -127,7 +127,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      * @param string|array $field
      * @return bool
      */
-    public function find($table, array $where, $field = '*')
+    public function find($table, $where, $field = '*')
     {
         return $this->get($table, $field, $where);
     }
@@ -138,7 +138,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      * @param string|array $field
      * @return array|bool
      */
-    public function findAll($table, array $where = array(), $field = '*')
+    public function findAll($table, $where = array(), $field = '*')
     {
         return $this->select($table, $field, $where);
     }
@@ -164,7 +164,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
         $repository = new $repository();
 
         if ($repository instanceof Repository) {
-            
+
             $repository->setConnection($this);
 
             $repository->setPrefix($this->getPrefix());
@@ -209,7 +209,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      * @param array $data
      * @return int|bool
      */
-    public function insert($table, array $data = array())
+    public function insert($table, $data = array())
     {
         return parent::insert($table, $data);
     }
@@ -220,7 +220,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      * @param array $where
      * @return int|bool
      */
-    public function update($table, array $data = array(), $where = array())
+    public function update($table, $data = array(), $where = array())
     {
         return parent::update($table, $data, $where);
     }
@@ -230,7 +230,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      * @param array $where
      * @return int|bool
      */
-    public function delete($table, array $where = array())
+    public function delete($table, $where = array())
     {
         if (empty($where)) {
             return false;
@@ -244,7 +244,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      * @param array $where
      * @return int|bool
      */
-    public function count($table, array $where = array())
+    public function count($table, $where = array())
     {
         return parent::count($table, $where);
     }
@@ -254,7 +254,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      * @param array $where
      * @return int|bool
      */
-    public function has($table, array $where = array())
+    public function has($table, $where = array())
     {
         return parent::has($table, $where);
     }
