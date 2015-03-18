@@ -25,7 +25,7 @@ if (!class_exists('\\medoo')) {
  *
  * @package Dobee\Kernel\Configuration\Drivers\Db\Mysql
  */
-class MysqlConnection extends \medoo implements ConnectionInterface
+class MysqlConnection implements ConnectionInterface
 {
     /**
      * @var \PDOStatement
@@ -47,26 +47,26 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     private $connectionName;
 
+    private $medoo;
+
     /**
      * @param array $options
      * @throws \Exception
      */
     public function __construct($options = array())
     {
-        \medoo::__construct(
-            array(
-                'database_type' => $options['database_type'],
-                'database_name' => $options['database_name'],
-                'server' => $options['database_host'],
-                'username' => $options['database_user'],
-                'password' => $options['database_pwd'],
-                'port' => isset($options['database_port']) ? $options['database_port'] : 3306,
-                'charset' => isset($options['database_charset']) ? $options['database_charset'] : 'utf8',
-                'option' => array(
-                    \PDO::ATTR_CASE => \PDO::CASE_NATURAL
-                )
+        $this->medoo = new \medoo(array(
+            'database_type' => $options['database_type'],
+            'database_name' => $options['database_name'],
+            'server' => $options['database_host'],
+            'username' => $options['database_user'],
+            'password' => $options['database_pwd'],
+            'port' => isset($options['database_port']) ? $options['database_port'] : 3306,
+            'charset' => isset($options['database_charset']) ? $options['database_charset'] : 'utf8',
+            'option' => array(
+                \PDO::ATTR_CASE => \PDO::CASE_NATURAL
             )
-        );
+        ));
 
         $this->prefix = isset($options['database_prefix']) ? $options['database_prefix'] : '';
     }
@@ -85,7 +85,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     public function createQuery($dql)
     {
-        $this->statement = $this->pdo->prepare($dql);
+        $this->statement = $this->medoo->pdo->prepare($dql);
 
         return $this;
     }
@@ -129,7 +129,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     public function find($table, $where, $field = '*')
     {
-        return $this->get($table, $field, $where);
+        return $this->medoo->get($table, $field, $where);
     }
 
     /**
@@ -140,7 +140,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     public function findAll($table, $where = array(), $field = '*')
     {
-        return $this->select($table, $field, $where);
+        return $this->medoo->select($table, $field, $where);
     }
 
     /**
@@ -201,7 +201,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     public function logs()
     {
-        return $this->log();
+        return $this->medoo->log();
     }
 
     /**
@@ -211,7 +211,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     public function insert($table, $data = array())
     {
-        return parent::insert($table, $data);
+        return $this->medoo->insert($table, $data);
     }
 
     /**
@@ -222,7 +222,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     public function update($table, $data = array(), $where = array())
     {
-        return parent::update($table, $data, $where);
+        return $this->medoo->update($table, $data, $where);
     }
 
     /**
@@ -236,7 +236,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
             return false;
         }
 
-        return parent::delete($table, $where);
+        return $this->medoo->delete($table, $where);
     }
 
     /**
@@ -246,7 +246,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     public function count($table, $where = array())
     {
-        return parent::count($table, $where);
+        return $this->medoo->count($table, $where);
     }
 
     /**
@@ -256,7 +256,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     public function has($table, $where = array())
     {
-        return parent::has($table, $where);
+        return $this->medoo->has($table, $where);
     }
 
     /**
@@ -264,7 +264,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     public function error()
     {
-        return parent::error();
+        return $this->medoo->error();
     }
 
     /**
@@ -272,7 +272,7 @@ class MysqlConnection extends \medoo implements ConnectionInterface
      */
     public function getLastQuery()
     {
-        return parent::last_query();
+        return $this->medoo->last_query();
     }
 
     /**
