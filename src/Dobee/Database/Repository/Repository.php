@@ -230,4 +230,13 @@ class Repository
     {
         return $this->connection->getLastQuery();
     }
+
+    /**
+     * @param $dql
+     * @return ConnectionInterface
+     */
+    public function createQuery($dql)
+    {
+        return $this->connection->createQuery($dql);
+    }
 }

@@ -41,7 +41,8 @@ $manager = new DriverManager(array(
 
 //$category = $manager->getConnection()->getRepository('Examples:Repository:PostCategory');
 $post = $manager->getConnection()->getRepository('Examples:Repository:Post');
-
+$posts = $post->createQuery('select * from sf_post')->getQuery()->getResult();
+print_r($posts);
 
 //print_r($post->findAllById(1));
 //print_r($post->getConnection()->getLastQuery());
@@ -56,7 +57,7 @@ $post = $manager->getConnection()->getRepository('Examples:Repository:Post');
 //print_r($connection->delete('sf_post', array('id' => 4)));
 //var_dump($connection->has('sf_post', array('id' => 4)));
 //print_r($connection->count('sf_post'));
-print_r($post);
+//print_r($post);
 //print_r($post->findAll());
-var_dump($post->delete(array('id' => 3)));
-print_r($post->findAll());
+//var_dump($post->delete(array('id' => 3)));
+//print_r($post->findAll());
