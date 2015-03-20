@@ -237,6 +237,6 @@ class Repository
      */
     public function createQuery($dql)
     {
-        return $this->connection->createQuery($dql);
+        return $this->connection->createQuery(str_replace(array('%table%'), $this->getTable(), $dql));
     }
 }
