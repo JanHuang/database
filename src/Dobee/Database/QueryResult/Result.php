@@ -212,6 +212,14 @@ class Result implements FormatterInterface, \ArrayAccess, \Iterator
      */
     public function toString()
     {
-        return '';
+        return var_export($this->result, true);
+    }
+
+    /**
+     * @return string
+     */
+    public function toSerialize()
+    {
+        return serialize($this);
     }
 }

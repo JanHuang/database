@@ -96,7 +96,7 @@ class Repository
     /**
      * @param array $where
      * @param array|string $field
-     * @return array
+     * @return \Dobee\Database\QueryResult\Result
      */
     public function find($where = array(), $field = '*')
     {
@@ -110,7 +110,7 @@ class Repository
     /**
      * @param array $where
      * @param array|string $field
-     * @return array
+     * @return \Dobee\Database\QueryResult\ResultCollection
      */
     public function findAll($where = array(),  $field = '*')
     {
@@ -124,7 +124,7 @@ class Repository
     /**
      * @param $method
      * @param $arguments
-     * @return array
+     * @return \Dobee\Database\QueryResult\ResultCollection
      */
     public function __call($method, $arguments)
     {

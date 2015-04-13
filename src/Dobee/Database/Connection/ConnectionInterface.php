@@ -37,7 +37,7 @@ interface ConnectionInterface
      * @param        $table
      * @param array  $where
      * @param string $field
-     * @return array
+     * @return \Dobee\Database\QueryResult\Result
      */
     public function find($table, $where, $field = '*');
 
@@ -45,7 +45,7 @@ interface ConnectionInterface
      * @param        $table
      * @param array  $where
      * @param string $field
-     * @return array
+     * @return \Dobee\Database\QueryResult\ResultCollection
      */
     public function findAll($table, $where = array(), $field = '*');
 
@@ -68,7 +68,7 @@ interface ConnectionInterface
     public function getQuery();
 
     /**
-     * @return mixed
+     * @return \Dobee\Database\QueryResult\ResultCollection
      */
     public function getResult();
 

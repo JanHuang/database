@@ -22,27 +22,29 @@ $manager = new DriverManager(array(
         'database_host' => 'localhost',
         'database_port' => '3306',
         'database_user' => 'root',
-        'database_pwd' => '123456',
+        'database_pwd' => '',
         'database_charset' => 'utf8',
-        'database_name' => 'sf_blog',
-        'database_prefix' => 'sf_',
+        'database_name' => 'lhl.linghit.com',
+        'database_prefix' => 'lhl_',
     ),
     'write' => array(
         'database_type' => 'mysql',
         'database_host' => 'localhost',
         'database_port' => '3306',
         'database_user' => 'root',
-        'database_pwd' => '123456',
+        'database_pwd' => '',
         'database_charset' => 'utf8',
-        'database_name' => 'sf_blog',
-        'database_prefix' => 'sf_',
+        'database_name' => 'lhl.linghit.com',
+        'database_prefix' => 'lhl_',
     ),
 ));
 
 //$category = $manager->getConnection()->getRepository('Examples:Repository:PostCategory');
-$post = $manager->getConnection()->getRepository('Examples:Repository:Post');
-$posts = $post->createQuery('select * from sf_post')->getQuery()->getResult();
-print_r($posts);
+$post = $manager->getConnection('read')->getRepository('Examples:Repository:Post');
+$results = $post->findAll();
+
+$goods = $post->find(array('id' => 1));
+print_r($goods->toSerialize());
 
 //print_r($post->findAllById(1));
 //print_r($post->getConnection()->getLastQuery());

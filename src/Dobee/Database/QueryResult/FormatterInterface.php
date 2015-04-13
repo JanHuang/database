@@ -39,4 +39,9 @@ interface FormatterInterface
      * @return string
      */
     public function toString();
+
+    /**
+     * @return string
+     */
+    public function toSerialize();
 }

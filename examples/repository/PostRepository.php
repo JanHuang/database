@@ -15,5 +15,5 @@ namespace Examples\Repository;
 
 class PostRepository extends \Dobee\Database\Repository\Repository
 {
-
+    protected $table = 'lhl_goods';
 }

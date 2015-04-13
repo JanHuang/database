@@ -18,7 +18,7 @@ namespace Dobee\Database\QueryResult;
  *
  * @package Dobee\Database\QueryResult
  */
-class ResultCollection implements \Countable, \Iterator
+class ResultCollection implements \Countable, \Iterator, \ArrayAccess
 {
     /**
      * @var array
@@ -57,16 +57,12 @@ class ResultCollection implements \Countable, \Iterator
         if (is_array($result)) {
             foreach ($result as $row) {
                 if (is_array($row)) {
-                    foreach ($row as $query) {
-                        $this->results[] = new Result($query);
-                    }
-                    continue;
+                    $this->results[] = new Result($row);
                 }
-                $this->results[] = new Result($row);
             }
+        } else {
+            $this->status = false;
         }
-
-        $this->status = $result;
     }
 
     /**
@@ -74,7 +70,7 @@ class ResultCollection implements \Countable, \Iterator
      * Return the current element
      *
      * @link http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
+     * @return Result Can return any type.
      */
     public function current()
     {
@@ -98,7 +94,7 @@ class ResultCollection implements \Countable, \Iterator
      * Return the key of the current element
      *
      * @link http://php.net/manual/en/iterator.key.php
-     * @return mixed scalar on success, or null on failure.
+     * @return string|int scalar on success, or null on failure.
      */
     public function key()
     {
@@ -143,5 +139,71 @@ class ResultCollection implements \Countable, \Iterator
     public function count()
     {
         return count($this->results);
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Whether a offset exists
+     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     * @param mixed $offset <p>
+     * An offset to check for.
+     * </p>
+     * @return boolean true on success or false on failure.
+     * </p>
+     * <p>
+     * The return value will be casted to boolean if non-boolean was returned.
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->results[$offset]);
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to retrieve
+     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     * @param mixed $offset <p>
+     * The offset to retrieve.
+     * </p>
+     * @return Result|null Can return all value types.
+     */
+    public function offsetGet($offset)
+    {
+        return isset($this->results[$offset]) ? $this->results[$offset] : null;
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to set
+     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     * @param mixed $offset <p>
+     * The offset to assign the value to.
+     * </p>
+     * @param mixed $value <p>
+     * The value to set.
+     * </p>
+     * @return void
+     */
+    public function offsetSet($offset, $value)
+    {
+        if (null === $offset) {
+            $this->results[$offset] = $value;
+        } else {
+            $this->results[$offset] = $value;
+        }
+    }
+
+    /**
+     * (PHP 5 &gt;= 5.0.0)<br/>
+     * Offset to unset
+     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     * @param mixed $offset <p>
+     * The offset to unset.
+     * </p>
+     * @return void
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->results[$offset]);
     }
 }

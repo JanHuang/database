@@ -9,7 +9,10 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "php": ">=5.4",
+        "phpunit/phpunit": "4.5.*"
+    },
     "autoload": {
         "psr-4": {
             "Examples\\Repository\\": "examples/repository",

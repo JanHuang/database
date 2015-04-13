@@ -16,6 +16,7 @@ namespace Dobee\Database\Mysql;
 use Dobee\Database\Connection\ConnectionInterface;
 use Dobee\Database\QueryResult\ResultCollection;
 use Dobee\Database\Repository\Repository;
+use Dobee\Database\QueryResult\Result;
 
 if (!class_exists('\\medoo')) {
     include __DIR__ . '/Medoo/medoo.min.php';
@@ -114,10 +115,15 @@ class MysqlConnection implements ConnectionInterface
     }
 
     /**
-     * @return array
+     * @return ResultCollection
+     * @throws \ErrorException
      */
     public function getResult()
     {
+        if (null == $this->statement) {
+            throw new \ErrorException(sprintf('Yhe sql is not query statement.'));
+        }
+
         return new ResultCollection($this->statement->fetchAll(\PDO::FETCH_ASSOC));
     }
 
@@ -125,18 +131,18 @@ class MysqlConnection implements ConnectionInterface
      * @param              $table
      * @param array        $where
      * @param string|array $field
-     * @return bool
+     * @return Result
      */
     public function find($table, $where, $field = '*')
     {
-        return new ResultCollection($this->medoo->get($table, $field, $where));
+        return new Result($this->medoo->get($table, $field, $where));
     }
 
     /**
      * @param              $table
      * @param array        $where
      * @param string|array $field
-     * @return array|bool
+     * @return ResultCollection
      */
     public function findAll($table, $where = array(), $field = '*')
     {
@@ -165,11 +171,14 @@ class MysqlConnection implements ConnectionInterface
 
         if ($repository instanceof Repository) {
 
-            $repository->setConnection($this);
+            $repository
+                ->setConnection($this)
+                ->setPrefix($this->getPrefix())
+            ;
 
-            $repository->setPrefix($this->getPrefix());
-
-            $repository->setTable($this->parseTableName($name));
+            if (null === $repository->getTable()) {
+                $repository->setTable($this->parseTableName($name));
+            }
         }
 
         return $repository;
