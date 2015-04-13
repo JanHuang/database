@@ -14,6 +14,7 @@
 namespace Dobee\Database\Mysql;
 
 use Dobee\Database\Connection\ConnectionInterface;
+use Dobee\Database\QueryResult\ResultCollection;
 use Dobee\Database\Repository\Repository;
 
 if (!class_exists('\\medoo')) {
@@ -113,12 +114,11 @@ class MysqlConnection implements ConnectionInterface
     }
 
     /**
-     * @param int $fetch_mode
      * @return array
      */
-    public function getResult($fetch_mode = \PDO::FETCH_ASSOC)
+    public function getResult()
     {
-        return $this->statement->fetchAll($fetch_mode);
+        return new ResultCollection($this->statement->fetchAll(\PDO::FETCH_ASSOC));
     }
 
     /**
@@ -129,7 +129,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function find($table, $where, $field = '*')
     {
-        return $this->medoo->get($table, $field, $where);
+        return new ResultCollection($this->medoo->get($table, $field, $where));
     }
 
     /**
@@ -140,7 +140,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function findAll($table, $where = array(), $field = '*')
     {
-        return $this->medoo->select($table, $field, $where);
+        return new ResultCollection($this->medoo->select($table, $field, $where));
     }
 
     /**
