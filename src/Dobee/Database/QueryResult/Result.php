@@ -26,6 +26,51 @@ class Result implements FormatterInterface, \ArrayAccess, \Iterator
     private $result;
 
     /**
+     * @var bool
+     */
+    private $status;
+
+    private $info;
+
+    /**
+     * @return boolean
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param boolean $status
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getInfo()
+    {
+        return $this->info;
+    }
+
+    /**
+     * @param mixed $info
+     * @return $this
+     */
+    public function setInfo($info)
+    {
+        $this->info = $info;
+
+        return $this;
+    }
+
+    /**
      * @param array $result
      * @return $this
      */
@@ -47,9 +92,13 @@ class Result implements FormatterInterface, \ArrayAccess, \Iterator
     /**
      * @param array $result
      */
-    public function __construct(array $result)
+    public function __construct($result)
     {
-        $this->setResult($result);
+        if (is_bool($result)) {
+            $this->status = $result;
+        } else {
+            $this->setResult($result);
+        }
     }
 
     /**
@@ -221,5 +270,23 @@ class Result implements FormatterInterface, \ArrayAccess, \Iterator
     public function toSerialize()
     {
         return serialize($this);
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
+    {
+        $this->result[$name] = $value;
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return isset($this->result[$name]) ? $this->result[$name] : false;
     }
 }

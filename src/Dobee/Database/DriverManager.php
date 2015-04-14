@@ -24,7 +24,7 @@ use Dobee\Database\Connection\ConnectionInterface;
 class DriverManager
 {
     /**
-     * @var array
+     * @var ConnectionInterface[]|array
      */
     private $mapping = array(
         'mysql' => 'Dobee\\Database\\Mysql\\MysqlConnection',

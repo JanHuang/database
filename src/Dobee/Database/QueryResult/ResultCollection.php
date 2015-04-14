@@ -18,10 +18,10 @@ namespace Dobee\Database\QueryResult;
  *
  * @package Dobee\Database\QueryResult
  */
-class ResultCollection implements \Countable, \Iterator, \ArrayAccess
+class ResultCollection implements \Countable, \Iterator, \ArrayAccess, FormatterInterface
 {
     /**
-     * @var array
+     * @var Result[]
      */
     private $results = array();
 
@@ -29,6 +29,27 @@ class ResultCollection implements \Countable, \Iterator, \ArrayAccess
      * @var bool
      */
     private $status = true;
+
+    private $info;
+
+    /**
+     * @return mixed
+     */
+    public function getInfo()
+    {
+        return $this->info;
+    }
+
+    /**
+     * @param mixed $info
+     * @return $this
+     */
+    public function setInfo($info)
+    {
+        $this->info = $info;
+
+        return $this;
+    }
 
     /**
      * @return boolean
@@ -205,5 +226,51 @@ class ResultCollection implements \Countable, \Iterator, \ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->results[$offset]);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $results = array();
+
+        foreach ($this->results as $result) {
+            $results[] = $result->toArray();
+        }
+
+        return $results;
+    }
+
+    /**
+     * @return string
+     */
+    public function toJson()
+    {
+        return json_decode($this->toArray());
+    }
+
+    /**
+     * @return \ArrayObject
+     */
+    public function toObject()
+    {
+        return new \ArrayObject($this->results);
+    }
+
+    /**
+     * @return string
+     */
+    public function toString()
+    {
+        return var_export($this->results, true);
+    }
+
+    /**
+     * @return string
+     */
+    public function toSerialize()
+    {
+        return serialize($this);
     }
 }

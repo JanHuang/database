@@ -49,6 +49,11 @@ class MysqlConnection implements ConnectionInterface
      */
     private $connectionName;
 
+    /**
+     * @var array
+     */
+    private $info;
+
     private $medoo;
 
     /**
@@ -71,6 +76,18 @@ class MysqlConnection implements ConnectionInterface
         ));
 
         $this->prefix = isset($options['database_prefix']) ? $options['database_prefix'] : '';
+
+        $this->info = $options;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConnectionInfo()
+    {
+        unset($this->info['database_pwd']);
+
+        return $this->info;
     }
 
     /**
@@ -124,7 +141,11 @@ class MysqlConnection implements ConnectionInterface
             throw new \ErrorException(sprintf('Yhe sql is not query statement.'));
         }
 
-        return new ResultCollection($this->statement->fetchAll(\PDO::FETCH_ASSOC));
+        $collection = new ResultCollection($this->statement->fetchAll(\PDO::FETCH_ASSOC));
+
+        $collection->setInfo($this->medoo->pdo->errorInfo());
+
+        return $collection;
     }
 
     /**
@@ -135,7 +156,11 @@ class MysqlConnection implements ConnectionInterface
      */
     public function find($table, $where, $field = '*')
     {
-        return new Result($this->medoo->get($table, $field, $where));
+        $result = new Result($this->medoo->get($table, $field, $where));
+
+        $result->setInfo($this->medoo->info());
+
+        return $result;
     }
 
     /**
@@ -146,7 +171,11 @@ class MysqlConnection implements ConnectionInterface
      */
     public function findAll($table, $where = array(), $field = '*')
     {
-        return new ResultCollection($this->medoo->select($table, $field, $where));
+        $collection = new ResultCollection($this->medoo->select($table, $field, $where));
+
+        $collection->setInfo($this->medoo->info());
+
+        return $collection;
     }
 
     /**
