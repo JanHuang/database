@@ -81,6 +81,14 @@ class MysqlConnection implements ConnectionInterface
     }
 
     /**
+     * @return \PDO
+     */
+    public function getPDO()
+    {
+        return $this->medoo->pdo;
+    }
+
+    /**
      * @return array
      */
     public function getConnectionInfo()
