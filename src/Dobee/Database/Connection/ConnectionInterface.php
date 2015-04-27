@@ -23,6 +23,11 @@ use Dobee\Database\Repository\Repository;
 interface ConnectionInterface
 {
     /**
+     * @param array $options
+     */
+    public function __construct(array $options);
+
+    /**
      * @param string $connection
      * @return $this
      */
@@ -128,4 +133,9 @@ interface ConnectionInterface
      * @return string
      */
     public function getLastQuery();
+
+    /**
+     * @return mixed
+     */
+    public function close();
 }

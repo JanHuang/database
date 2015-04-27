@@ -60,7 +60,7 @@ class MysqlConnection implements ConnectionInterface
      * @param array $options
      * @throws \Exception
      */
-    public function __construct($options = array())
+    public function __construct(array $options = array())
     {
         $this->medoo = new \medoo(array(
             'database_type' => $options['database_type'],
@@ -338,5 +338,13 @@ class MysqlConnection implements ConnectionInterface
     public function getConnectionName()
     {
         return $this->connectionName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function close()
+    {
+        unset($this->medoo);
     }
 }

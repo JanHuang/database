@@ -16,8 +16,12 @@ namespace Dobee\Database\Connection\Mongo;
 use Dobee\Database\Connection\ConnectionInterface;
 use Dobee\Database\Repository\Repository;
 
-class MongoConnection implements ConnectionInterface
+class MongoConnection extends \MongoClient implements ConnectionInterface
 {
+    public function __construct(array $options)
+    {
+
+    }
 
     /**
      * @param string $connection
@@ -175,5 +179,13 @@ class MongoConnection implements ConnectionInterface
     public function getLastQuery()
     {
         // TODO: Implement getLastQuery() method.
+    }
+
+    /**
+     * @return mixed
+     */
+    public function close()
+    {
+        // TODO: Implement close() method.
     }
 }
