@@ -11,7 +11,7 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Database\Mysql;
+namespace Dobee\Database\Connection\Mysql;
 
 use Dobee\Database\Connection\ConnectionInterface;
 use Dobee\Database\QueryResult\ResultCollection;

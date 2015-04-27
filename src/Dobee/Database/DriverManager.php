@@ -24,12 +24,11 @@ use Dobee\Database\Connection\ConnectionInterface;
 class DriverManager
 {
     /**
-     * @var ConnectionInterface[]|array
+     * @var ConnectionInterface[]
      */
     private $mapping = array(
-        'mysql' => 'Dobee\\Database\\Mysql\\MysqlConnection',
-        'mongo' => '',
-        'sqlit' => '',
+        'mysql' => 'Dobee\\Database\\Connection\\Mysql\\MysqlConnection',
+        'mongo' => 'Dobee\\Database\\Connection\\Mysql\\MongoConnection',
     );
 
     /**
