@@ -29,6 +29,7 @@ class DriverManager
     private $mapping = array(
         'mysql' => 'Dobee\\Database\\Connection\\Mysql\\MysqlConnection',
         'mongo' => 'Dobee\\Database\\Connection\\Mysql\\MongoConnection',
+        'pgsql' => 'Dobee\\Database\\Connection\\PostgreSQL\\PostgreSQLConnection',
     );
 
     /**

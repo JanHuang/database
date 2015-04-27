@@ -13,6 +13,9 @@
         "php": ">=5.4",
         "phpunit/phpunit": "4.5.*"
     },
+    "config": {
+        "bin-dir": "bin"
+    },
     "autoload": {
         "psr-4": {
             "Examples\\Repository\\": "examples/repository",

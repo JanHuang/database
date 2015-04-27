@@ -13,7 +13,7 @@
 
 namespace Dobee\Database\Tests;
 
-class ConnectionTest extends \PHPUnit_Framework_TestCase
+class MysqlTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Dobee\Database\DriverManager
@@ -73,5 +73,9 @@ class ConnectionTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($read->find('sf_post', array('id' => 111))->getStatus());
 
         $this->assertFalse($read->find('no_had_table', array('id' => 1))->getStatus());
+
+        $collection = $read->findAll('sf_post');
+
+        $this->assertEquals(2, $collection->count());
     }
 }
