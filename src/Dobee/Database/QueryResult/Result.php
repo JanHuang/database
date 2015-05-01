@@ -23,7 +23,7 @@ class Result implements FormatterInterface, \ArrayAccess, \Iterator
     /**
      * @var array
      */
-    private $result;
+    protected $result;
 
     /**
      * @var bool
