@@ -45,7 +45,7 @@ class DriverManager
     /**
      * @param array $config
      */
-    public function __construct($config = array())
+    public function __construct(array $config)
     {
         $this->config = $config;
     }
@@ -99,7 +99,7 @@ class DriverManager
 
         $config = $this->config[$connection];
 
-        $connection = new $this->mapping[$config['database_type']?:'mysql']($config);
+        $connection = new $this->mapping[$config['database_type'] ?: 'mysql']($config);
 
         $connection->setConnectionName($connection);
 
