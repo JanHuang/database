@@ -191,4 +191,28 @@ class PostgreSQLConnection implements ConnectionInterface
     {
         // TODO: Implement close() method.
     }
+
+    /**
+     * @return bool
+     */
+    public function startTransaction()
+    {
+        // TODO: Implement startTransaction() method.
+    }
+
+    /**
+     * @return bool
+     */
+    public function commit()
+    {
+        // TODO: Implement commit() method.
+    }
+
+    /**
+     * @return bool
+     */
+    public function rollback()
+    {
+        // TODO: Implement rollback() method.
+    }
 }

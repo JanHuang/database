@@ -54,38 +54,33 @@ class MysqlConnection implements ConnectionInterface
      */
     private $info;
 
+    /**
+     * @var \medoo
+     */
     private $medoo;
 
     /**
-     * @param array $options
+     * @param array $config
      * @throws \Exception
      */
-    public function __construct(array $options = array())
+    public function __construct(array $config = array())
     {
         $this->medoo = new \medoo(array(
-            'database_type' => $options['database_type'],
-            'database_name' => $options['database_name'],
-            'server' => $options['database_host'],
-            'username' => $options['database_user'],
-            'password' => $options['database_pwd'],
-            'port' => isset($options['database_port']) ? $options['database_port'] : 3306,
-            'charset' => isset($options['database_charset']) ? $options['database_charset'] : 'utf8',
-            'option' => array(
+            'database_type' => $config['database_type'],
+            'database_name' => $config['database_name'],
+            'server'        => $config['database_host'],
+            'username'      => $config['database_user'],
+            'password'      => $config['database_pwd'],
+            'port'          => isset($config['database_port']) ? $config['database_port'] : 3306,
+            'charset'       => isset($config['database_charset']) ? $config['database_charset'] : 'utf8',
+            'option'        => array(
                 \PDO::ATTR_CASE => \PDO::CASE_NATURAL
             )
         ));
 
-        $this->prefix = isset($options['database_prefix']) ? $options['database_prefix'] : '';
+        $this->prefix = isset($config['database_prefix']) ? $config['database_prefix'] : '';
 
-        $this->info = $options;
-    }
-
-    /**
-     * @return \PDO
-     */
-    public function getPDO()
-    {
-        return $this->medoo->pdo;
+        $this->info = $config;
     }
 
     /**
@@ -93,8 +88,6 @@ class MysqlConnection implements ConnectionInterface
      */
     public function getConnectionInfo()
     {
-        unset($this->info['database_pwd']);
-
         return $this->info;
     }
 
@@ -104,6 +97,36 @@ class MysqlConnection implements ConnectionInterface
     public function getPrefix()
     {
         return $this->prefix;
+    }
+
+    /**
+     * Begin mysql transaction
+     *
+     * @return mixed
+     */
+    public function startTransaction()
+    {
+        $this->createQuery('START TRANSACTION; set autocommit = 0;')->getQuery()->getResult();
+    }
+
+    /**
+     * Rollback mysql transaction
+     *
+     * @return mixed
+     */
+    public function rollback()
+    {
+        $this->createQuery('ROLLBACK')->getQuery()->getResult();
+    }
+
+    /**
+     * Commit mysql transaction
+     *
+     * @return mixed
+     */
+    public function commit()
+    {
+        $this->createQuery('COMMIT')->getQuery()->getResult();
     }
 
     /**
@@ -151,7 +174,7 @@ class MysqlConnection implements ConnectionInterface
 
         $collection = new ResultCollection($this->statement->fetchAll(\PDO::FETCH_ASSOC));
 
-        $collection->setInfo($this->medoo->pdo->errorInfo());
+        $collection->setInfo($this->medoo->info());
 
         return $collection;
     }
@@ -257,7 +280,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function insert($table, $data = array())
     {
-        return $this->medoo->insert($table, $data);
+        return (int)$this->medoo->insert($table, $data);
     }
 
     /**
@@ -268,7 +291,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function update($table, $data = array(), $where = array())
     {
-        return $this->medoo->update($table, $data, $where);
+        return (int)$this->medoo->update($table, $data, $where);
     }
 
     /**
@@ -282,7 +305,7 @@ class MysqlConnection implements ConnectionInterface
             return false;
         }
 
-        return $this->medoo->delete($table, $where);
+        return (int)$this->medoo->delete($table, $where);
     }
 
     /**
@@ -292,7 +315,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function count($table, $where = array())
     {
-        return $this->medoo->count($table, $where);
+        return (int)$this->medoo->count($table, $where);
     }
 
     /**
@@ -302,7 +325,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function has($table, $where = array())
     {
-        return $this->medoo->has($table, $where);
+        return (bool)$this->medoo->has($table, $where);
     }
 
     /**

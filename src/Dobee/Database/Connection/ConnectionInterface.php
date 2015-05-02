@@ -23,15 +23,30 @@ use Dobee\Database\Repository\Repository;
 interface ConnectionInterface
 {
     /**
-     * @param array $options
+     * @param array $config
      */
-    public function __construct(array $options);
+    public function __construct(array $config);
 
     /**
      * @param string $connection
      * @return $this
      */
     public function setConnectionName($connection);
+
+    /**
+     * @return bool
+     */
+    public function startTransaction();
+
+    /**
+     * @return bool
+     */
+    public function commit();
+
+    /**
+     * @return bool
+     */
+    public function rollback();
 
     /**
      * @return string

@@ -44,6 +44,16 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
                 'database_name' => 'sf_blog',
                 'database_prefix' => 'sf_',
             ),
+            'test' => array(
+                'database_type' => 'mysql',
+                'database_host' => 'localhost',
+                'database_port' => '3306',
+                'database_user' => 'root',
+                'database_pwd' => '123456',
+                'database_charset' => 'utf8',
+                'database_name' => 'test',
+                'database_prefix' => '',
+            ),
         ));
     }
 
@@ -77,5 +87,44 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $collection = $read->findAll('sf_post');
 
         $this->assertEquals(2, $collection->count());
+    }
+
+    public function testInsert()
+    {
+        $test = $this->database->getConnection('test');
+
+        $insertId = $test->insert('demo', array('name' => 'janhuang'));
+
+        $result = $test->find('demo', array('id' => $insertId));
+
+        $this->assertEquals($insertId, $result['id']);
+    }
+
+    public function testUpdate()
+    {
+        $demo = $this->database->getConnection('test');
+
+        $demo->update('demo', array('name' => 'and update'),
+            [
+                "AND" => [
+                    'id' => 5,
+                    'name' => 'janhuang'
+                ],
+            ]
+        );
+    }
+
+    public function testDelete()
+    {
+        $demo = $this->database->getConnection('test');
+
+        $demo->delete('demo', array("id" => 2));
+
+        $demo->delete('demo', array('and' => ['id' => 4, 'name' => 'janhuang']));
+    }
+
+    public function testTransaction()
+    {
+
     }
 }

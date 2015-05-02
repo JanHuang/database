@@ -97,9 +97,7 @@ class DriverManager
             throw new ConnectionException(sprintf('Connection type "%s" is undefined.', $connection));
         }
 
-        $config = $this->config[$connection];
-
-        $connection = new $this->mapping[$config['database_type'] ?: 'mysql']($config);
+        $connection = new $this->mapping[$this->config[$connection]['database_type']]($this->config[$connection]);
 
         $connection->setConnectionName($connection);
 
