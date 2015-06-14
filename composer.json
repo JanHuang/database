@@ -2,6 +2,8 @@
     "name": "dobee/database",
     "description": "dobee php simple framework database driver component",
     "license": "MIT",
+    "type": "library",
+    "keywords": ["database", "dobee"],
     "authors": [
         {
             "name": "janhuang",
@@ -10,11 +12,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.4",
-        "phpunit/phpunit": "4.5.*"
-    },
-    "config": {
-        "bin-dir": "bin"
+        "php": ">=5.4"
     },
     "autoload": {
         "psr-4": {

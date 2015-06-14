@@ -83,7 +83,7 @@ interface ConnectionInterface
     public function setParameters($name, $value = '');
 
     /**
-     * @return mixed
+     * @return $this
      */
     public function getQuery();
 
