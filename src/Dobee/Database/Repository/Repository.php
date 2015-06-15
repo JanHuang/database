@@ -23,11 +23,15 @@ use Dobee\Database\Connection\ConnectionInterface;
 class Repository
 {
     /**
+     * Mapping database table full name.
+     *
      * @var string
      */
     protected $table;
 
     /**
+     * Return mapping database table full name.
+     *
      * @return string
      */
     public function getTable()
@@ -36,6 +40,8 @@ class Repository
     }
 
     /**
+     * Reset database table mapping related.
+     *
      * @param string $table
      * @return $this
      */
@@ -47,6 +53,8 @@ class Repository
     }
 
     /**
+     * Return database table mapping prefix.
+     *
      * @return string
      */
     public function getPrefix()

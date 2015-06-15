@@ -17,13 +17,15 @@ use Dobee\Database\Connection\ConnectionException;
 use Dobee\Database\Connection\ConnectionInterface;
 
 /**
- * Class Driver
+ * Class DatabaseDriver
  *
  * @package Dobee\Kernel\Configuration\Drivers
  */
-class DriverManager
+class Database
 {
     /**
+     * Database connection mapping.
+     *
      * @var ConnectionInterface[]
      */
     private $mapping = array(
@@ -33,14 +35,18 @@ class DriverManager
     );
 
     /**
-     * @var array
-     */
-    private $collections = array();
-
-    /**
+     * All database configuration information.
+     *
      * @var array
      */
     private $config = array();
+
+    /**
+     * Database connection collection.
+     *
+     * @var array
+     */
+    private $collections = array();
 
     /**
      * @param array $config
@@ -51,31 +57,43 @@ class DriverManager
     }
 
     /**
+     * @param $name
+     * @return bool
+     */
+    public function getConfig($name)
+    {
+        return isset($this->config[$name]) ? $this->config[$name] : false;
+    }
+
+    /**
      * @param null $connection
      * @return ConnectionInterface
      * @throws ConnectionException
      */
     public function getConnection($connection = null)
     {
-        if (isset($this->collections[$connection])) {
+        if ($this->hasConnection($connection)) {
             return $this->collections[$connection];
         }
 
-        if (null === $connection) {
-            if (!isset($this->config['default_connection'])) {
-                throw new ConnectionException(sprintf('Default connection is undefined.'));
-            }
-
-            $connection = $this->config['default_connection'];
-        }
-
-        $this->setConnection($connection, $this->createConnection($connection));
-
-        return $this->collections[$connection];
+        return $this
+            ->setConnection($connection, $this->createConnection($connection))
+            ->getConnection($connection);
     }
 
     /**
-     * @param                     $connection
+     * @param $connection
+     * @return bool
+     */
+    public function hasConnection($connection)
+    {
+        return isset($this->collections[$connection]);
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * @param                     $name
      * @param ConnectionInterface $connectionInterface
      * @return $this
      */
@@ -87,17 +105,19 @@ class DriverManager
     }
 
     /**
+     * Created new database connection.
+     *
      * @param $connection
      * @return ConnectionInterface
      * @throws ConnectionException
      */
     private function createConnection($connection)
     {
-        if (!isset($this->config[$connection])) {
+        if (false === ($config = $this->getConfig($connection))) {
             throw new ConnectionException(sprintf('Connection type "%s" is undefined.', $connection));
         }
 
-        $connection = new $this->mapping[$this->config[$connection]['database_type']]($this->config[$connection]);
+        $connection = new $this->mapping[$config['database_type']]($config);
 
         $connection->setConnectionName($connection);
 

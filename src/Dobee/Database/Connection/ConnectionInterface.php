@@ -23,6 +23,9 @@ use Dobee\Database\Repository\Repository;
 interface ConnectionInterface
 {
     /**
+     * Constructor.
+     * Sub database module config.
+     *
      * @param array $config
      */
     public function __construct(array $config);
@@ -34,40 +37,48 @@ interface ConnectionInterface
     public function setConnectionName($connection);
 
     /**
-     * @return bool
-     */
-    public function startTransaction();
-
-    /**
-     * @return bool
-     */
-    public function commit();
-
-    /**
-     * @return bool
-     */
-    public function rollback();
-
-    /**
+     * Return current database connection name.
+     *
      * @return string
      */
     public function getConnectionName();
 
     /**
-     * @param        $table
-     * @param array  $where
-     * @param string $field
-     * @return \Dobee\Database\QueryResult\Result
+     * Start database transaction.
+     *
+     * @return bool
      */
-    public function find($table, $where, $field = '*');
+    public function startTransaction();
+
+    /**
+     * Commit database transaction.
+     *
+     * @return bool
+     */
+    public function commit();
+
+    /**
+     * Transaction error. Transaction rollback.
+     *
+     * @return bool
+     */
+    public function rollback();
 
     /**
      * @param        $table
      * @param array  $where
-     * @param string $field
-     * @return \Dobee\Database\QueryResult\ResultCollection
+     * @param array $field
+     * @return array
      */
-    public function findAll($table, $where = array(), $field = '*');
+    public function find($table, array $where, array $field = ['*']);
+
+    /**
+     * @param        $table
+     * @param array  $where
+     * @param array $field
+     * @return array
+     */
+    public function findAll($table, array $where, array $field = ['*']);
 
     /**
      * @param $dql
@@ -88,7 +99,7 @@ interface ConnectionInterface
     public function getQuery();
 
     /**
-     * @return \Dobee\Database\QueryResult\ResultCollection
+     * @return array
      */
     public function getResult();
 
@@ -103,7 +114,7 @@ interface ConnectionInterface
      * @param array $data
      * @return int|bool
      */
-    public function insert($table, $data = array());
+    public function insert($table, array $data = array());
 
     /**
      * @param       $table
@@ -111,28 +122,36 @@ interface ConnectionInterface
      * @param array $where
      * @return int|bool
      */
-    public function update($table, $data = array(), $where = array());
+    public function update($table, array $data = array(), array $where = array());
 
     /**
      * @param       $table
      * @param array $where
      * @return int|bool
      */
-    public function delete($table, $where = array());
+    public function delete($table, array $where = array());
 
     /**
      * @param       $table
      * @param array $where
      * @return int|bool
      */
-    public function count($table, $where = array());
+    public function count($table, array $where = array());
 
     /**
      * @param       $table
      * @param array $where
      * @return int|bool
      */
-    public function has($table, $where = array());
+    public function has($table, array $where = array());
+
+    /**
+     * @param       $table
+     * @param array $data
+     * @param array $where
+     * @return int|bool
+     */
+    public function replace($table, array $data, array $where);
 
     /**
      * @return array|bool

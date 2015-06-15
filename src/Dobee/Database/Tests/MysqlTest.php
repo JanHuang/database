@@ -16,17 +16,16 @@ namespace Dobee\Database\Tests;
 class MysqlTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Dobee\Database\DriverManager
+     * @var \Dobee\Database\Database
      */
     private $database;
 
     public function setUp()
     {
-        $this->database = new \Dobee\Database\DriverManager(array(
-            'default_connection' => 'read',
+        $this->database = new \Dobee\Database\Database(array(
             'read' => array(
                 'database_type' => 'mysql',
-                'database_host' => 'localhost',
+                'database_host' => '127.0.0.1',
                 'database_port' => '3306',
                 'database_user' => 'root',
                 'database_pwd' => '123456',
@@ -36,7 +35,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
             ),
             'write' => array(
                 'database_type' => 'mysql',
-                'database_host' => 'localhost',
+                'database_host' => '127.0.0.1',
                 'database_port' => '3306',
                 'database_user' => 'root',
                 'database_pwd' => '123456',
@@ -46,7 +45,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
             ),
             'test' => array(
                 'database_type' => 'mysql',
-                'database_host' => 'localhost',
+                'database_host' => '127.0.0.1',
                 'database_port' => '3306',
                 'database_user' => 'root',
                 'database_pwd' => '123456',
@@ -61,70 +60,6 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
     {
         $read = $this->database->getConnection('read');
 
-        $this->assertInstanceOf('Dobee\Database\Connection\ConnectionInterface', $read);
-
-        try {
-            $this->database->getConnection('not_has_connection');
-        } catch (\Exception $e) {
-            return true;
-        }
-    }
-
-    public function testFind()
-    {
-        $read = $this->database->getConnection('read');
-
-        $result = $read->find('sf_post', array('id' => 1));
-
-        $this->assertInstanceOf('\\Dobee\\Database\\QueryResult\\Result', $result);
-
-        $this->assertEquals($result->title, $result['title']);
-
-        $this->assertFalse($read->find('sf_post', array('id' => 111))->getStatus());
-
-        $this->assertFalse($read->find('no_had_table', array('id' => 1))->getStatus());
-
-        $collection = $read->findAll('sf_post');
-
-        $this->assertEquals(2, $collection->count());
-    }
-
-    public function testInsert()
-    {
-        $test = $this->database->getConnection('test');
-
-        $insertId = $test->insert('demo', array('name' => 'janhuang'));
-
-        $result = $test->find('demo', array('id' => $insertId));
-
-        $this->assertEquals($insertId, $result['id']);
-    }
-
-    public function testUpdate()
-    {
-        $demo = $this->database->getConnection('test');
-
-        $demo->update('demo', array('name' => 'and update'),
-            [
-                "AND" => [
-                    'id' => 5,
-                    'name' => 'janhuang'
-                ],
-            ]
-        );
-    }
-
-    public function testDelete()
-    {
-        $demo = $this->database->getConnection('test');
-
-        $demo->delete('demo', array("id" => 2));
-
-        $demo->delete('demo', array('and' => ['id' => 4, 'name' => 'janhuang']));
-    }
-
-    public function testTransaction()
-    {
-
+        print_r($read);
     }
 }
