@@ -16,7 +16,7 @@ namespace Dobee\Database\QueryResult;
 /**
  * Interface FormatterInterface
  *
- * @package Dobee\Database\QueryResult
+ * @package Dobee\Database\Query
  */
 interface FormatterInterface
 {

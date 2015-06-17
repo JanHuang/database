@@ -16,7 +16,7 @@ namespace Dobee\Database\QueryResult;
 /**
  * Class Result
  *
- * @package Dobee\Database\QueryResult
+ * @package Dobee\Database\Query
  */
 class Result implements FormatterInterface, \ArrayAccess, \Iterator
 {

@@ -13,8 +13,8 @@
 
 namespace Dobee\Database;
 
-use Dobee\Database\Connection\ConnectionException;
-use Dobee\Database\Connection\ConnectionInterface;
+use Dobee\Database\Driver\DriverInterface;
+use Dobee\Database\Driver\MysqlDriver;
 
 /**
  * Class DatabaseDriver
@@ -24,22 +24,11 @@ use Dobee\Database\Connection\ConnectionInterface;
 class Database
 {
     /**
-     * Database connection mapping.
-     *
-     * @var ConnectionInterface[]
-     */
-    private $mapping = array(
-        'mysql' => 'Dobee\\Database\\Connection\\Mysql\\MysqlConnection',
-        'mongo' => 'Dobee\\Database\\Connection\\Mysql\\MongoConnection',
-        'pgsql' => 'Dobee\\Database\\Connection\\PostgreSQL\\PostgreSQLConnection',
-    );
-
-    /**
      * All database configuration information.
      *
-     * @var array
+     * @var Config
      */
-    private $config = array();
+    private $config;
 
     /**
      * Database connection collection.
@@ -53,22 +42,12 @@ class Database
      */
     public function __construct(array $config)
     {
-        $this->config = $config;
-    }
-
-    /**
-     * @param $name
-     * @return bool
-     */
-    public function getConfig($name)
-    {
-        return isset($this->config[$name]) ? $this->config[$name] : false;
+        $this->config = new Config($config);
     }
 
     /**
      * @param null $connection
-     * @return ConnectionInterface
-     * @throws ConnectionException
+     * @return DriverInterface
      */
     public function getConnection($connection = null)
     {
@@ -93,13 +72,13 @@ class Database
     /**
      * @inheritdoc
      *
-     * @param                     $name
-     * @param ConnectionInterface $connectionInterface
+     * @param                 $connection
+     * @param DriverInterface $connection
      * @return $this
      */
-    public function setConnection($connection, ConnectionInterface $connectionInterface)
+    public function setConnection($connection, DriverInterface $driver)
     {
-        $this->collections[$connection] = $connectionInterface;
+        $this->collections[$connection] = $driver;
 
         return $this;
     }
@@ -108,19 +87,19 @@ class Database
      * Created new database connection.
      *
      * @param $connection
-     * @return ConnectionInterface
-     * @throws ConnectionException
+     * @return DriverInterface
      */
     private function createConnection($connection)
     {
-        if (false === ($config = $this->getConfig($connection))) {
-            throw new ConnectionException(sprintf('Connection type "%s" is undefined.', $connection));
+        $config = $this->config->createConfig($connection);
+
+        switch ($config->getDatabaseType()) {
+            case 'mysql':
+            case 'mariadb':
+            default:
+                $driver = new MysqlDriver($config);
         }
 
-        $connection = new $this->mapping[$config['database_type']]($config);
-
-        $connection->setConnectionName($connection);
-
-        return $connection;
+        return $driver;
     }
 }

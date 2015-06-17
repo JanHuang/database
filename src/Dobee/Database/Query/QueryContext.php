@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/6/15
- * Time: 下午2:18
+ * Date: 15/6/17
+ * Time: 下午11:21
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,13 +12,26 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace Dobee\Database\Pagination;
+namespace Dobee\Database\Query;
 
-use Dobee\Database\Query\QueryContext;
-
-class QueryPagination
+class QueryContext
 {
-    public function __construct(QueryContext $context)
+    public function __construct($table, array $where = [], array $fields = ['*'])
+    {
+
+    }
+
+    public function getSql()
+    {
+
+    }
+
+    public function getOffset()
+    {
+
+    }
+
+    public function getLimit()
     {
 
     }

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: janhuang
  * Date: 15/6/15
- * Time: 下午2:46
+ * Time: 下午9:44
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,151 +12,95 @@
  * WebSite: http://www.janhuang.me
  */
 
+namespace Dobee\Database\Driver;
 
-namespace Dobee\Database\Connection;
-
-use Dobee\Database\Driver\DriverConfig;
-use Dobee\Database\Driver\DriverInterface;
-use Dobee\Database\Driver\PDODriver;
-use Dobee\Database\Repository\Repository;
+use Dobee\Database\Config;
+use Dobee\Database\Connection\Mysql\MysqlConnection;
+use Dobee\Database\Query\QueryContext;
 
 /**
- * Class DbConnection
+ * Class PDODriver
  *
- * @package Dobee\Database\Connection
+ * @package Dobee\Database\Driver
  */
-class DbConnection implements ConnectionInterface
+abstract class PdoDriver implements DriverInterface
 {
     /**
-     * @var DriverInterface
+     * @var MysqlConnection
      */
-    protected $driver;
+    protected $connection;
 
     /**
-     * @var string
+     * @var \PDOStatement
      */
-    protected $connectionName;
-
-    protected $repositories = [];
+    protected $statement;
 
     /**
-     * @param array $config
+     * @param $config
      */
-    public function __construct(array $config)
+    public function __construct(Config $config)
     {
-        $this->driver = $this->createConnectionDriverSocket($config, isset($config['options']) ? $config['options'] : []);
+        $this->connection = new MysqlConnection($config);
     }
 
     /**
-     * Create new database driver connection socket pipe.
-     *
-     * @param array $config
-     * @param array $options
-     * @return DriverInterface
-     */
-    protected function createConnectionDriverSocket(array $config, array $options = [])
-    {
-        return new PDODriver(new DriverConfig($config, $options));
-    }
-
-    /**
-     * @param string $connection
-     * @return $this
-     */
-    public function setConnectionName($connection)
-    {
-        $this->connectionName = $connection;
-
-        return $this;
-    }
-
-    /**
-     * Return current database connection name.
-     *
-     * @return string
-     */
-    public function getConnectionName()
-    {
-        return $this->connectionName;
-    }
-
-    /**
-     * Start database transaction.
-     *
      * @return bool
      */
-    public function startTransaction()
+    public function beginTransaction()
     {
-        return $this->driver->beginTransaction();
+        return $this->connection->beginTransaction();
     }
 
     /**
-     * Commit database transaction.
-     *
      * @return bool
      */
     public function commit()
     {
-        return $this->driver->commit();
+        return $this->connection->commit();
     }
 
     /**
-     * Transaction error. Transaction rollback.
-     *
      * @return bool
      */
     public function rollback()
     {
-        return $this->driver->rollBack();
+        return $this->connection->rollBack();
     }
 
     /**
-     * @param        $table
-     * @param array  $where
-     * @param array $field
      * @return array
      */
-    public function find($table, array $where = [], array $field = ['*'])
+    public function error()
     {
-        return $this->driver->bind('')->getQuery();
+        return $this->connection->error();
     }
 
     /**
-     * @param        $table
-     * @param array  $where
-     * @param array  $field
-     * @return array
-     */
-    public function findAll($table, array $where = [], array $field = ['*'])
-    {
-        // TODO: Implement findAll() method.
-    }
-
-    /**
-     * @param $dql
+     * @param $sql
      * @return $this
      */
-    public function createQuery($dql)
+    public function createQuery($sql)
     {
-        $this->driver->bind($dql);
+        $this->connection->prepare($sql);
 
         return $this;
     }
 
     /**
-     * @param        $name
-     * @param string $value
+     * @param mixed $name
+     * @param null  $value
      * @return $this
      */
     public function setParameters($name, $value = null)
     {
-        $parameters = [];
-
         if (!is_array($name)) {
-            $parameters[$name] = $value;
+            $this->connection->setParameters($name, $value);
+            return $this;
         }
 
-        $this->driver->setParameters($parameters);
+        foreach ($name as $key => $value) {
+            $this->connection->setParameters($name, $value);
+        }
 
         return $this;
     }
@@ -166,7 +110,7 @@ class DbConnection implements ConnectionInterface
      */
     public function getQuery()
     {
-        $this->driver->getQuery();
+        $this->connection->getQuery();
 
         return $this;
     }
@@ -176,7 +120,35 @@ class DbConnection implements ConnectionInterface
      */
     public function getResult()
     {
-        return $this->driver->getResult();
+        return $this->connection->getResult();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSql()
+    {
+        // TODO: Implement getSql() method.
+    }
+
+    /**
+     * @return string
+     *
+     * @api
+     */
+    public function log()
+    {
+        return $this->statement->debugDumpParams();
+    }
+
+    public function find($table, array $where = [], array $fields = ['*'])
+    {
+        // TODO: Implement find() method.
+    }
+
+    public function findAll($table, array $where = [], array $fields = ['*'])
+    {
+        // TODO: Implement findAll() method.
     }
 
     /**
@@ -259,38 +231,6 @@ class DbConnection implements ConnectionInterface
     }
 
     /**
-     * @return array|bool
-     */
-    public function logs()
-    {
-        // TODO: Implement logs() method.
-    }
-
-    /**
-     * @return array
-     */
-    public function error()
-    {
-        // TODO: Implement error() method.
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastQuery()
-    {
-        // TODO: Implement getLastQuery() method.
-    }
-
-    /**
-     * @return mixed
-     */
-    public function close()
-    {
-        // TODO: Implement close() method.
-    }
-
-    /**
      * @param       $table
      * @param array $data
      * @param array $where
@@ -301,8 +241,16 @@ class DbConnection implements ConnectionInterface
         // TODO: Implement replace() method.
     }
 
-    protected function parserSql()
+    public function info()
     {
-
+        return $this->connection->info();
     }
+
+    /**
+     * @param       $table
+     * @param array $where
+     * @param array $fields
+     * @return QueryContext
+     */
+    abstract public function createQueryContext($table, array $where, array $fields = ['*']);
 }

@@ -14,6 +14,9 @@
 
 namespace Dobee\Database\Driver;
 
+use Dobee\Database\Config;
+use Dobee\Database\Repository\Repository;
+
 /**
  * Interface DriverInterface
  *
@@ -22,9 +25,9 @@ namespace Dobee\Database\Driver;
 interface DriverInterface
 {
     /**
-     * @param DriverConfig $config
+     * @param Config $config
      */
-    public function __construct(DriverConfig $config);
+    public function __construct(Config $config);
 
     /**
      * Start database transaction.
@@ -53,17 +56,28 @@ interface DriverInterface
 
     /**
      * @return string
+     */
+    public function getSql();
+
+    /**
+     * @return string
      *
      * @api
      */
     public function error();
 
     /**
-     * @return array
+     * @return string
      *
      * @api
      */
-    public function logs();
+    public function log();
+
+    public function info();
+
+    public function find($table, array $where = [], array $fields = ['*']);
+
+    public function findAll($table, array $where = [], array $fields = ['*']);
 
     /**
      * @param $sql
@@ -71,15 +85,16 @@ interface DriverInterface
      *
      * @api
      */
-    public function bind($sql);
+    public function createQuery($sql);
 
     /**
-     * @param array $parameters
+     * @param mixed $name
+     * @param mixed $value
      * @return $this
      *
      * @api
      */
-    public function setParameters(array $parameters);
+    public function setParameters($name, $value = null);
 
     /**
      * @return $this
@@ -94,4 +109,55 @@ interface DriverInterface
      * @api
      */
     public function getResult();
+
+    /**
+     * @param $repository
+     * @return Repository
+     */
+    public function getRepository($repository);
+
+    /**
+     * @param       $table
+     * @param array $data
+     * @return int|bool
+     */
+    public function insert($table, array $data = array());
+
+    /**
+     * @param       $table
+     * @param array $data
+     * @param array $where
+     * @return int|bool
+     */
+    public function update($table, array $data = array(), array $where = array());
+
+    /**
+     * @param       $table
+     * @param array $where
+     * @return int|bool
+     */
+    public function delete($table, array $where = array());
+
+    /**
+     * @param       $table
+     * @param array $where
+     * @return int|bool
+     */
+    public function count($table, array $where = array());
+
+    /**
+     * @param       $table
+     * @param array $where
+     * @return int|bool
+     */
+    public function has($table, array $where = array());
+
+    /**
+     * @param       $table
+     * @param array $data
+     * @param array $where
+     * @return int|bool
+     */
+    public function replace($table, array $data, array $where);
+
 }

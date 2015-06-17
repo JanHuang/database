@@ -14,6 +14,7 @@
 namespace Dobee\Database\Connection;
 
 use Dobee\Database\Repository\Repository;
+use Dobee\Database\Config;
 
 /**
  * Interface ConnectionInterface
@@ -26,29 +27,16 @@ interface ConnectionInterface
      * Constructor.
      * Sub database module config.
      *
-     * @param array $config
+     * @param Config $config
      */
-    public function __construct(array $config);
-
-    /**
-     * @param string $connection
-     * @return $this
-     */
-    public function setConnectionName($connection);
-
-    /**
-     * Return current database connection name.
-     *
-     * @return string
-     */
-    public function getConnectionName();
+    public function __construct(Config $config);
 
     /**
      * Start database transaction.
      *
      * @return bool
      */
-    public function startTransaction();
+    public function beginTransaction();
 
     /**
      * Commit database transaction.
@@ -65,26 +53,10 @@ interface ConnectionInterface
     public function rollback();
 
     /**
-     * @param        $table
-     * @param array  $where
-     * @param array $field
-     * @return array
-     */
-    public function find($table, array $where, array $field = ['*']);
-
-    /**
-     * @param        $table
-     * @param array  $where
-     * @param array $field
-     * @return array
-     */
-    public function findAll($table, array $where, array $field = ['*']);
-
-    /**
      * @param $dql
      * @return $this
      */
-    public function createQuery($dql);
+    public function prepare($dql);
 
     /**
      * @param        $name
@@ -104,69 +76,14 @@ interface ConnectionInterface
     public function getResult();
 
     /**
-     * @param $repository
-     * @return Repository
-     */
-    public function getRepository($repository);
-
-    /**
-     * @param       $table
-     * @param array $data
-     * @return int|bool
-     */
-    public function insert($table, array $data = array());
-
-    /**
-     * @param       $table
-     * @param array $data
-     * @param array $where
-     * @return int|bool
-     */
-    public function update($table, array $data = array(), array $where = array());
-
-    /**
-     * @param       $table
-     * @param array $where
-     * @return int|bool
-     */
-    public function delete($table, array $where = array());
-
-    /**
-     * @param       $table
-     * @param array $where
-     * @return int|bool
-     */
-    public function count($table, array $where = array());
-
-    /**
-     * @param       $table
-     * @param array $where
-     * @return int|bool
-     */
-    public function has($table, array $where = array());
-
-    /**
-     * @param       $table
-     * @param array $data
-     * @param array $where
-     * @return int|bool
-     */
-    public function replace($table, array $data, array $where);
-
-    /**
      * @return array|bool
      */
-    public function logs();
+    public function info();
 
     /**
      * @return array
      */
     public function error();
-
-    /**
-     * @return string
-     */
-    public function getLastQuery();
 
     /**
      * @return mixed

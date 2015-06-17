@@ -12,16 +12,14 @@
  * WebSite: http://www.janhuang.me
  */
 
-
-namespace Dobee\Database\Driver;
-
+namespace Dobee\Database;
 
 /**
- * Class DriverConfig
+ * Class Config
  *
- * @package Dobee\Database\Driver
+ * @package Dobee\Database
  */
-class DriverConfig
+class Config
 {
     /**
      * @var array
@@ -45,13 +43,40 @@ class DriverConfig
 
     /**
      * @param array $config
-     * @param array $options
      */
-    public function __construct(array $config, array $options = [])
+    public function __construct(array $config)
     {
-        $this->config = array_merge($config);
+        $this->config = $config;
+    }
 
-        $this->options = $options;
+    /**
+     * @param array $config
+     * @return $this
+     */
+    public function setConfig(array $config)
+    {
+        $this->config = array_merge($this->config, $config);
+
+        return $this;
+    }
+
+    /**
+     * @param $name
+     * @return Config
+     */
+    public function createConfig($name)
+    {
+        $config = $this->config[$name];
+
+        $config['connection_name'] = $name;
+
+        $config = new Config($config);
+
+        if (isset($this->config[$name]['options'])) {
+            $config->setOptions($this->config[$name]['options']);
+        }
+
+        return $config;
     }
 
     /**
@@ -65,7 +90,7 @@ class DriverConfig
     /**
      * @param array $options
      */
-    public function setOptions($options)
+    public function setOptions(array $options)
     {
         $this->options = $options;
     }

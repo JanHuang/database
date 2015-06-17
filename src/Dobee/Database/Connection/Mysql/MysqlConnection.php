@@ -13,13 +13,13 @@
 
 namespace Dobee\Database\Connection\Mysql;
 
-use Dobee\Database\Connection\DbConnection;
+use Dobee\Database\Connection\PdoConnection;
 
 /**
  * Class MysqlConnection
  *
  * @package Dobee\Kernel\Configuration\Drivers\Db\Mysql
  */
-class MysqlConnection extends DbConnection
+class MysqlConnection extends PdoConnection
 {
 }

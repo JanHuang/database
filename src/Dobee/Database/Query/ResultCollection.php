@@ -16,7 +16,7 @@ namespace Dobee\Database\QueryResult;
 /**
  * Class ResultCollection
  *
- * @package Dobee\Database\QueryResult
+ * @package Dobee\Database\Query
  */
 class ResultCollection implements \Countable, \Iterator, \ArrayAccess, FormatterInterface
 {
