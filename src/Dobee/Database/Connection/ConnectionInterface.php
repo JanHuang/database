@@ -13,9 +13,6 @@
 
 namespace Dobee\Database\Connection;
 
-use Dobee\Database\Repository\Repository;
-use Dobee\Database\Config;
-
 /**
  * Interface ConnectionInterface
  *
@@ -25,11 +22,17 @@ interface ConnectionInterface
 {
     /**
      * Constructor.
-     * Sub database module config.
+     * Initialize database connection.
      *
-     * @param Config $config
+     * @param string $dsn The connection dsn.
+     * @param string $user The connection username.
+     * @param string $password The connection user password.
+     * @param string $charset The connection default charset.
+     * @param array  $options The connection initialize execute options array.
+     *
+     * @api
      */
-    public function __construct(Config $config);
+    public function __construct($dsn, $user, $password, $charset = 'utf8', array $options = []);
 
     /**
      * Start database transaction.
@@ -59,6 +62,8 @@ interface ConnectionInterface
     public function prepare($dql);
 
     /**
+     * Bind prepare value. But the name is no has ':'.
+     *
      * @param        $name
      * @param string $value
      * @return $this
@@ -71,19 +76,48 @@ interface ConnectionInterface
     public function getQuery();
 
     /**
-     * @return array
+     * @return array|bool
      */
-    public function getResult();
+    public function getAll();
 
     /**
      * @return array|bool
      */
-    public function info();
+    public function getOne();
+
+    /**
+     * @return int|false
+     */
+    public function getAffectedRow();
+
+    /**
+     * @return int|false
+     */
+    public function getLastId();
+
+    /**
+     * Get connection detail information.
+     *
+     * @return array|bool
+     */
+    public function getConnectionInfo();
+
+    /**
+     * Get connection operation error information.
+     *
+     * @return array
+     */
+    public function getErrors();
 
     /**
      * @return array
      */
-    public function error();
+    public function getSql();
+
+    /**
+     * @return array
+     */
+    public function getLogs();
 
     /**
      * @return mixed

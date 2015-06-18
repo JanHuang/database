@@ -13,13 +13,181 @@
 
 namespace Dobee\Database\Connection\Mysql;
 
-use Dobee\Database\Connection\PdoConnection;
+use Dobee\Database\Connection\ConnectionInterface;
 
 /**
  * Class MysqlConnection
  *
  * @package Dobee\Kernel\Configuration\Drivers\Db\Mysql
  */
-class MysqlConnection extends PdoConnection
+class MysqlConnection implements ConnectionInterface
 {
+    /**
+     * @var \PDO
+     */
+    protected $driver;
+
+    /**
+     * @var \PDOStatement
+     */
+    protected $statement;
+
+    /**
+     * @param string $dsn
+     * @param string $user
+     * @param string $password
+     * @param string $charset
+     * @param array  $options
+     */
+    public function __construct($dsn, $user, $password, $charset = 'utf8', array $options = [])
+    {
+        $this->driver = new \PDO($dsn, $user, $password, array_merge(
+            [
+                \PDO::MYSQL_ATTR_INIT_COMMAND => 'set names ' . $charset
+            ],
+            $options
+        ));
+    }
+
+    /**
+     * Start database transaction.
+     *
+     * @return bool
+     */
+    public function beginTransaction()
+    {
+        return $this->driver->beginTransaction();
+    }
+
+    /**
+     * Commit database transaction.
+     *
+     * @return bool
+     */
+    public function commit()
+    {
+        return $this->driver->commit();
+    }
+
+    /**
+     * Transaction error. Transaction rollback.
+     *
+     * @return bool
+     */
+    public function rollback()
+    {
+        return $this->driver->rollBack();
+    }
+
+    /**
+     * @param        $name
+     * @param string $value
+     * @return $this
+     */
+    public function setParameters($name, $value = null)
+    {
+        $this->statement->bindParam(':' . $name, $value);
+
+        return $this;
+    }
+
+    /**
+     * @param $sql
+     * @return $this
+     */
+    public function prepare($sql)
+    {
+        $this->statement = $this->driver->prepare($sql);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function getQuery()
+    {
+        $this->statement->execute();
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAll()
+    {
+        $result = $this->statement->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    public function getOne()
+    {
+        $result = $this->statement->fetch(\PDO::FETCH_ASSOC);
+
+        return $result;
+    }
+
+    /**
+     * Get connection operation error information.
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->statement->errorInfo();
+    }
+
+    /**
+     * @return array
+     */
+    public function getSql()
+    {
+        return $this->statement->queryString;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLogs()
+    {
+    }
+
+    /**
+     * @return void
+     */
+    public function close()
+    {
+        $this->driver = null;
+        $this->statement = null;
+    }
+
+    /**
+     * Get connection detail information.
+     *
+     * @return array|bool
+     */
+    public function getConnectionInfo()
+    {
+        
+    }
+
+    /**
+     * @return int|false
+     */
+    public function getAffectedRow()
+    {
+        $row = $this->statement->rowCount();
+
+        return $row;
+    }
+
+    /**
+     * @return int|false
+     */
+    public function getLastId()
+    {
+        return $this->driver->lastInsertId();
+    }
 }
