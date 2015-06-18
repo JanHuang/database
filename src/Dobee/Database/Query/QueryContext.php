@@ -23,7 +23,6 @@ namespace Dobee\Database\Query;
  */
 class QueryContext
 {
-    protected $tables;
     protected $table;
     protected $where;
     protected $fields = '*';
@@ -36,6 +35,10 @@ class QueryContext
     protected $value;
     protected $keys;
     protected $sql;
+
+    const CONTEXT_INSERT = 1;
+    const CONTEXT_UPDATE = 2;
+    const CONTEXT_DELETE = 3;
 
     protected function parseWhere(array $where)
     {
@@ -58,7 +61,11 @@ class QueryContext
         $where = [];
 
         foreach ($conditions as $key => $value) {
-            $where[] = '`' . $key . '`=\'' . $value . '\'';
+            if (false === strpos($value, ' ')) {
+                $where[] = '`' . $key . '`=\'' . $value . '\'';
+            } else {
+                $where[] = '`' . $key . '`' . $value;
+            }
         }
 
         if ('' !== $joint) {
@@ -68,22 +75,22 @@ class QueryContext
         return implode($joint, $where);
     }
 
-    public function data(array $data, $operation = 'UPDATE')
+    public function data(array $data, $operation = QueryContext::CONTEXT_UPDATE)
     {
         switch ($operation) {
-            case 'INSERT':
+            case QueryContext::CONTEXT_INSERT:
                 $keys = array_keys($data);
                 $values = array_values($data);
-                $this->keys = '(`' . implode('`, `', $keys) . '`)';
-                $this->value = '(\'' . implode('\', \'', $values) . '\')';
+                $this->keys = '(`' . implode('`,`', $keys) . '`)';
+                $this->value = '(\'' . implode('\',\'', $values) . '\')';
                 break;
-            case 'UPDATE':
+            case QueryContext::CONTEXT_UPDATE:
             default:
                 $values = [];
                 foreach ($data as $name => $value) {
                     $values[] = '`' . $name . '`=\'' . $value . '\'';
                 }
-                $this->value = implode(', ', $values);
+                $this->value = implode(',', $values);
         }
 
         return $this;
@@ -91,7 +98,18 @@ class QueryContext
 
     public function table($table)
     {
-        $this->table = $table;
+        $this->fields   = '*';
+        $this->where    = null;
+        $this->group    = null;
+        $this->limit    = null;
+        $this->having   = null;
+        $this->order    = null;
+        $this->keys     = null;
+        $this->value    = null;
+        $this->sql      = null;
+        $this->join     = null;
+
+        $this->table = str_replace('``', '`', '`' . $table . '`');
 
         return $this;
     }
@@ -142,14 +160,18 @@ class QueryContext
 
     public function order($order)
     {
-        $this->order = $order;
+        $this->order = ' ORDER BY ' . $order;
 
         return $this;
     }
 
-    public function limit($limit, $offset = null)
+    public function limit($limit = null, $offset = null)
     {
-        $this->limit = ' LIMIT ' . (null === $offset ? '' : ($offset . ', ')) . $limit;
+        $this->limit = null;
+
+        if (null !== $limit) {
+            $this->limit = ' LIMIT ' . (null === $offset ? '' : ($offset . ',')) . $limit;
+        }
 
         return $this;
     }
@@ -185,10 +207,5 @@ class QueryContext
     public function getSql()
     {
         return $this->sql;
-    }
-
-    public function __clone()
-    {
-        return $this;
     }
 }

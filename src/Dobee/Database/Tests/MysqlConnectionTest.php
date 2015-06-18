@@ -31,15 +31,14 @@ class MysqlConnectionTest extends \PHPUnit_Framework_TestCase
 
     public function testBaseCURD()
     {
-        $all = $this->connection->prepare('select * from ws_user')->getQuery()->getAll();
-        print_r($all);
-        $one = $this->connection->prepare('select * from ws_user')->getQuery()->getOne();
-        print_r($one);
+//        $all = $this->connection->prepare('select * from ws_user')->getQuery()->getAll();
+//        $one = $this->connection->prepare('select * from ws_user')->getQuery()->getOne();
+
         // update
-        echo $this->connection->prepare('update ws_user set username=\'janhuang\', update_at = '.time())->getQuery()->getAffectedRow() . PHP_EOL;
+//        echo PHP_EOL . 'Update: ' . $this->connection->prepare('update ws_user set username=\'janhuang\', update_at = '.time())->getQuery()->getAffectedRow() . PHP_EOL;
         // insert
-        echo $this->connection->prepare('insert into ws_user (username) values(\'demo\')')->getQuery()->getLastId() . PHP_EOL;
+//        echo 'Insert: ' . $this->connection->prepare('insert into ws_user (username) values(\'demo\')')->getQuery()->getLastId() . PHP_EOL;
         // delete wranning
-        echo $this->connection->prepare('delete from ws_user')->getQuery()->getAffectedRow() . PHP_EOL;
+//        echo 'Delete: ' . $this->connection->prepare('delete from ws_user')->getQuery()->getAffectedRow() . PHP_EOL;
     }
 }

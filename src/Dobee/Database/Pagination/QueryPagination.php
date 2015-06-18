@@ -18,8 +18,7 @@ use Dobee\Database\Query\QueryContext;
 
 class QueryPagination
 {
-    public function __construct(QueryContext $context)
+    public function __construct(QueryContext $context, $limit, $offset)
     {
-
     }
 }

@@ -34,49 +34,15 @@ class Config
         'database_charset'  => 'utf8',
         'database_prefix'   => '',
         'database_suffix'   => '',
+        'database_options'  => [],
     ];
-
-    /**
-     * @var array
-     */
-    protected $options = [];
 
     /**
      * @param array $config
      */
     public function __construct(array $config)
     {
-        $this->config = $config;
-    }
-
-    /**
-     * @param array $config
-     * @return $this
-     */
-    public function setConfig(array $config)
-    {
         $this->config = array_merge($this->config, $config);
-
-        return $this;
-    }
-
-    /**
-     * @param $name
-     * @return Config
-     */
-    public function createConfig($name)
-    {
-        $config = $this->config[$name];
-
-        $config['connection_name'] = $name;
-
-        $config = new Config($config);
-
-        if (isset($this->config[$name]['options'])) {
-            $config->setOptions($this->config[$name]['options']);
-        }
-
-        return $config;
     }
 
     /**
@@ -84,15 +50,7 @@ class Config
      */
     public function getOptions()
     {
-        return $this->options;
-    }
-
-    /**
-     * @param array $options
-     */
-    public function setOptions(array $options)
-    {
-        $this->options = $options;
+        return $this->config['database_options'];
     }
 
     /**

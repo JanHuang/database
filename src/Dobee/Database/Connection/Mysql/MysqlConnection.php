@@ -41,12 +41,9 @@ class MysqlConnection implements ConnectionInterface
      */
     public function __construct($dsn, $user, $password, $charset = 'utf8', array $options = [])
     {
-        $this->driver = new \PDO($dsn, $user, $password, array_merge(
-            [
-                \PDO::MYSQL_ATTR_INIT_COMMAND => 'set names ' . $charset
-            ],
-            $options
-        ));
+        $this->driver = new \PDO($dsn, $user, $password, [
+                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $charset
+        ]);
     }
 
     /**
@@ -170,7 +167,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function getConnectionInfo()
     {
-        
+
     }
 
     /**
