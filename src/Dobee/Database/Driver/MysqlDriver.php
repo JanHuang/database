@@ -14,11 +14,263 @@
 
 namespace Dobee\Database\Driver;
 
+use Dobee\Database\Config;
+use Dobee\Database\Connection\Mysql\MysqlConnection;
+use Dobee\Database\Query\QueryContext;
+
 /**
- * Class MysqlDriver
+ * Class PDODriver
  *
  * @package Dobee\Database\Driver
  */
-class MysqlDriver extends PdoDriver
+class MysqlDriver implements DriverInterface
 {
+    /**
+     * @var MysqlConnection
+     */
+    protected $connection;
+
+    /**
+     * @var \PDOStatement
+     */
+    protected $statement;
+
+    /**
+     * @var QueryContext
+     */
+    protected $queryContext;
+
+    /**
+     * @param $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->connection = new MysqlConnection($config);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSql()
+    {
+        return null === $this->queryContext ? null : $this->queryContext->getSql();
+    }
+
+    /**
+     * @return string
+     *
+     * @api
+     */
+    public function log()
+    {
+        return null === $this->queryContext ? null : $this->queryContext->getSql();
+    }
+
+    /**
+     * @return array
+     */
+    public function error()
+    {
+        return $this->connection->error();
+    }
+
+    public function info()
+    {
+        return $this->connection->info();
+    }
+
+    /**
+     * @return bool
+     */
+    public function beginTransaction()
+    {
+        return $this->connection->beginTransaction();
+    }
+
+    /**
+     * @return bool
+     */
+    public function commit()
+    {
+        return $this->connection->commit();
+    }
+
+    /**
+     * @return bool
+     */
+    public function rollback()
+    {
+        return $this->connection->rollBack();
+    }
+
+    /**
+     * @param $sql
+     * @return $this
+     */
+    public function createQuery($sql)
+    {
+        $this->connection->prepare($sql);
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $name
+     * @param null  $value
+     * @return $this
+     */
+    public function setParameters($name, $value = null)
+    {
+        if (!is_array($name)) {
+            $this->connection->setParameters($name, $value);
+            return $this;
+        }
+
+        foreach ($name as $key => $value) {
+            $this->connection->setParameters($name, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function getQuery()
+    {
+        $this->connection->getQuery();
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getResult()
+    {
+        return $this->connection->getResult();
+    }
+
+    public function find($table, array $where = [], array $fields = [])
+    {
+        $context = $this->createQueryContext($table, $where, $fields);
+
+        $sql = $context->limit(1)->select()->getSql();
+
+        $result = $this->connection->prepare($sql)->getQuery()->getResult();
+
+        return isset($result[0]) ? $result[0] : [];
+    }
+
+    public function findAll($table, array $where = [], array $fields = [])
+    {
+        // TODO: Implement findAll() method.
+    }
+
+    /**
+     * @param $repository
+     * @return Repository
+     */
+    public function getRepository($repository)
+    {
+        if (isset($this->repositories[$repository])) {
+            return $this->repositories[$repository];
+        }
+
+        if (false !== strpos($repository, ':')) {
+            $repository = str_replace(':', '\\', $repository);
+        }
+        $name = $repository;
+        $repository .= 'Repository';
+        $repository = new $repository();
+        if ($repository instanceof Repository) {
+            $repository
+                ->setConnection($this)
+                ->setPrefix($this->getPrefix())
+            ;
+            if (null === $repository->getTable()) {
+                $repository->setTable($this->parseTableName($name));
+            }
+        }
+        return $repository;
+    }
+
+    /**
+     * @param       $table
+     * @param array $data
+     * @return int|bool
+     */
+    public function insert($table, array $data = array())
+    {
+        // TODO: Implement insert() method.
+    }
+
+    /**
+     * @param       $table
+     * @param array $data
+     * @param array $where
+     * @return int|bool
+     */
+    public function update($table, array $data = array(), array $where = array())
+    {
+        // TODO: Implement update() method.
+    }
+
+    /**
+     * @param       $table
+     * @param array $where
+     * @return int|bool
+     */
+    public function delete($table, array $where = array())
+    {
+        // TODO: Implement delete() method.
+    }
+
+    /**
+     * @param       $table
+     * @param array $where
+     * @return int|bool
+     */
+    public function count($table, array $where = array())
+    {
+        // TODO: Implement count() method.
+    }
+
+    /**
+     * @param       $table
+     * @param array $where
+     * @return int|bool
+     */
+    public function has($table, array $where = array())
+    {
+        // TODO: Implement has() method.
+    }
+
+    /**
+     * @param       $table
+     * @param array $data
+     * @param array $where
+     * @return int|bool
+     */
+    public function replace($table, array $data, array $where)
+    {
+        // TODO: Implement replace() method.
+    }
+
+    /**
+     * @param       $table
+     * @param array $where
+     * @param array $fields
+     * @return QueryContext
+     */
+    public function createQueryContext($table, array $where = [], array $fields = [])
+    {
+        if (null === $this->queryContext) {
+            $this->queryContext = new QueryContext($table, $where, $fields);
+        } else {
+            $this->queryContext->initialize($table, $where, $fields);
+        }
+
+        return $this->queryContext;
+    }
 }

@@ -56,14 +56,26 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         ));
     }
 
-    public function testConnection()
+    public function testSelectContext()
     {
         $read = $this->database->getConnection('read');
 
-//        $result = $read->createQuery('show tables;')->getQuery()->getResult();
+        $context = $read->createQueryContext('sf_links');
 
-        $result = $read->find('sf_links');
+        $context->select();
 
-        print_r($result);
+        $this->assertEquals('SELECT * FROM sf_links', $context->getSql());
+
+        $context->limit(1);
+
+        $this->assertEquals('SELECT * FROM sf_links LIMIT 1', $context->getSql());
+
+        $context = $read->createQueryContext('sf_links');
+
+        $context->select()->limit(2, 0);
+
+        $this->assertEquals('SELECT * FROM sf_links LIMIT 0, 2', $context->getSql());
+
+
     }
 }

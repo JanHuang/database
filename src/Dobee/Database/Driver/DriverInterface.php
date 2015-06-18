@@ -15,6 +15,7 @@
 namespace Dobee\Database\Driver;
 
 use Dobee\Database\Config;
+use Dobee\Database\Query\QueryContext;
 use Dobee\Database\Repository\Repository;
 
 /**
@@ -73,10 +74,25 @@ interface DriverInterface
      */
     public function log();
 
+    /**
+     * @return array
+     */
     public function info();
 
+    /**
+     * @param       $table
+     * @param array $where
+     * @param array $fields
+     * @return array
+     */
     public function find($table, array $where = [], array $fields = ['*']);
 
+    /**
+     * @param       $table
+     * @param array $where
+     * @param array $fields
+     * @return array
+     */
     public function findAll($table, array $where = [], array $fields = ['*']);
 
     /**
@@ -160,4 +176,11 @@ interface DriverInterface
      */
     public function replace($table, array $data, array $where);
 
+    /**
+     * @param       $table
+     * @param array $where
+     * @param array $fields
+     * @return QueryContext
+     */
+    public function createQueryContext($table, array $where = [], array $fields = ['*']);
 }

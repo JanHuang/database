@@ -29,20 +29,17 @@ class QueryContext
     protected $limit;
     protected $offset;
     protected $join;
+    protected $group;
+    protected $order;
+    protected $having;
     protected $sql;
 
     public function __construct($table, array $where = [], array $fields = ['*'])
     {
-        $this->initialize();
-
-        $this->table = $table;
-
-        $this->where = $where;
-
-        $this->fields = $fields;
+        $this->initialize($table, $where, $fields);
     }
 
-    protected function initialize()
+    public function initialize($table, array $where = [], array $fields = ['*'])
     {
         $this->table    = null;
         $this->where    = null;
@@ -51,15 +48,53 @@ class QueryContext
         $this->offset   = null;
         $this->join     = null;
         $this->sql      = null;
+        $this->table    = $table;
+        $this->where    = $this->where($where);
+        $this->fields   = $this->fields($fields);
+    }
+
+    protected function where(array $where = [])
+    {
+        if (empty($where)) {
+            return '';
+        }
+        
+        return '';
+    }
+
+    protected function fields(array $fields = [])
+    {
+        if (empty($fields) || ['*'] == $fields) {
+            return '*';
+        }
+
+        return '`' . implode('`, `', $fields) . '`';
+    }
+
+    public function group()
+    {
+        $this->sql .= ' GROUP BY ' . $this->group;
+
+        return $this;
+    }
+
+    public function having()
+    {
+        $this->sql .= ' HAVING ' . $this->having;
+
+        return $this;
+    }
+
+    public function limit($limit, $offset = null)
+    {
+        $this->sql .= ' LIMIT ' . (null === $offset ? '' : ($offset . ', ')) . $limit;
+
+        return $this;
     }
 
     public function select()
     {
-        $sql = 'SELECT %s FROM %s %s %s';
-
-        $fields = implode(',', $this->fields);
-
-        $this->sql = sprintf($sql, $fields, $this->table, '', '');
+        $this->sql = sprintf('SELECT %s FROM %s', $this->fields, $this->table);
 
         return $this;
     }
@@ -87,20 +122,8 @@ class QueryContext
         return $this->sql;
     }
 
-    public function getOffset()
-    {
-
-    }
-
-    public function limit($limit = null, $offset = null)
-    {
-        return $this;
-    }
-
     public function __clone()
     {
-        $this->initialize();
-
         return $this;
     }
 }
