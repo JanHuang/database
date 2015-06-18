@@ -14,8 +14,6 @@
 
 namespace Dobee\Database\Driver;
 
-use Dobee\Database\Query\QueryContext;
-
 /**
  * Class MysqlDriver
  *
@@ -23,14 +21,4 @@ use Dobee\Database\Query\QueryContext;
  */
 class MysqlDriver extends PdoDriver
 {
-    /**
-     * @param       $table
-     * @param array $where
-     * @param array $fields
-     * @return \Dobee\Database\Query\QueryContext
-     */
-    public function createQueryContext($table, array $where, array $fields = ['*'])
-    {
-        return new QueryContext($table, $where, $fields);
-    }
 }

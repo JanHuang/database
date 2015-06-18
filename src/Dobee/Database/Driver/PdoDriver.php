@@ -35,6 +35,8 @@ abstract class PdoDriver implements DriverInterface
      */
     protected $statement;
 
+    protected $queryContext;
+
     /**
      * @param $config
      */
@@ -138,12 +140,17 @@ abstract class PdoDriver implements DriverInterface
      */
     public function log()
     {
-        return $this->statement->debugDumpParams();
     }
 
     public function find($table, array $where = [], array $fields = ['*'])
     {
-        // TODO: Implement find() method.
+        $context = $this->createQueryContext($table, $where, $fields);
+
+        $sql = $context->limit(1)->select()->getSql();
+
+        $result = $this->connection->prepare($sql)->getQuery()->getResult();
+
+        return isset($result[0]) ? $result[0] : [];
     }
 
     public function findAll($table, array $where = [], array $fields = ['*'])
@@ -252,5 +259,14 @@ abstract class PdoDriver implements DriverInterface
      * @param array $fields
      * @return QueryContext
      */
-    abstract public function createQueryContext($table, array $where, array $fields = ['*']);
+    public function createQueryContext($table, array $where, array $fields = ['*'])
+    {
+        if (null === $this->queryContext) {
+            $this->queryContext = new QueryContext($table, $where, $fields);
+        } else {
+            $this->queryContext = clone $this->queryContext;
+        }
+
+        return $this->queryContext;
+    }
 }

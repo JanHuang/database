@@ -60,8 +60,10 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
     {
         $read = $this->database->getConnection('read');
 
-        $result = $read->createQuery('show tables;')->getQuery()->getResult();
+//        $result = $read->createQuery('show tables;')->getQuery()->getResult();
 
-        print_r($read->log());
+        $result = $read->find('sf_links');
+
+        print_r($result);
     }
 }
