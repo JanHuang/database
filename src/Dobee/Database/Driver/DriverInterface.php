@@ -167,20 +167,4 @@ interface DriverInterface
      * @return int|bool
      */
     public function has($table, array $where = array());
-
-    /**
-     * @param       $table
-     * @param array $data
-     * @param array $where
-     * @return int|bool
-     */
-    public function replace($table, array $data, array $where);
-
-    /**
-     * @param       $table
-     * @param array $where
-     * @param array $fields
-     * @return QueryContext
-     */
-    public function createQueryContext($table, array $where = [], array $fields = ['*']);
 }

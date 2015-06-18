@@ -23,7 +23,7 @@ use Dobee\Database\Query\QueryContext;
  *
  * @package Dobee\Database\Driver
  */
-class MysqlDriver implements DriverInterface
+class MysqlDriver extends DbDriverAbstract
 {
     /**
      * @var MysqlConnection
@@ -46,6 +46,8 @@ class MysqlDriver implements DriverInterface
     public function __construct(Config $config)
     {
         $this->connection = new MysqlConnection($config);
+
+        $this->queryContext = new QueryContext();
     }
 
     /**
@@ -151,11 +153,56 @@ class MysqlDriver implements DriverInterface
         return $this->connection->getResult();
     }
 
+    public function fields(array $fields = [])
+    {
+        $this->queryContext->fields($fields);
+
+        return $this;
+    }
+
+    public function group($group)
+    {
+        $this->queryContext->group($group);
+
+        return $this;
+    }
+
+    public function having(array $having)
+    {
+        $this->queryContext->having($having);
+    }
+
+    public function order($order)
+    {
+        $this->queryContext->order($order);
+
+        return $this;
+    }
+
+    public function limit($limit, $offset = null)
+    {
+        $this->queryContext->limit($limit, $offset);
+
+        return $this;
+    }
+
+    public function where(array $where = [])
+    {
+        $this->queryContext->where($where);
+
+        return $this;
+    }
+
     public function find($table, array $where = [], array $fields = [])
     {
-        $context = $this->createQueryContext($table, $where, $fields);
-
-        $sql = $context->limit(1)->select()->getSql();
+        $sql = $this->queryContext
+            ->table($table)
+            ->fields($fields)
+            ->where($where)
+            ->limit(1)
+            ->select()
+            ->getSql()
+        ;
 
         $result = $this->connection->prepare($sql)->getQuery()->getResult();
 
@@ -164,35 +211,15 @@ class MysqlDriver implements DriverInterface
 
     public function findAll($table, array $where = [], array $fields = [])
     {
-        // TODO: Implement findAll() method.
-    }
+        $sql = $this->queryContext
+            ->table($table)
+            ->fields($fields)
+            ->where($where)
+            ->select()
+            ->getSql()
+        ;
 
-    /**
-     * @param $repository
-     * @return Repository
-     */
-    public function getRepository($repository)
-    {
-        if (isset($this->repositories[$repository])) {
-            return $this->repositories[$repository];
-        }
-
-        if (false !== strpos($repository, ':')) {
-            $repository = str_replace(':', '\\', $repository);
-        }
-        $name = $repository;
-        $repository .= 'Repository';
-        $repository = new $repository();
-        if ($repository instanceof Repository) {
-            $repository
-                ->setConnection($this)
-                ->setPrefix($this->getPrefix())
-            ;
-            if (null === $repository->getTable()) {
-                $repository->setTable($this->parseTableName($name));
-            }
-        }
-        return $repository;
+        return $this->connection->prepare($sql)->getQuery()->getResult();
     }
 
     /**
@@ -202,7 +229,14 @@ class MysqlDriver implements DriverInterface
      */
     public function insert($table, array $data = array())
     {
-        // TODO: Implement insert() method.
+        $sql = $this->queryContext
+            ->table($table)
+            ->data($data, 'INSERT')
+            ->insert()
+            ->getSql()
+        ;
+
+        return $this->connection->prepare($sql)->getQuery()->getResult();
     }
 
     /**
@@ -213,7 +247,15 @@ class MysqlDriver implements DriverInterface
      */
     public function update($table, array $data = array(), array $where = array())
     {
-        // TODO: Implement update() method.
+        $sql = $this->queryContext
+            ->table($table)
+            ->data($data, 'UPDATE')
+            ->where($where)
+            ->update()
+            ->getSql()
+        ;
+
+        return $this->connection->prepare($sql)->getQuery()->getResult();
     }
 
     /**
@@ -223,7 +265,14 @@ class MysqlDriver implements DriverInterface
      */
     public function delete($table, array $where = array())
     {
-        // TODO: Implement delete() method.
+        $sql = $this->queryContext
+            ->table($table)
+            ->where($where)
+            ->delete()
+            ->getSql()
+        ;
+
+        return $this->connection->prepare($sql)->getQuery()->getResult();
     }
 
     /**
@@ -233,7 +282,18 @@ class MysqlDriver implements DriverInterface
      */
     public function count($table, array $where = array())
     {
-        // TODO: Implement count() method.
+        $sql = $this->queryContext
+            ->table($table)
+            ->where($where)
+            ->fields(['COUNT(1) as total'])
+            ->limit(1)
+            ->select()
+            ->getSql()
+        ;
+
+        $result = $this->connection->prepare($sql)->getQuery()->getResult();
+
+        return isset($result[0]) ? $result[0]['total'] : false;
     }
 
     /**
@@ -243,34 +303,6 @@ class MysqlDriver implements DriverInterface
      */
     public function has($table, array $where = array())
     {
-        // TODO: Implement has() method.
-    }
-
-    /**
-     * @param       $table
-     * @param array $data
-     * @param array $where
-     * @return int|bool
-     */
-    public function replace($table, array $data, array $where)
-    {
-        // TODO: Implement replace() method.
-    }
-
-    /**
-     * @param       $table
-     * @param array $where
-     * @param array $fields
-     * @return QueryContext
-     */
-    public function createQueryContext($table, array $where = [], array $fields = [])
-    {
-        if (null === $this->queryContext) {
-            $this->queryContext = new QueryContext($table, $where, $fields);
-        } else {
-            $this->queryContext->initialize($table, $where, $fields);
-        }
-
-        return $this->queryContext;
+        return $this->count($table, $where) ? true : false;
     }
 }
