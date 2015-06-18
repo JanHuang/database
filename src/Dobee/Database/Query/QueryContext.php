@@ -98,17 +98,6 @@ class QueryContext
 
     public function table($table)
     {
-        $this->fields   = '*';
-        $this->where    = null;
-        $this->group    = null;
-        $this->limit    = null;
-        $this->having   = null;
-        $this->order    = null;
-        $this->keys     = null;
-        $this->value    = null;
-        $this->sql      = null;
-        $this->join     = null;
-
         $this->table = str_replace('``', '`', '`' . $table . '`');
 
         return $this;
@@ -206,6 +195,16 @@ class QueryContext
 
     public function getSql()
     {
+        $this->fields   = '*';
+        $this->where    = null;
+        $this->group    = null;
+        $this->limit    = null;
+        $this->having   = null;
+        $this->order    = null;
+        $this->keys     = null;
+        $this->value    = null;
+        $this->join     = null;
+
         return $this->sql;
     }
 }

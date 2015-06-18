@@ -81,7 +81,7 @@ interface ConnectionInterface
     public function getAll();
 
     /**
-     * @return array|bool
+     * @return array|
      */
     public function getOne();
 

@@ -46,9 +46,8 @@ class Driver
             case 'maraidb':
             default:
                 $this->setConnection(new MysqlConnection($config->getDsn(), $config->getDatabaseUser(), $config->getDatabasePwd(), $config->getDatabaseCharset(), $config->getOptions()));
+                $this->queryContext = new QueryContext();
         }
-
-        $this->queryContext = new QueryContext();
     }
 
     public function setConnection(ConnectionInterface $connection)
@@ -106,10 +105,18 @@ class Driver
     }
 
     public function update($table, array $data, array $where = [])
-    {}
+    {
+        $sql = $this->queryContext->table($table)->data($data, QueryContext::CONTEXT_UPDATE)->where($where)->update()->getSql();
+
+        return $this->connection->prepare($sql)->getQuery()->getAffectedRow();
+    }
 
     public function insert($table, array $data)
-    {}
+    {
+        $sql = $this->queryContext->table($table)->data($data, QueryContext::CONTEXT_INSERT)->insert()->getSql();
+
+        return $this->connection->prepare($sql)->getQuery()->getLastId();
+    }
 
     public function count($table, array $where)
     {}
@@ -179,5 +186,10 @@ class Driver
         $this->queryContext->where($where);
 
         return $this;
+    }
+
+    public function getSql()
+    {
+        return (false === ($sql = $this->connection->getSql())) ? $this->queryContext->getSql() : $sql;
     }
 }
