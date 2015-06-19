@@ -48,14 +48,9 @@ class Driver
             case 'mysql':
             case 'maraidb':
             default:
-                $this->setConnection(new MysqlConnection($config->getDsn(), $config->getDatabaseUser(), $config->getDatabasePwd(), $config->getDatabaseCharset(), $config->getOptions()));
+                $this->connection = new MysqlConnection($config->getDsn(), $config->getDatabaseUser(), $config->getDatabasePwd(), $config->getDatabaseCharset(), $config->getOptions());
                 $this->queryContext = new QueryContext();
         }
-    }
-
-    public function setConnection(ConnectionInterface $connection)
-    {
-        $this->connection = $connection;
     }
 
     public function getConnection()
@@ -94,12 +89,16 @@ class Driver
 
     public function find($table, array $where = [], array $fields = [])
     {
+        $sql = $this->queryContext->table($table)->where($where)->limit(1)->fields($fields)->select()->getSql();
 
+        return $this->connection->prepare($sql)->getQuery()->getOne();
     }
 
     public function findAll($table, array $where = [], array $fields = [])
     {
+        $sql = $this->queryContext->table($table)->where($where)->fields($fields)->select()->getSql();
 
+        return $this->connection->prepare($sql)->getQuery()->getAll();
     }
 
     public function findPage()
@@ -121,11 +120,12 @@ class Driver
         return $this->connection->prepare($sql)->getQuery()->getLastId();
     }
 
-    public function count($table, array $where)
-    {}
+    public function count($table, array $where = [])
+    {
+        $sql = $this->queryContext->table($table)->limit(1)->fields(['COUNT(1) as total'])->where($where)->select()->getSql();
 
-    public function has($table, array $where = [])
-    {}
+        return $this->connection->prepare($sql)->getQuery()->getOne('total');
+    }
 
     public function getQueryString()
     {

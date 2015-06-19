@@ -36,9 +36,30 @@ class DriverTest extends \PHPUnit_Framework_TestCase
         ]));
     }
 
+    public function testSelect()
+    {
+        $this->driver->find('ws_user');
+
+        $this->assertEquals('SELECT * FROM `ws_user` LIMIT 1;', $this->driver->getSql());
+
+        $this->driver->group('id')->find('ws_user');
+
+        $this->assertEquals('SELECT * FROM `ws_user` GROUP BY id LIMIT 1;', $this->driver->getSql());
+
+        $this->driver->count('ws_user');
+
+        $this->assertEquals('SELECT COUNT(1) as total FROM `ws_user` LIMIT 1;', $this->driver->getSql());
+
+        $this->driver->count('ws_user', ['username' => 'janhuang']);
+
+        $this->assertEquals('SELECT COUNT(1) as total FROM `ws_user` WHERE `username`=\'janhuang\' LIMIT 1;', $this->driver->getSql());
+    }
+
     public function testInsert()
     {
-
+//        $this->driver->insert('ws_user', ['username' => 'janhuang']);
+//
+//        $this->assertEquals('INSERT INTO `ws_user`(`username`) VALUES (\'janhuang\');', $this->driver->getSql());
     }
 
     public function testDelete()

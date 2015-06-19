@@ -76,14 +76,16 @@ interface ConnectionInterface
     public function getQuery();
 
     /**
+     * @param string $name
      * @return array|bool
      */
-    public function getAll();
+    public function getAll($name = null);
 
     /**
-     * @return array|
+     * @param string $name
+     * @return array|bool
      */
-    public function getOne();
+    public function getOne($name = null);
 
     /**
      * @return int|false

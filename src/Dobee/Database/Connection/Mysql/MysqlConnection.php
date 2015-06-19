@@ -110,20 +110,25 @@ class MysqlConnection implements ConnectionInterface
     }
 
     /**
+     * @param null $name
      * @return array
      */
-    public function getAll()
+    public function getAll($name = null)
     {
         $result = $this->statement->fetchAll(\PDO::FETCH_ASSOC);
 
         return $result;
     }
 
-    public function getOne()
+    /**
+     * @param null $name
+     * @return mixed
+     */
+    public function getOne($name = null)
     {
         $result = $this->statement->fetch(\PDO::FETCH_ASSOC);
 
-        return $result;
+        return null === $name ? $result : $result[$name];
     }
 
     /**
