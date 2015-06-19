@@ -13,6 +13,7 @@
 
 namespace Dobee\Database;
 
+use Dobee\Database\Driver\Driver;
 use Dobee\Database\Driver\DriverInterface;
 use Dobee\Database\Driver\MysqlDriver;
 
@@ -87,19 +88,10 @@ class Database
      * Created new database connection.
      *
      * @param $connection
-     * @return DriverInterface
+     * @return Driver
      */
     private function createConnection($connection)
     {
-        $config = $this->config->createConfig($connection);
-
-        switch ($config->getDatabaseType()) {
-            case 'mysql':
-            case 'mariadb':
-            default:
-                $driver = new MysqlDriver($config);
-        }
-
-        return $driver;
+        return new Driver(new Config($this->config[$connection]));
     }
 }

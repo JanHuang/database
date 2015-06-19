@@ -37,6 +37,9 @@ class Driver
     protected $queryContext;
 
     /**
+     * Constructor.
+     * Create different database connection.
+     *
      * @param Config $config
      */
     public function __construct(Config $config)
