@@ -14,8 +14,6 @@
 namespace Dobee\Database;
 
 use Dobee\Database\Driver\Driver;
-use Dobee\Database\Driver\DriverInterface;
-use Dobee\Database\Driver\MysqlDriver;
 
 /**
  * Class DatabaseDriver
@@ -43,12 +41,12 @@ class Database
      */
     public function __construct(array $config)
     {
-        $this->config = new Config($config);
+        $this->config = $config;
     }
 
     /**
      * @param null $connection
-     * @return DriverInterface
+     * @return Driver
      */
     public function getConnection($connection = null)
     {
@@ -56,8 +54,10 @@ class Database
             return $this->collections[$connection];
         }
 
+        $config = new Config($this->config[$connection]);
+
         return $this
-            ->setConnection($connection, $this->createConnection($connection))
+            ->setConnection($connection, new Driver($config))
             ->getConnection($connection);
     }
 
@@ -73,25 +73,14 @@ class Database
     /**
      * @inheritdoc
      *
-     * @param                 $connection
-     * @param DriverInterface $connection
+     * @param        $connection
+     * @param Driver $driver
      * @return $this
      */
-    public function setConnection($connection, DriverInterface $driver)
+    public function setConnection($connection, Driver $driver)
     {
         $this->collections[$connection] = $driver;
 
         return $this;
-    }
-
-    /**
-     * Created new database connection.
-     *
-     * @param $connection
-     * @return Driver
-     */
-    private function createConnection($connection)
-    {
-        return new Driver(new Config($this->config[$connection]));
     }
 }

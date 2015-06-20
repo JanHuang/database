@@ -17,6 +17,7 @@ namespace Dobee\Database\Driver;
 use Dobee\Database\Config;
 use Dobee\Database\Connection\ConnectionInterface;
 use Dobee\Database\Connection\Mysql\MysqlConnection;
+use Dobee\Database\Pagination\QueryPagination;
 use Dobee\Database\Query\QueryContext;
 
 /**
@@ -53,11 +54,17 @@ class Driver
         }
     }
 
+    /**
+     * @return ConnectionInterface|MysqlConnection
+     */
     public function getConnection()
     {
         return $this->connection;
     }
 
+    /**
+     * @return QueryContext
+     */
     public function getQueryContext()
     {
         return $this->queryContext;
@@ -87,6 +94,12 @@ class Driver
         return $this->connection->rollBack();
     }
 
+    /**
+     * @param       $table
+     * @param array $where
+     * @param array $fields
+     * @return array|bool|mixed
+     */
     public function find($table, array $where = [], array $fields = [])
     {
         $sql = $this->queryContext->table($table)->where($where)->limit(1)->fields($fields)->select()->getSql();
@@ -94,6 +107,12 @@ class Driver
         return $this->connection->prepare($sql)->getQuery()->getOne();
     }
 
+    /**
+     * @param       $table
+     * @param array $where
+     * @param array $fields
+     * @return array|bool
+     */
     public function findAll($table, array $where = [], array $fields = [])
     {
         $sql = $this->queryContext->table($table)->where($where)->fields($fields)->select()->getSql();
@@ -101,11 +120,24 @@ class Driver
         return $this->connection->prepare($sql)->getQuery()->getAll();
     }
 
-    public function findPage()
+    /**
+     * @param       $table
+     * @param int   $page
+     * @param int   $show
+     * @param int   $lastId
+     * @return QueryPagination
+     */
+    public function pagination($table, $page = 1, $show = 5, $lastId = null)
     {
-
+        return new QueryPagination($this->table($table), $page, $show, $lastId);
     }
 
+    /**
+     * @param       $table
+     * @param array $data
+     * @param array $where
+     * @return false|int
+     */
     public function update($table, array $data, array $where = [])
     {
         $sql = $this->queryContext->table($table)->data($data, QueryContext::CONTEXT_UPDATE)->where($where)->update()->getSql();
@@ -113,6 +145,11 @@ class Driver
         return $this->connection->prepare($sql)->getQuery()->getAffectedRow();
     }
 
+    /**
+     * @param       $table
+     * @param array $data
+     * @return false|int
+     */
     public function insert($table, array $data)
     {
         $sql = $this->queryContext->table($table)->data($data, QueryContext::CONTEXT_INSERT)->insert()->getSql();
@@ -120,6 +157,11 @@ class Driver
         return $this->connection->prepare($sql)->getQuery()->getLastId();
     }
 
+    /**
+     * @param       $table
+     * @param array $where
+     * @return array|bool|mixed
+     */
     public function count($table, array $where = [])
     {
         $sql = $this->queryContext->table($table)->limit(1)->fields(['COUNT(1) as total'])->where($where)->select()->getSql();
@@ -127,11 +169,18 @@ class Driver
         return $this->connection->prepare($sql)->getQuery()->getOne('total');
     }
 
+    /**
+     * @return array|string
+     */
     public function getQueryString()
     {
-        return $this->connection->getSql();
+        return $this->getSql();
     }
 
+    /**
+     * @param $sql
+     * @return $this
+     */
     public function createQuery($sql)
     {
         $this->connection->prepare($sql);
@@ -139,6 +188,9 @@ class Driver
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function getQuery()
     {
         $this->connection->getQuery();
@@ -146,11 +198,38 @@ class Driver
         return $this;
     }
 
-    public function getResult()
+    /**
+     * @return array|bool
+     */
+    public function getAll()
     {
         return $this->connection->getAll();
     }
 
+    /**
+     * @param null $name
+     * @return array|bool|mixed
+     */
+    public function getOne($name = null)
+    {
+        return $this->connection->getOne($name);
+    }
+
+    /**
+     * @param $table
+     * @return $this
+     */
+    public function table($table)
+    {
+        $this->queryContext->table($table);
+
+        return $this;
+    }
+
+    /**
+     * @param array $fields
+     * @return $this
+     */
     public function fields(array $fields = [])
     {
         $this->queryContext->fields($fields);
@@ -158,6 +237,10 @@ class Driver
         return $this;
     }
 
+    /**
+     * @param $group
+     * @return $this
+     */
     public function group($group)
     {
         $this->queryContext->group($group);
@@ -165,11 +248,18 @@ class Driver
         return $this;
     }
 
+    /**
+     * @param array $having
+     */
     public function having(array $having)
     {
         $this->queryContext->having($having);
     }
 
+    /**
+     * @param $order
+     * @return $this
+     */
     public function order($order)
     {
         $this->queryContext->order($order);
@@ -177,6 +267,11 @@ class Driver
         return $this;
     }
 
+    /**
+     * @param      $limit
+     * @param null $offset
+     * @return $this
+     */
     public function limit($limit, $offset = null)
     {
         $this->queryContext->limit($limit, $offset);
@@ -184,6 +279,10 @@ class Driver
         return $this;
     }
 
+    /**
+     * @param array $where
+     * @return $this
+     */
     public function where(array $where = [])
     {
         $this->queryContext->where($where);
@@ -191,8 +290,32 @@ class Driver
         return $this;
     }
 
+    /**
+     * @return array|string
+     */
     public function getSql()
     {
         return (false === ($sql = $this->connection->getSql())) ? $this->queryContext->getSql() : $sql;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConnectionInfo()
+    {
+        return $this->connection->getConnectionInfo();
+    }
+
+    public function getRepository()
+    {
+
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getConnectionInfo();
     }
 }

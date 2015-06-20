@@ -172,11 +172,24 @@ class MysqlConnection implements ConnectionInterface
     /**
      * Get connection detail information.
      *
-     * @return array|bool
+     * @return string
      */
     public function getConnectionInfo()
     {
+        $attributes = '';
 
+        foreach ([
+                    'driver'            => 'DRIVER_NAME',
+                    'client version'    => 'CLIENT_VERSION',
+                    'connection status' => 'CONNECTION_STATUS',
+                    'server info'       => 'SERVER_INFO',
+                    'server version'    => 'SERVER_VERSION',
+                    'timeout'           => 'TIMEOUT',
+                 ] as $name => $value) {
+            $attributes .= $name . ': ' . $this->driver->getAttribute(constant('PDO::ATTR_' . $value)) . PHP_EOL;
+        }
+
+        return $attributes;
     }
 
     /**
@@ -195,5 +208,13 @@ class MysqlConnection implements ConnectionInterface
     public function getLastId()
     {
         return $this->driver->lastInsertId();
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getConnectionInfo();
     }
 }

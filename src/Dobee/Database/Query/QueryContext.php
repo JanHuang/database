@@ -15,31 +15,86 @@
 namespace Dobee\Database\Query;
 
 /**
- * Prototype query context.
- *
  * Class QueryContext
  *
  * @package Dobee\Database\Query
  */
 class QueryContext
 {
-    protected $table;
-    protected $where;
-    protected $fields = '*';
-    protected $limit;
-    protected $offset;
-    protected $join;
-    protected $group;
-    protected $order;
+    /**
+     * @var string
+     */
+    public $table;
+
+    /**
+     * @var string
+     */
+    public $where;
+
+    /**
+     * @var string
+     */
+    public $fields = '*';
+
+    /**
+     * @var string
+     */
+    public $limit;
+
+    /**
+     * @var string
+     */
+    public $join;
+
+    /**
+     * @var string
+     */
+    public $group;
+
+    /**
+     * @var string
+     */
+    public $order;
+
+    /**
+     * @var string
+     */
     protected $having;
+
+    /**
+     * @var string
+     */
     protected $value;
+
+    /**
+     * @var string
+     */
     protected $keys;
+
+    /**
+     * @var string
+     */
     protected $sql;
 
+    /**
+     * @const int
+     */
     const CONTEXT_INSERT = 1;
+
+    /**
+     * @const int
+     */
     const CONTEXT_UPDATE = 2;
+
+    /**
+     * @const int
+     */
     const CONTEXT_DELETE = 3;
 
+    /**
+     * @param array $where
+     * @return string
+     */
     protected function parseWhere(array $where)
     {
         if (empty($where)) {
@@ -75,6 +130,11 @@ class QueryContext
         return implode($joint, $where);
     }
 
+    /**
+     * @param array $data
+     * @param int   $operation
+     * @return $this
+     */
     public function data(array $data, $operation = QueryContext::CONTEXT_UPDATE)
     {
         switch ($operation) {
@@ -96,6 +156,10 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @param $table
+     * @return $this
+     */
     public function table($table)
     {
         $this->table = str_replace('``', '`', '`' . $table . '`');
@@ -103,6 +167,10 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @param array $where
+     * @return $this
+     */
     public function where(array $where = [])
     {
         $where = $this->parseWhere($where);
@@ -114,6 +182,10 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @param array $fields
+     * @return $this
+     */
     public function fields(array $fields = [])
     {
         if (array() !== $fields) {
@@ -133,6 +205,10 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @param $group
+     * @return $this
+     */
     public function group($group)
     {
         $this->group = ' GROUP BY ' . $group;
@@ -140,6 +216,10 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @param array $having
+     * @return $this
+     */
     public function having(array $having)
     {
         $this->having = ' HAVING ' . $this->parseWhere($having);
@@ -147,6 +227,10 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @param $order
+     * @return $this
+     */
     public function order($order)
     {
         $this->order = ' ORDER BY ' . $order;
@@ -154,6 +238,11 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @param null $limit
+     * @param null $offset
+     * @return $this
+     */
     public function limit($limit = null, $offset = null)
     {
         $this->limit = null;
@@ -165,6 +254,9 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function select()
     {
         $this->sql = 'SELECT ' . $this->fields . ' FROM ' . $this->table . $this->where . $this->group . $this->having . $this->order . $this->limit . ';';
@@ -172,6 +264,9 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function update()
     {
         $this->sql = 'UPDATE ' . $this->table . ' SET ' . $this->value . $this->where . $this->limit . ';';
@@ -179,6 +274,9 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function delete()
     {
         $this->sql = 'DELETE FROM ' . $this->table . $this->where . $this->limit . ';';
@@ -186,6 +284,9 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function insert()
     {
         $this->sql = 'INSERT INTO ' . $this->table . $this->keys . ' VALUES ' . $this->value . ';';
@@ -193,6 +294,9 @@ class QueryContext
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getSql()
     {
         $this->fields   = '*';
