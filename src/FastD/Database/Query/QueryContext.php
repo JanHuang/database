@@ -12,12 +12,12 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace Dobee\Database\Query;
+namespace FastD\Database\Query;
 
 /**
  * Class QueryContext
  *
- * @package Dobee\Database\Query
+ * @package FastD\Database\Query
  */
 class QueryContext
 {

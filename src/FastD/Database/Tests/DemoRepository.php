@@ -13,10 +13,10 @@
  */
 
 
-namespace Dobee\Database\Tests;
+namespace FastD\Database\Tests;
 
 
-use Dobee\Database\Repository\Repository;
+use FastD\Database\Repository\Repository;
 
 class DemoRepository extends Repository
 {

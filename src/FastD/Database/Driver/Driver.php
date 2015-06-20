@@ -12,19 +12,19 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace Dobee\Database\Driver;
+namespace FastD\Database\Driver;
 
-use Dobee\Database\Config;
-use Dobee\Database\Connection\ConnectionInterface;
-use Dobee\Database\Connection\Mysql\MysqlConnection;
-use Dobee\Database\Pagination\QueryPagination;
-use Dobee\Database\Query\QueryContext;
-use Dobee\Database\Repository\Repository;
+use FastD\Database\Config;
+use FastD\Database\Connection\ConnectionInterface;
+use FastD\Database\Connection\Mysql\MysqlConnection;
+use FastD\Database\Pagination\QueryPagination;
+use FastD\Database\Query\QueryContext;
+use FastD\Database\Repository\Repository;
 
 /**
  * Class Driver
  *
- * @package Dobee\Database\Driver
+ * @package FastD\Database\Driver
  */
 class Driver
 {

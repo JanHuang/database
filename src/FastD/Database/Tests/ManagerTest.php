@@ -12,12 +12,12 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace Dobee\Database\Tests;
+namespace FastD\Database\Tests;
 
-use Dobee\Database\Database;
-use Dobee\Database\Driver\Driver;
-use Dobee\Database\Connection\ConnectionInterface;
-use Dobee\Database\Query\QueryContext;
+use FastD\Database\Database;
+use FastD\Database\Driver\Driver;
+use FastD\Database\Connection\ConnectionInterface;
+use FastD\Database\Query\QueryContext;
 
 class ManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -50,13 +50,13 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDriver()
     {
-        $this->assertInstanceOf('Dobee\Database\Driver\Driver', $this->manager->getConnection('read'));
+        $this->assertInstanceOf('FastD\Database\Driver\Driver', $this->manager->getConnection('read'));
     }
 
     public function testGetConnection()
     {
-        $this->assertInstanceOf('Dobee\Database\Connection\ConnectionInterface', $this->manager->getConnection('read')->getConnection());
-        $this->assertInstanceOf('Dobee\Database\Query\QueryContext', $this->manager->getConnection('read')->getQueryContext());
+        $this->assertInstanceOf('FastD\Database\Connection\ConnectionInterface', $this->manager->getConnection('read')->getConnection());
+        $this->assertInstanceOf('FastD\Database\Query\QueryContext', $this->manager->getConnection('read')->getQueryContext());
         $this->assertTrue($this->manager->hasConnection('read'));
         $this->assertFalse($this->manager->hasConnection('write'));
     }

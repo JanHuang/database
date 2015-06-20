@@ -12,12 +12,12 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace Dobee\Database;
+namespace FastD\Database;
 
 /**
  * Class Config
  *
- * @package Dobee\Database
+ * @package FastD\Database
  */
 class Config
 {

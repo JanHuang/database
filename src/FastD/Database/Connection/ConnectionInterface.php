@@ -11,12 +11,12 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Database\Connection;
+namespace FastD\Database\Connection;
 
 /**
  * Interface ConnectionInterface
  *
- * @package Dobee\Database\Connection
+ * @package FastD\Database\Connection
  */
 interface ConnectionInterface
 {

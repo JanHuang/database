@@ -11,14 +11,14 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Database;
+namespace FastD\Database;
 
-use Dobee\Database\Driver\Driver;
+use FastD\Database\Driver\Driver;
 
 /**
  * Class DatabaseDriver
  *
- * @package Dobee\Kernel\Configuration\Drivers
+ * @package FastD\Kernel\Configuration\Drivers
  */
 class Database
 {

@@ -13,10 +13,10 @@
  */
 
 
-namespace Dobee\Database\Tests;
+namespace FastD\Database\Tests;
 
 
-use Dobee\Database\Query\QueryContext;
+use FastD\Database\Query\QueryContext;
 
 class MysqlContextTest extends \PHPUnit_Framework_TestCase
 {

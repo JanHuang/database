@@ -12,10 +12,10 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace Dobee\Database\Tests;
+namespace FastD\Database\Tests;
 
-use Dobee\Database\Driver\Driver;
-use Dobee\Database\Config;
+use FastD\Database\Driver\Driver;
+use FastD\Database\Config;
 
 class PaginationTest extends \PHPUnit_Framework_TestCase
 {

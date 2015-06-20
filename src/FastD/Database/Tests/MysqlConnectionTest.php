@@ -13,9 +13,9 @@
  */
 
 
-namespace Dobee\Database\Tests;
+namespace FastD\Database\Tests;
 
-use Dobee\Database\Connection\Mysql\MysqlConnection;
+use FastD\Database\Connection\Mysql\MysqlConnection;
 
 class MysqlConnectionTest extends \PHPUnit_Framework_TestCase
 {

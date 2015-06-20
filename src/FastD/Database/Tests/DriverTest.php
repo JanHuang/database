@@ -12,10 +12,10 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace Dobee\Database\Tests;
+namespace FastD\Database\Tests;
 
-use Dobee\Database\Config;
-use Dobee\Database\Driver\Driver;
+use FastD\Database\Config;
+use FastD\Database\Driver\Driver;
 
 class DriverTest extends \PHPUnit_Framework_TestCase
 {
@@ -39,9 +39,9 @@ class DriverTest extends \PHPUnit_Framework_TestCase
 
     public function testRepository()
     {
-        $repository = $this->driver->getRepository('Dobee:Database:Tests:WsUser');
+        $repository = $this->driver->getRepository('FastD:Database:Tests:WsUser');
         $this->assertEquals('lhl_ws_user', $repository->getTable());
-        $repository = $this->driver->getRepository('Dobee:Database:Tests:Demo');
+        $repository = $this->driver->getRepository('FastD:Database:Tests:Demo');
         $this->assertEquals('lhl_demo', $repository->getTable());
     }
 

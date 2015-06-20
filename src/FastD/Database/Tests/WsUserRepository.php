@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: janhuang
  * Date: 15/6/20
- * Time: 下午7:32
+ * Time: 下午6:45
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,13 +12,11 @@
  * WebSite: http://www.janhuang.me
  */
 
+namespace FastD\Database\Tests;
 
-namespace Dobee\Database\Tests;
+use FastD\Database\Repository\Repository;
 
-
-use Dobee\Database\Repository\Repository;
-
-class ExistsRepository extends Repository
+class WsUserRepository extends Repository
 {
-    protected $table = 'demo';
+
 }

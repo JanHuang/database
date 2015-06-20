@@ -1,9 +1,9 @@
 {
-    "name": "dobee/database",
-    "description": "dobee php simple framework database driver component",
+    "name": "fastd/database",
+    "description": "FastD php simple framework database driver component",
     "license": "MIT",
     "type": "library",
-    "keywords": ["database", "dobee"],
+    "keywords": ["database", "fastd", "FastD"],
     "authors": [
         {
             "name": "janhuang",
@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Dobee\\": "src/Dobee"
+            "FastD\\": "src/FastD"
         }
     }
 

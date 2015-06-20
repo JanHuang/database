@@ -11,14 +11,14 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace Dobee\Database\Connection\Mysql;
+namespace FastD\Database\Connection\Mysql;
 
-use Dobee\Database\Connection\ConnectionInterface;
+use FastD\Database\Connection\ConnectionInterface;
 
 /**
  * Class MysqlConnection
  *
- * @package Dobee\Kernel\Configuration\Drivers\Db\Mysql
+ * @package FastD\Kernel\Configuration\Drivers\Db\Mysql
  */
 class MysqlConnection implements ConnectionInterface
 {

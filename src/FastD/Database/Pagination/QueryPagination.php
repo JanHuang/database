@@ -12,15 +12,15 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace Dobee\Database\Pagination;
+namespace FastD\Database\Pagination;
 
-use Dobee\Database\Driver\Driver;
-use Dobee\Database\Query\QueryContext;
+use FastD\Database\Driver\Driver;
+use FastD\Database\Query\QueryContext;
 
 /**
  * Class QueryPagination
  *
- * @package Dobee\Database\Pagination
+ * @package FastD\Database\Pagination
  */
 class QueryPagination
 {
