@@ -41,4 +41,14 @@ class MysqlConnectionTest extends \PHPUnit_Framework_TestCase
         // delete wranning
 //        echo 'Delete: ' . $this->connection->prepare('delete from ws_user')->getQuery()->getAffectedRow() . PHP_EOL;
     }
+
+    public function testSetParameters()
+    {
+        $result = $this->connection
+            ->prepare('SELECT * FROM ws_user where id = :id')
+            ->setParameters('id', 1)
+            ->getQuery()
+            ->getOne()
+        ;
+    }
 }

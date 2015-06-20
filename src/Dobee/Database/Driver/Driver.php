@@ -199,6 +199,18 @@ class Driver
     }
 
     /**
+     * @param $name
+     * @param $value
+     * @return $this
+     */
+    public function setParameters($name, $value)
+    {
+        $this->connection->setParameters($name, $value);
+
+        return $this;
+    }
+
+    /**
      * @return $this
      */
     public function getQuery()
