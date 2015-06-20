@@ -13,7 +13,7 @@
 
 namespace Dobee\Database\Repository;
 
-use Dobee\Database\Connection\ConnectionInterface;
+use Dobee\Database\Driver\Driver;
 
 /**
  * Class Repository
@@ -23,11 +23,22 @@ use Dobee\Database\Connection\ConnectionInterface;
 class Repository
 {
     /**
-     * Mapping database table full name.
-     *
-     * @var string
+     * @var
      */
     protected $table;
+
+    /**
+     * @var Driver
+     */
+    protected $connection;
+
+    /**
+     * @param Driver $driver
+     */
+    public function __construct(Driver $driver)
+    {
+        $this->connection = $driver;
+    }
 
     /**
      * Return mapping database table full name.
@@ -53,33 +64,7 @@ class Repository
     }
 
     /**
-     * Return database table mapping prefix.
-     *
-     * @return string
-     */
-    public function getPrefix()
-    {
-        return $this->prefix;
-    }
-
-    /**
-     * @param string $prefix
-     * @return $this
-     */
-    public function setPrefix($prefix)
-    {
-        $this->prefix = $prefix;
-
-        return $this;
-    }
-
-    /**
-     * @var string
-     */
-    protected $prefix;
-
-    /**
-     * @return ConnectionInterface
+     * @return Driver
      */
     public function getConnection()
     {
@@ -87,26 +72,11 @@ class Repository
     }
 
     /**
-     * @param ConnectionInterface $connection
-     * @return $this
-     */
-    public function setConnection($connection)
-    {
-        $this->connection = $connection;
-
-        return $this;
-    }
-    /**
-     * @var ConnectionInterface
-     */
-    protected $connection;
-
-    /**
      * @param array $where
-     * @param array|string $field
-     * @return \Dobee\Database\QueryResult\Result
+     * @param array $field
+     * @return array|bool
      */
-    public function find($where = array(), $field = '*')
+    public function find(array $where = [], array $field = ['*'])
     {
         if (!is_array($where)) {
             $where = array('id' => $where);
@@ -118,9 +88,9 @@ class Repository
     /**
      * @param array $where
      * @param array|string $field
-     * @return \Dobee\Database\QueryResult\ResultCollection
+     * @return array|bool
      */
-    public function findAll($where = array(),  $field = '*')
+    public function findAll(array $where = [],  array $field = ['*'])
     {
         if (!is_array($where)) {
             $where = array('id' => $where);
@@ -130,56 +100,12 @@ class Repository
     }
 
     /**
-     * @param $method
-     * @param $arguments
-     * @return \Dobee\Database\QueryResult\ResultCollection
-     */
-    public function __call($method, $arguments)
-    {
-        if ('find' == substr($method, 0, 4)) {
-            switch (strtolower(substr($method, 4, 3))) {
-                case 'all':
-                    $field = str_replace('findAllBy', '', $method);
-                    $method = 'findAll';
-                    break;
-                default:
-                    $field = str_replace('findBy', '', $method);
-                    $method = 'find';
-            }
-
-            $field = preg_replace_callback(
-                '([A-Z])',
-                function ($matches) {
-                    return '_' . strtolower($matches[0]);
-                },
-                $field
-            );
-
-            $arguments = array(
-                ltrim($field, '_') => $arguments[0]
-            );
-
-            return call_user_func_array(array($this, $method), $arguments);
-        }
-
-        return call_user_func_array(array($this->connection, $method), $arguments);
-    }
-
-    /**
-     * @return array|bool
-     */
-    public function logs()
-    {
-        return $this->connection->logs();
-    }
-
-    /**
      * @param array $data
      * @return int|bool
      */
     public function insert(array $data = array())
     {
-        return $this->connection->insert($this->table, $data);
+        return $this->connection->insert($this->getTable(), $data);
     }
 
     /**
@@ -187,40 +113,18 @@ class Repository
      * @param array $where
      * @return int|bool
      */
-    public function update(array $data = array(), $where = array())
+    public function update(array $data = [], array $where = [])
     {
-        return $this->connection->update($this->table, $data, $where);
+        return $this->connection->update($this->getTable(), $data, $where);
     }
 
     /**
      * @param array $where
      * @return int|bool
      */
-    public function delete(array $where = array())
+    public function count(array $where = [])
     {
-        if (empty($where)) {
-            return false;
-        }
-
-        return $this->connection->delete($this->table, $where);
-    }
-
-    /**
-     * @param array $where
-     * @return int|bool
-     */
-    public function count(array $where = array())
-    {
-        return $this->connection->count($this->table, $where);
-    }
-
-    /**
-     * @param array $where
-     * @return int|bool
-     */
-    public function has(array $where = array())
-    {
-        return $this->connection->has($this->table, $where);
+        return $this->connection->count($this->getTable(), $where);
     }
 
     /**
@@ -228,7 +132,7 @@ class Repository
      */
     public function getErrors()
     {
-        return $this->connection->error();
+        return $this->connection->getErrors();
     }
 
     /**
@@ -236,15 +140,23 @@ class Repository
      */
     public function getLastQuery()
     {
-        return $this->connection->getLastQuery();
+        return $this->connection->getQueryString();
+    }
+
+    /**
+     * @return array
+     */
+    public function getQueryLogs()
+    {
+        return $this->connection->getLogs();
     }
 
     /**
      * @param $dql
-     * @return ConnectionInterface
+     * @return Driver
      */
     public function createQuery($dql)
     {
-        return $this->connection->createQuery(str_replace(array('%table%'), $this->getTable(), $dql));
+        return $this->connection->createQuery($dql);
     }
 }

@@ -33,6 +33,11 @@ class MysqlConnection implements ConnectionInterface
     protected $statement;
 
     /**
+     * @var array
+     */
+    protected $logs = [];
+
+    /**
      * @param string $dsn
      * @param string $user
      * @param string $password
@@ -96,6 +101,8 @@ class MysqlConnection implements ConnectionInterface
     {
         $this->statement = $this->driver->prepare($sql);
 
+        $this->logs[] = $sql;
+
         return $this;
     }
 
@@ -158,6 +165,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function getLogs()
     {
+        return $this->logs;
     }
 
     /**

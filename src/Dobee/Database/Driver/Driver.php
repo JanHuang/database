@@ -19,6 +19,7 @@ use Dobee\Database\Connection\ConnectionInterface;
 use Dobee\Database\Connection\Mysql\MysqlConnection;
 use Dobee\Database\Pagination\QueryPagination;
 use Dobee\Database\Query\QueryContext;
+use Dobee\Database\Repository\Repository;
 
 /**
  * Class Driver
@@ -38,6 +39,13 @@ class Driver
     protected $queryContext;
 
     /**
+     * @var array
+     */
+    protected $repositories = [];
+
+    protected $config;
+
+    /**
      * Constructor.
      * Create different database connection.
      *
@@ -52,6 +60,8 @@ class Driver
                 $this->connection = new MysqlConnection($config->getDsn(), $config->getDatabaseUser(), $config->getDatabasePwd(), $config->getDatabaseCharset(), $config->getOptions());
                 $this->queryContext = new QueryContext();
         }
+
+        $this->config = $config;
     }
 
     /**
@@ -179,7 +189,7 @@ class Driver
 
     /**
      * @param $sql
-     * @return $this
+     * @return Driver
      */
     public function createQuery($sql)
     {
@@ -306,9 +316,51 @@ class Driver
         return $this->connection->getConnectionInfo();
     }
 
-    public function getRepository()
+    /**
+     * @param $name
+     * @return Repository
+     */
+    public function getRepository($name)
     {
+        if ('Repository' != substr($name, -10)) {
+            $name .= 'Repository';
+        }
 
+        $name = str_replace(':', '\\', $name);
+
+        if (isset($this->repositories[$name])) {
+            return $this->repositories[$name];
+        }
+
+        $repository = new $name($this);
+
+        if (null === $repository->getTable()) {
+            $repositoryArray = explode('\\', $name);
+            $defaultName = end($repositoryArray); unset($repositoryArray);
+            $defaultName = str_replace('Repository', '', $defaultName);
+            $defaultName = strtolower(trim(preg_replace('/([A-Z])/', '_$1', $defaultName), '_'));
+            $repository->setTable($this->config->getDatabasePrefix() . $defaultName . $this->config->getDatabaseSuffix());
+        }
+
+        $this->repositories[$name] = $repository;
+
+        return $this->repositories[$name];
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->connection->getErrors();
+    }
+
+    /**
+     * @return array
+     */
+    public function getLogs()
+    {
+        return $this->connection->getLogs();
     }
 
     /**

@@ -33,7 +33,16 @@ class DriverTest extends \PHPUnit_Framework_TestCase
             'database_host' => '127.0.0.1',
             'database_port' => 3306,
             'database_name' => 'test',
+            'database_prefix' => 'lhl_'
         ]));
+    }
+
+    public function testRepository()
+    {
+        $repository = $this->driver->getRepository('Dobee:Database:Tests:WsUser');
+        $this->assertEquals('lhl_ws_user', $repository->getTable());
+        $repository = $this->driver->getRepository('Dobee:Database:Tests:Demo');
+        $this->assertEquals('lhl_demo', $repository->getTable());
     }
 
     public function testSelect()
