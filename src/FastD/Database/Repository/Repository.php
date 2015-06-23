@@ -76,7 +76,7 @@ class Repository
      * @param array $field
      * @return array|bool
      */
-    public function find(array $where = [], array $field = ['*'])
+    public function find(array $where = [], array $field = [])
     {
         if (!is_array($where)) {
             $where = array('id' => $where);
@@ -90,7 +90,7 @@ class Repository
      * @param array|string $field
      * @return array|bool
      */
-    public function findAll(array $where = [],  array $field = ['*'])
+    public function findAll(array $where = [],  array $field = [])
     {
         if (!is_array($where)) {
             $where = array('id' => $where);
