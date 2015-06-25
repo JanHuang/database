@@ -60,6 +60,11 @@ class QueryPagination
     protected $lastId;
 
     /**
+     * @var null|array
+     */
+    protected $result;
+
+    /**
      * @param Driver $driver
      * @param int    $page
      * @param int    $show
@@ -109,6 +114,10 @@ class QueryPagination
      */
     public function getLastId()
     {
+        if (null === $this->lastId) {
+            $this->getResult();
+        }
+
         return $this->lastId;
     }
 
@@ -298,6 +307,10 @@ class QueryPagination
      */
     public function getResult()
     {
+        if (null !== $this->result) {
+            return $this->result;
+        }
+
         $context = $this->driver->getQueryContext();
 
         if (null !== $this->lastId) {
@@ -321,6 +334,8 @@ class QueryPagination
 
         unset($last, $context);
 
-        return $result;
+        $this->result = $result;
+        unset($result);
+        return $this->result;
     }
 }
