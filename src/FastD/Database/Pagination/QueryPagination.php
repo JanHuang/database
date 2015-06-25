@@ -330,7 +330,7 @@ class QueryPagination
 
         $last = end($result);
 
-        $this->lastId = isset($last['id']) ? $last['id'] : null;
+        $this->lastId = isset($last['id']) && $this->totalPages > 1 ? $last['id'] : 0;
 
         unset($last, $context);
 
