@@ -76,10 +76,8 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
 
     public function testPaginationResult()
     {
-        $pagination = $this->driver->where(['username' => 'janhuang'])->pagination('ws_user', 1);
+        $pagination = $this->driver->where(['username' => 'janhuang'])->pagination('ws_user', 1, 1, 1);
 
-        $result = $pagination->getResult();
-
-        $result = $pagination->page(2)->getResult();
+        $pagination->getResult();
     }
 }

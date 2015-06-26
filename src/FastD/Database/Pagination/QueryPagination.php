@@ -314,11 +314,12 @@ class QueryPagination
         $context = $this->driver->getQueryContext();
 
         if (null !== $this->lastId) {
-            $joint = '';
             if (!empty($context->where)) {
                 $joint = ' AND ';
+            } else {
+                $joint = ' WHERE ';
             }
-            $context->where .= ' WHERE ' . $joint . '`id` > ' . $this->lastId;
+            $context->where .= $joint . '`id` > ' . $this->lastId;
             $context->limit($this->show);
         } else {
             $context->limit($this->show, $this->offset);
