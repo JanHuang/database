@@ -145,7 +145,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function getErrors()
     {
-        return $this->statement->errorInfo();
+        return null === $this->statement ? $this->driver->errorInfo() : $this->statement->errorInfo();
     }
 
     /**
