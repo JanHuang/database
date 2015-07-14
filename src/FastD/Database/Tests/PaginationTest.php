@@ -16,6 +16,7 @@ namespace FastD\Database\Tests;
 
 use FastD\Database\Driver\Driver;
 use FastD\Database\Config;
+use FastD\Database\Pagination\QueryPagination;
 
 class PaginationTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,48 +37,85 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
         ]));
     }
 
-    public function testPagination()
+    public function testNullQueryContextAndDriverPagination()
     {
-        $pagination = $this->driver->pagination('ws_user', 1);
+        $pagination = new QueryPagination(30);
+
+        $this->assertEquals(2, $pagination->getTotalPages());
+        $this->assertEquals(1, $pagination->getCurrentPage());
         $this->assertEquals(1, $pagination->getPrevPage());
+        $this->assertEquals(2, $pagination->getNextPage());
+        $this->assertEquals(2, $pagination->getTotalPages());
         $this->assertEquals(1, $pagination->getFirstPage());
         $this->assertEquals(2, $pagination->getLastPage());
+        $this->assertEquals([1, 2], $pagination->getPageList());
+        $this->assertNull($pagination->getResult());
+
+        $pagination = new QueryPagination(51); // totolpage 3
+
+        $this->assertEquals(51, $pagination->getTotalRows());
+        $this->assertEquals(3, $pagination->getTotalPages());
+        $this->assertEquals(1, $pagination->getCurrentPage());
+        $this->assertEquals(1, $pagination->getPrevPage());
         $this->assertEquals(2, $pagination->getNextPage());
+        $this->assertEquals(1, $pagination->getFirstPage());
+        $this->assertEquals(3, $pagination->getLastPage());
+        $this->assertEquals([1,2,3], $pagination->getPageList());
+        $this->assertNull($pagination->getResult());
     }
 
-    public function testPaginationList()
+    public function testDriverPagination()
     {
-        $pagination = $this->driver->pagination('ws_user', 2);
+        // The `ws_user` table is has 8 rows.
+        $pagination = $this->driver->pagination('ws_user', 1);
 
-        $pagination->setTotal(11)->initialize();
+        $this->assertEquals(1, $pagination->getPrevPage());
+        $this->assertEquals(1, $pagination->getFirstPage());
+        $this->assertEquals(1, $pagination->getLastPage());
+        $this->assertEquals(1, $pagination->getNextPage());
+    }
 
-        $this->assertEquals([1, 2, 3], $pagination->getPageList());
+    public function testDriverPaginationList()
+    {
+        // The `ws_user` table is has 8 rows.
+        $pagination = $this->driver->pagination('ws_user', 2, 1);
 
-        $pagination->setTotal(21)->initialize(); // 21 / 5 5
-
+        $this->assertEquals(8, $pagination->getTotalRows());
+        $this->assertEquals(8, $pagination->getTotalPages());
+        $this->assertEquals(8, $pagination->getLastPage());
+        $this->assertEquals(2, $pagination->getCurrentPage());
         $this->assertEquals([1,2,3,4,5], $pagination->getPageList());
 
-        $pagination->setTotal(31)->setPage(2)->initialize(); // 31 / 5 = 7
+        $pagination = $this->driver->pagination('ws_user', 6, 1);
+        $this->assertEquals(8, $pagination->getTotalRows());
+        $this->assertEquals(8, $pagination->getTotalPages());
+        $this->assertEquals(8, $pagination->getLastPage());
+        $this->assertEquals(6, $pagination->getCurrentPage());
+        $this->assertEquals([4,5,6,7,8], $pagination->getPageList());
 
-        $this->assertEquals([1,2,3,4,5], $pagination->getPageList());
-
-        $pagination->setTotal(31)->setPage(4)->initialize(); // 31 / 5 = 7
-
+        $pagination = $this->driver->pagination('ws_user', 4, 1);
+        $this->assertEquals(8, $pagination->getTotalRows());
+        $this->assertEquals(8, $pagination->getTotalPages());
+        $this->assertEquals(8, $pagination->getLastPage());
+        $this->assertEquals(4, $pagination->getCurrentPage());
         $this->assertEquals([2,3,4,5,6], $pagination->getPageList());
 
-        $pagination->setTotal(31)->setPage(5)->initialize(); // 31 / 5 = 7
-
-        $this->assertEquals([3,4,5,6,7], $pagination->getPageList());
-
-        $pagination->setTotal(31)->setPage(7)->initialize(); // 31 / 5 = 7
-
-        $this->assertEquals([3,4,5,6,7], $pagination->getPageList());
-    }
-
-    public function testPaginationResult()
-    {
-        $pagination = $this->driver->where(['username' => 'janhuang'])->pagination('ws_user', 1, 1, 1);
-
+        $pagination = $this->driver->pagination('ws_user', 6, 1, 5, 6);
+        $this->assertEquals(8, $pagination->getTotalRows());
+        $this->assertEquals(8, $pagination->getTotalPages());
+        $this->assertEquals(8, $pagination->getLastPage());
+        $this->assertEquals(6, $pagination->getCurrentPage());
+        $this->assertEquals([4,5,6,7,8], $pagination->getPageList());
         $pagination->getResult();
+        $this->assertEquals('SELECT * FROM `ws_user` WHERE `id` > 6 LIMIT 1;', $pagination->getQueryString());
+
+        $pagination = $this->driver->pagination('ws_user', 3, 2, 5, 6);
+        $this->assertEquals(8, $pagination->getTotalRows());
+        $this->assertEquals(4, $pagination->getTotalPages());
+        $this->assertEquals(4, $pagination->getLastPage());
+        $this->assertEquals(3, $pagination->getCurrentPage());
+        $this->assertEquals([1,2,3,4], $pagination->getPageList());
+        $pagination->getResult();
+        $this->assertEquals('SELECT * FROM `ws_user` WHERE `id` > 6 LIMIT 2;', $pagination->getQueryString());
     }
 }

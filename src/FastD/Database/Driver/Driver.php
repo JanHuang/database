@@ -133,13 +133,14 @@ class Driver
     /**
      * @param       $table
      * @param int   $page
-     * @param int   $show
+     * @param int   $showList
+     * @param int   $showPage
      * @param int   $lastId
      * @return QueryPagination
      */
-    public function pagination($table, $page = 1, $show = 5, $lastId = null)
+    public function pagination($table, $page = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
-        return new QueryPagination($this->table($table), $page, $show, $lastId);
+        return new QueryPagination($this->table($table), $page, $showList, $showPage, $lastId);
     }
 
     /**

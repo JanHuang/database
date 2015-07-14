@@ -25,19 +25,23 @@ use FastD\Database\Query\QueryContext;
 class QueryPagination
 {
     /**
+     * @var Driver
+     */
+    private $driver;
+
+    /**
+     * The query or custom total row.
+     *
      * @var int
      */
     protected $totalRows = 0;
 
     /**
+     * The pagination show all page number.
+     *
      * @var int
      */
     protected $totalPages = 0;
-
-    /**
-     * @var Driver
-     */
-    private $driver;
 
     /**
      * @var int
@@ -47,12 +51,17 @@ class QueryPagination
     /**
      * @var int
      */
-    protected $show = 5;
+    protected $showList = 25;
 
     /**
      * @var int
      */
-    protected $page = 1;
+    protected $showPage = 5;
+
+    /**
+     * @var int
+     */
+    protected $currentPage = 1;
 
     /**
      * @var null|int
@@ -65,48 +74,43 @@ class QueryPagination
     protected $result;
 
     /**
-     * @param Driver $driver
-     * @param int    $page
-     * @param int    $show
-     * @param null   $lastId
+     * @param null $driverOrTotal
+     * @param int  $currentPage
+     * @param int  $showList
+     * @param int  $showPage
+     * @param null $lastId
      */
-    public function __construct(Driver $driver, $page = 1, $show = 5, $lastId = null)
+    public function __construct($driverOrTotal = null, $currentPage = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
-        $this->driver = $driver;
+        $this->initialize($driverOrTotal, $currentPage, $showList, $showPage, $lastId);
+    }
 
-        $this->show = empty($show) ? 5 : $show;
+    /**
+     * @param Driver|int|null   $driverOrTotal
+     * @param int               $currentPage
+     * @param int               $showList
+     * @param int               $showPage
+     * @param null              $lastId
+     */
+    public function initialize($driverOrTotal = null, $currentPage = 1, $showList = 25, $showPage = 5, $lastId = null)
+    {
+        if ($driverOrTotal instanceof Driver) {
+            $this->driver = $driverOrTotal;
+            $this->totalRows = $this->fetchQueryContextTotalRows(clone $driverOrTotal->getQueryContext());
+        } else if (is_numeric($driverOrTotal)) {
+            $this->totalRows = $driverOrTotal;
+        }
 
-        $this->page = $page;
+        // initialize attribute
+        $this->currentPage = $currentPage;
+
+        $this->showList = $showList;
+
+        $this->showPage = $showPage;
 
         $this->lastId = $lastId;
 
-        $this->initialize();
-    }
-
-    /**
-     * Initialize pagination.
-     *
-     * @return void
-     */
-    public function initialize()
-    {
-        $context = clone $this->driver->getQueryContext();
-
-        $total = $this->getTotal($context);
-
-        $this->totalPages = ceil($total / $this->show);
-
-        $this->resetPageOffset();
-    }
-
-    /**
-     * Reset pagination offset.
-     *
-     * @return void
-     */
-    public function resetPageOffset()
-    {
-        $this->offset = ($this->page - 1) * $this->show;
+        $this->totalPages = ceil($this->totalRows / $this->showList);
     }
 
     /**
@@ -114,10 +118,6 @@ class QueryPagination
      */
     public function getLastId()
     {
-        if (null === $this->lastId) {
-            $this->getResult();
-        }
-
         return $this->lastId;
     }
 
@@ -154,20 +154,18 @@ class QueryPagination
     /**
      * @return int
      */
-    public function getPage()
+    public function getCurrentPage()
     {
-        return $this->page;
+        return $this->currentPage;
     }
 
     /**
      * @param int $page
      * @return $this
      */
-    public function setPage($page)
+    public function setCurrentPage($page)
     {
-        $this->page = $page;
-
-        $this->resetPageOffset();
+        $this->currentPage = $page;
 
         return $this;
     }
@@ -178,16 +176,16 @@ class QueryPagination
      */
     public function page($page)
     {
-        return $this->setPage($page);
+        return $this->setCurrentPage($page);
     }
 
     /**
-     * @param int $show
+     * @param $showList
      * @return $this
      */
-    public function setShow($show)
+    public function setShowList($showList)
     {
-        $this->show = $show;
+        $this->showList = $showList;
 
         return $this;
     }
@@ -195,16 +193,35 @@ class QueryPagination
     /**
      * @return int
      */
-    public function getShow()
+    public function getShowList()
     {
-        return $this->show;
+        return $this->showList;
+    }
+
+    /**
+     * @param $showPage
+     * @return $this
+     */
+    public function setShowPage($showPage)
+    {
+        $this->showPage = $showPage;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getShowPage()
+    {
+        return $this->showPage;
     }
 
     /**
      * @param $total
      * @return $this
      */
-    public function setTotal($total)
+    public function setTotalRows($total)
     {
         $this->totalRows = $total;
 
@@ -212,17 +229,40 @@ class QueryPagination
     }
 
     /**
-     * @param QueryContext|null $context
-     * @return array|bool|int|mixed
+     * @param QueryContext $context
+     * @return array|bool|mixed
      */
-    public function getTotal(QueryContext $context = null)
+    public function fetchQueryContextTotalRows(QueryContext $context)
     {
-        if (empty($this->totalRows) && null !== $context) {
-            $sql = $context->limit(1)->fields(['COUNT(1) as total'])->select()->getSql();
-            $this->totalRows = $this->driver->createQuery($sql)->getQuery()->getOne('total');
-        }
+        $sql = $context->limit(1)->fields(['COUNT(1) as total'])->select()->getSql();
+        return $this->driver->createQuery($sql)->getQuery()->getOne('total');
+    }
 
+    /**
+     * @return int
+     */
+    public function getTotalRows()
+    {
         return $this->totalRows;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalPages()
+    {
+        return $this->totalPages;
+    }
+
+    /**
+     * @param int $totalPages
+     * @return $this
+     */
+    public function setTotalPages($totalPages)
+    {
+        $this->totalPages = $totalPages;
+
+        return $this;
     }
 
     /**
@@ -234,21 +274,21 @@ class QueryPagination
             return [];
         }
 
-        $step = floor($this->show / 2);
+        $step = floor($this->showPage / 2);
 
-        $start = $this->page - $step;
+        $start = $this->currentPage - $step;
 
-        $end = $this->page + $step;
+        $end = $this->currentPage + $step;
 
-        if ($this->totalPages > $this->show) {
+        if ($this->totalPages > $this->showPage) {
             if ($start <= 1) {
                 $start = 1;
-                $end = $this->show;
+                $end = $this->showPage;
             }
 
             if ($end >= $this->totalPages) {
                 $end = $this->totalPages;
-                $start = $this->totalPages - ($this->show - 1);
+                $start = $this->totalPages - ($this->showPage - 1);
             }
         } else {
             $start = 1;
@@ -263,7 +303,7 @@ class QueryPagination
      */
     public function getPrevPage()
     {
-        $prev = $this->page - 1;
+        $prev = $this->currentPage - 1;
 
         if ($prev <= 0) {
             $prev = 1;
@@ -277,7 +317,7 @@ class QueryPagination
      */
     public function getNextPage()
     {
-        $next = $this->page + 1;
+        $next = $this->currentPage + 1;
 
         if ($next >= $this->totalPages) {
             $next = $this->totalPages;
@@ -307,7 +347,7 @@ class QueryPagination
      */
     public function getResult()
     {
-        if (null !== $this->result) {
+        if (null !== $this->result || !($this->driver instanceof Driver)) {
             return $this->result;
         }
 
@@ -320,9 +360,9 @@ class QueryPagination
                 $joint = ' WHERE ';
             }
             $context->where .= $joint . '`id` > ' . $this->lastId;
-            $context->limit($this->show);
+            $context->limit($this->showList);
         } else {
-            $context->limit($this->show, $this->offset);
+            $context->limit($this->showList, $this->offset);
         }
 
         $sql = $context->select()->getSql();
@@ -338,5 +378,10 @@ class QueryPagination
         $this->result = $result;
         unset($result);
         return $this->result;
+    }
+
+    public function getQueryString()
+    {
+        return null === $this->driver ? null : $this->driver->getQueryString();
     }
 }

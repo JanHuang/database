@@ -159,4 +159,9 @@ class Repository
     {
         return $this->connection->createQuery($dql);
     }
+
+    public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
+    {
+        return $this->connection->pagination($this->getTable(), $page, $showList, $showPage, $lastId);
+    }
 }
