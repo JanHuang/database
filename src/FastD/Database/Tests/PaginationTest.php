@@ -117,5 +117,23 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([1,2,3,4], $pagination->getPageList());
         $pagination->getResult();
         $this->assertEquals('SELECT * FROM `ws_user` WHERE `id` > 6 LIMIT 2;', $pagination->getQueryString());
+
+        $pagination = $this->driver->pagination('ws_user', 3, 2, 5);
+        $this->assertEquals(8, $pagination->getTotalRows());
+        $this->assertEquals(4, $pagination->getTotalPages());
+        $this->assertEquals(4, $pagination->getLastPage());
+        $this->assertEquals(3, $pagination->getCurrentPage());
+        $this->assertEquals([1,2,3,4], $pagination->getPageList());
+        $pagination->getResult();
+        $this->assertEquals('SELECT * FROM `ws_user` LIMIT 4,2;', $pagination->getQueryString());
+
+        $pagination = $this->driver->pagination('ws_user', 2, 2, 5);
+        $this->assertEquals(8, $pagination->getTotalRows());
+        $this->assertEquals(4, $pagination->getTotalPages());
+        $this->assertEquals(4, $pagination->getLastPage());
+        $this->assertEquals(2, $pagination->getCurrentPage());
+        $this->assertEquals([1,2,3,4], $pagination->getPageList());
+        $pagination->getResult();
+        $this->assertEquals('SELECT * FROM `ws_user` LIMIT 2,2;', $pagination->getQueryString());
     }
 }

@@ -111,6 +111,8 @@ class QueryPagination
         $this->lastId = $lastId;
 
         $this->totalPages = ceil($this->totalRows / $this->showList);
+
+        $this->offset = ($this->currentPage - 1) * $this->showList;
     }
 
     /**
