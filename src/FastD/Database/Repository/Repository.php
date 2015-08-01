@@ -20,7 +20,7 @@ use FastD\Database\Driver\Driver;
  *
  * @package FastD\Database\Repository
  */
-class Repository
+class Repository implements RepositoryInterface
 {
     /**
      * @var
@@ -35,7 +35,7 @@ class Repository
     /**
      * @param Driver $driver
      */
-    public function __construct(Driver $driver)
+    public function __construct(Driver $driver = null)
     {
         $this->connection = $driver;
     }
@@ -160,8 +160,118 @@ class Repository
         return $this->connection->createQuery($dql);
     }
 
+    /**
+     * @param int  $page
+     * @param int  $showList
+     * @param int  $showPage
+     * @param null $lastId
+     * @return \FastD\Database\Pagination\QueryPagination
+     */
     public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
         return $this->connection->pagination($this->getTable(), $page, $showList, $showPage, $lastId);
     }
+
+    /**
+     * @param array      $data
+     * @param array|null $fields
+     * @return array
+     */
+    public function buildTableFieldsData(array $data, array $fields = null)
+    {
+        if (empty($fields)) {
+            $fields = $this->getFields();
+        }
+
+        foreach ($data as $name => $type) {
+            if (!isset($fields[$name])) {
+                unset($data[$name]);
+                continue;
+            }
+            switch ($fields[$name]) {
+                case 'int':
+                case 'integer':
+                    $data[$name] = (int)$data[$name];
+                    break;
+                case 'json':
+                case 'array':
+                    $data[$name] = json_encode($data[$name]);
+                    break;
+                case 'serialize':
+                    $data[$name] = serialize($data[$name]);
+                    break;
+                case 'string':
+                default:
+                    $data[$name] = (string)$data[$name];
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array      $data
+     * @param array|null $fields
+     * @return array
+     */
+    public function parseTableFieldsData(array $data, array $fields = null)
+    {
+        if (empty($fields)) {
+            $fields = $this->getFields();
+        }
+
+        foreach ($data as $name => $type) {
+            if (!isset($fields[$name])) {
+                unset($data[$name]);
+                continue;
+            }
+            switch ($fields[$name]) {
+                case 'int':
+                case 'integer':
+                    $data[$name] = (int)$data[$name];
+                    break;
+                case 'json':
+                case 'array':
+                    $data[$name] = json_decode($data[$name], true);
+                    break;
+                case 'serialize':
+                    $data[$name] = unserialize($data[$name]);
+                    break;
+                case 'string':
+                default:
+                    $data[$name] = (string)$data[$name];
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array $data
+     * @param array $fields
+     * @return array
+     */
+    public function buildTableFieldsDataAppendCreateAt(array $data, array $fields = [])
+    {
+        $fields = $this->buildTableFieldsData($data, $fields);
+        $fields['create_at'] = time();
+        return $fields;
+    }
+
+    /**
+     * @param array $data
+     * @param array $fields
+     * @return array
+     */
+    public function buildTableFieldsDataAppendUpdateAt(array $data, array $fields = [])
+    {
+        $fields = $this->buildTableFieldsData($data, $fields);
+        $fields['update_at'] = time();
+        return $fields;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFields(){}
 }
