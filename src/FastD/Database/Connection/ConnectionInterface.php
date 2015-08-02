@@ -125,15 +125,4 @@ interface ConnectionInterface
      * @return mixed
      */
     public function close();
-
-    /**
-     * @param                 $table
-     * @param EntityInterface $entityInterface
-     * @return $this
-     */
-    public function prepareEntity($table, EntityInterface $entityInterface);
-
-    public function getOneEntity();
-
-    public function getAllEntity();
 }

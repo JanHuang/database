@@ -82,7 +82,9 @@ class Repository implements RepositoryInterface
             $where = array('id' => $where);
         }
 
-        return $this->connection->find($this->getTable(), $where, $field);
+        $row = $this->connection->find($this->getTable(), $where, $field);
+
+        return null === $this->getFields() ? $row : $this->parseTableFieldsData($row, $this->getFields());
     }
 
     /**
@@ -96,7 +98,17 @@ class Repository implements RepositoryInterface
             $where = array('id' => $where);
         }
 
-        return $this->connection->findAll($this->getTable(), $where, $field);
+        $list = $this->connection->findAll($this->getTable(), $where, $field);
+
+        if (null === $this->getFields()) {
+            return $list;
+        }
+
+        foreach ($list as $key => $value) {
+            $list[$key] = $this->parseTableFieldsData($value, $this->getFields());
+        }
+
+        return $list;
     }
 
     /**

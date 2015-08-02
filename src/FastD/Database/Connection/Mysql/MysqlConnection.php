@@ -225,24 +225,4 @@ class MysqlConnection implements ConnectionInterface
     {
         return $this->getConnectionInfo();
     }
-
-    /**
-     * @param                 $table
-     * @param EntityInterface $entityInterface
-     * @return $this
-     */
-    public function prepareEntity($table, EntityInterface $entityInterface)
-    {
-        // TODO: Implement prepareEntity() method.
-    }
-
-    public function getOneEntity()
-    {
-        // TODO: Implement getOneEntity() method.
-    }
-
-    public function getAllEntity()
-    {
-        // TODO: Implement getAllEntity() method.
-    }
 }

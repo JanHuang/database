@@ -43,6 +43,9 @@ class Driver
      */
     protected $repositories = [];
 
+    /**
+     * @var Config
+     */
     protected $config;
 
     /**
