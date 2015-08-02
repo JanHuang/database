@@ -244,7 +244,7 @@ class Repository implements RepositoryInterface
                     break;
                 case 'json':
                 case 'array':
-                    $data[$name] = json_decode($data[$name], true);
+                    $data[$name] = (null == ($json = json_decode($data[$name], true))) ? new \stdClass() : $json;
                     break;
                 case 'serialize':
                     $data[$name] = unserialize($data[$name]);
