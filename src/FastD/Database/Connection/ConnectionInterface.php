@@ -12,6 +12,7 @@
  */
 
 namespace FastD\Database\Connection;
+use FastD\Database\Entity\EntityInterface;
 
 /**
  * Interface ConnectionInterface
@@ -76,10 +77,9 @@ interface ConnectionInterface
     public function getQuery();
 
     /**
-     * @param string $name
      * @return array|bool
      */
-    public function getAll($name = null);
+    public function getAll();
 
     /**
      * @param string $name
@@ -125,4 +125,15 @@ interface ConnectionInterface
      * @return mixed
      */
     public function close();
+
+    /**
+     * @param                 $table
+     * @param EntityInterface $entityInterface
+     * @return $this
+     */
+    public function prepareEntity($table, EntityInterface $entityInterface);
+
+    public function getOneEntity();
+
+    public function getAllEntity();
 }

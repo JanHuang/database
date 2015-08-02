@@ -14,6 +14,7 @@
 namespace FastD\Database\Connection\Mysql;
 
 use FastD\Database\Connection\ConnectionInterface;
+use FastD\Database\Entity\EntityInterface;
 
 /**
  * Class MysqlConnection
@@ -117,10 +118,9 @@ class MysqlConnection implements ConnectionInterface
     }
 
     /**
-     * @param null $name
      * @return array
      */
-    public function getAll($name = null)
+    public function getAll()
     {
         $result = $this->statement->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -224,5 +224,25 @@ class MysqlConnection implements ConnectionInterface
     public function __toString()
     {
         return $this->getConnectionInfo();
+    }
+
+    /**
+     * @param                 $table
+     * @param EntityInterface $entityInterface
+     * @return $this
+     */
+    public function prepareEntity($table, EntityInterface $entityInterface)
+    {
+        // TODO: Implement prepareEntity() method.
+    }
+
+    public function getOneEntity()
+    {
+        // TODO: Implement getOneEntity() method.
+    }
+
+    public function getAllEntity()
+    {
+        // TODO: Implement getAllEntity() method.
     }
 }
