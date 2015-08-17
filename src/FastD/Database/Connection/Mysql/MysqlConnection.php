@@ -14,7 +14,6 @@
 namespace FastD\Database\Connection\Mysql;
 
 use FastD\Database\Connection\ConnectionInterface;
-use FastD\Database\Entity\EntityInterface;
 
 /**
  * Class MysqlConnection
@@ -47,9 +46,8 @@ class MysqlConnection implements ConnectionInterface
      */
     public function __construct($dsn, $user, $password, $charset = 'utf8', array $options = [])
     {
-        $this->driver = new \PDO($dsn, $user, $password, [
-                \PDO::MYSQL_ATTR_INIT_COMMAND => 'set names ' . $charset
-        ]);
+        $this->driver = new \PDO($dsn, $user, $password);
+        $this->driver->exec('SET NAMES ' . $charset);
     }
 
     /**
