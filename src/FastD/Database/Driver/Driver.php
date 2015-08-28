@@ -242,6 +242,22 @@ class Driver
     }
 
     /**
+     * @return false|int
+     */
+    public function getAffectedRow()
+    {
+        return $this->connection->getAffectedRow();
+    }
+
+    /**
+     * @return false|int
+     */
+    public function getLastId()
+    {
+        return $this->connection->getLastId();
+    }
+
+    /**
      * @param $table
      * @return $this
      */
