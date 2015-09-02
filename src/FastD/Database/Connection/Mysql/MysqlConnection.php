@@ -47,6 +47,7 @@ class MysqlConnection implements ConnectionInterface
     public function __construct($dsn, $user, $password, $charset = 'utf8', array $options = [])
     {
         $this->driver = new \PDO($dsn, $user, $password);
+        $this->driver->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
         $this->driver->exec('SET NAMES ' . $charset);
     }
 
