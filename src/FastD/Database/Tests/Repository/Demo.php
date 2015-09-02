@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/6/20
- * Time: 下午6:45
+ * Date: 15/8/1
+ * Time: 下午11:27
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,11 +12,18 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Tests;
+namespace FastD\Database\Tests\Repository;
 
 use FastD\Database\Repository\Repository;
 
-class WsUserRepository extends Repository
+class Demo extends Repository
 {
-
+    public function getFields()
+    {
+        return [
+            'id' => 'int',
+            'name' => 'string',
+            'roles' => 'json',
+        ];
+    }
 }

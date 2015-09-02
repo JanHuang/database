@@ -14,13 +14,13 @@
 
 namespace FastD\Database\Tests;
 
-use FastD\Database\Tests\Repository\DemoRepository;
+use FastD\Database\Tests\Repository\Demo;
 
 class FieldsBuildTest extends \PHPUnit_Framework_TestCase
 {
     public function testBuildFields()
     {
-        $demo = new DemoRepository();
+        $demo = new Demo();
         $data = [
             'id' => '10',
             'name' => 'janhuang',

@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/8/1
- * Time: 下午11:27
+ * Date: 15/6/20
+ * Time: 下午7:32
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,18 +12,13 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Tests\Repository;
+
+namespace FastD\Database\Tests;
+
 
 use FastD\Database\Repository\Repository;
 
-class DemoRepository extends Repository
+class Exists extends Repository
 {
-    public function getFields()
-    {
-        return [
-            'id' => 'int',
-            'name' => 'string',
-            'roles' => 'json',
-        ];
-    }
+    protected $table = 'demo';
 }

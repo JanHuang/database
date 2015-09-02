@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: janhuang
  * Date: 15/6/20
- * Time: 下午7:32
+ * Time: 下午7:30
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -18,7 +18,7 @@ namespace FastD\Database\Tests;
 
 use FastD\Database\Repository\Repository;
 
-class ExistsRepository extends Repository
+class Demo extends Repository
 {
-    protected $table = 'demo';
+
 }
