@@ -14,6 +14,7 @@
 namespace FastD\Database\Repository;
 
 use FastD\Database\Driver\Driver;
+use FastD\Database\ORM\Entity\Entity;
 
 /**
  * Class Repository
@@ -31,6 +32,11 @@ class Repository implements RepositoryInterface
      * @var Driver
      */
     protected $connection;
+
+    /**
+     * @var Entity
+     */
+    protected $entity;
 
     /**
      * @param Driver $driver
@@ -182,6 +188,11 @@ class Repository implements RepositoryInterface
     public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
         return $this->connection->pagination($this->getTable(), $page, $showList, $showPage, $lastId);
+    }
+
+    public function persist()
+    {
+        $this->connection->table();
     }
 
     /**

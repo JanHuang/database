@@ -16,7 +16,7 @@ namespace FastD\Database\Tests\Entity;
 
 use FastD\Database\Entity\Entity;
 
-class DemoEntity extends Entity
+class Demo extends Entity
 {
     private $id;
     private $name;
