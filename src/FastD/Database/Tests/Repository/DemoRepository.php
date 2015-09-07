@@ -16,7 +16,7 @@ namespace FastD\Database\Tests\Repository;
 
 use FastD\Database\Repository\Repository;
 
-class Demo extends Repository
+class DemoRepository extends Repository
 {
     public function getFields()
     {

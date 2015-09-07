@@ -15,6 +15,7 @@ namespace FastD\Database\Repository;
 
 use FastD\Database\Driver\Driver;
 use FastD\Database\ORM\Entity\Entity;
+use FastD\Database\ORM\Entity\EntityAbstract;
 
 /**
  * Class Repository
@@ -190,111 +191,9 @@ class Repository implements RepositoryInterface
         return $this->connection->pagination($this->getTable(), $page, $showList, $showPage, $lastId);
     }
 
-    public function persist()
+    public function persist(EntityAbstract $entityAbstract)
     {
-        $this->connection->table();
+
+        $connection = $this->connection->table($entityAbstract->getTable());
     }
-
-    /**
-     * @param array      $data
-     * @param array|null $fields
-     * @return array
-     */
-    public function buildTableFieldsData(array $data, array $fields = null)
-    {
-        if (empty($fields)) {
-            $fields = $this->getFields();
-        }
-
-        foreach ($data as $name => $type) {
-            if (!isset($fields[$name])) {
-                unset($data[$name]);
-                continue;
-            }
-            switch ($fields[$name]) {
-                case 'int':
-                case 'integer':
-                    $data[$name] = (int)$data[$name];
-                    break;
-                case 'json':
-                case 'array':
-                    $data[$name] = json_encode($data[$name]);
-                    break;
-                case 'serialize':
-                    $data[$name] = serialize($data[$name]);
-                    break;
-                case 'string':
-                default:
-                    $data[$name] = (string)$data[$name];
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param array      $data
-     * @param array|null $fields
-     * @return array
-     */
-    public function parseTableFieldsData(array $data, array $fields = null)
-    {
-        if (empty($fields)) {
-            $fields = $this->getFields();
-        }
-
-        foreach ($data as $name => $type) {
-            if (!isset($fields[$name])) {
-                unset($data[$name]);
-                continue;
-            }
-            switch ($fields[$name]) {
-                case 'int':
-                case 'integer':
-                    $data[$name] = (int)$data[$name];
-                    break;
-                case 'json':
-                case 'array':
-                    $data[$name] = (null == ($json = json_decode($data[$name], true))) ? new \stdClass() : $json;
-                    break;
-                case 'serialize':
-                    $data[$name] = unserialize($data[$name]);
-                    break;
-                case 'string':
-                default:
-                    $data[$name] = (string)$data[$name];
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param array $data
-     * @param array $fields
-     * @return array
-     */
-    public function buildTableFieldsDataAppendCreateAt(array $data, array $fields = [])
-    {
-        $fields = $this->buildTableFieldsData($data, $fields);
-        $fields['create_at'] = time();
-        return $fields;
-    }
-
-    /**
-     * @param array $data
-     * @param array $fields
-     * @return array
-     */
-    public function buildTableFieldsDataAppendUpdateAt(array $data, array $fields = [])
-    {
-        $fields = $this->buildTableFieldsData($data, $fields);
-        $fields['update_at'] = time();
-        return $fields;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFields(){}
 }

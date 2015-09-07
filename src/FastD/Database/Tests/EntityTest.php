@@ -20,7 +20,6 @@ class EntityTest extends \PHPUnit_Framework_TestCase
 {
     public function testProcess()
     {
-        $demoRepository = new Demo();
-        $demoRepository->persist(new \FastD\Database\Tests\Entity\Demo());
+        
     }
 }

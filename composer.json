@@ -17,7 +17,9 @@
     "require-dev": {
         "fastd/console": "~0.1.0",
         "fastd/config": "~1.0.0",
-        "fastd/debug": "~1.0.0"
+        "fastd/debug": "~1.0.0",
+        "fastd/container": "~0.1.0",
+        "fastd/finder": "~0.1.0"
     },
     "extra": {
         "branch-alias": {

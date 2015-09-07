@@ -24,19 +24,19 @@ interface RepositoryInterface
     /**
      * @return array
      */
-    public function getFields();
+//    public function getFields();
 
     /**
      * @param array      $data
      * @param array|null $fields
      * @return array
      */
-    public function buildTableFieldsData(array $data, array $fields = null);
+//    public function buildTableFieldsData(array $data, array $fields = null);
 
     /**
      * @param array      $data
      * @param array|null $fields
      * @return array
      */
-    public function parseTableFieldsData(array $data, array $fields = null);
+//    public function parseTableFieldsData(array $data, array $fields = null);
 }
