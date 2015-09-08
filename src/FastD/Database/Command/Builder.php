@@ -50,29 +50,39 @@ class Builder extends Command
             throw new \RuntimeException('Table name is unset.');
         }
 
-        try {
-            $suffix = $config->get('suffix');
-        } catch (\Exception $e) {
-            $suffix = '';
-        }
-
-        try {
-            $prefix = $config->get('prefix');
-        } catch (\Exception $e) {
-            $prefix = '';
-        }
-
+        $suffix = $config->hasGet('suffix', '');
+        $prefix = $config->hasGet('prefix', '');
+        $charset = $config->hasGet('charset', 'utf8');
+        $engine = $config->hasGet('engine', 'innodb');
+        $fields = $config->hasGet('fields', []);
         $fullTable = $prefix . $table . $suffix;
-        $fields = $config->get('fields');
+        $primary = $config->hasGet('id', []);
+
+        $this->createTableSql($fullTable, $primary, $fields, $charset, $engine);
     }
 
-    protected function createTableSql()
+    protected function createTableSql($table, array $primary, array $fields, $charset = 'utf8', $engine = 'innodb', array $options = [])
     {
-        return '
+        $makeFields = function () use ($primary, $fields) {
+            $sql = [];
+            $fields = array_merge($primary, $fields);
+            foreach ($fields as $key => $value) {
+                $length = (array_key_exists('length', $value) ? '(' . $value['length'] . ')' : '');
+                $default = (array_key_exists('default', $value) ? ' DEFAULT "' . $value['default'] . '"' : '');
+                $comment = (array_key_exists('comment', $value) ? ' COMMENT "' . $value['comment'] . '"' : '');
+                $sql[] = "`{$key}` {$value['type']}{$length}{$default}{$comment}";
+            }
+            return PHP_EOL . implode(',' . PHP_EOL, $sql) . PHP_EOL;
+        };
+        $sql = sprintf('
 CREATE TABLE `%s` (%s) CHARSET=%s ENGINE=%s;
-        ';
+        ', $table, $makeFields(), $charset, $engine);
+
+        echo $sql;
     }
 
     protected function createRepository(EntityAbstract $entityAbstract)
-    {}
+    {
+
+    }
 }
