@@ -12,7 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\ORM\Entity;
+namespace FastD\Database\ORM;
 
 class Builder
 {

@@ -12,12 +12,12 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\ORM\Entity;
+namespace FastD\Database\ORM;
 
 /**
  * Class Struct
  *
- * @package FastD\Database\ORM\Entity
+ * @package FastD\Database\ORM
  */
 class Struct
 {
