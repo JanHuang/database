@@ -14,7 +14,7 @@
 
 namespace FastD\Database\Tests\ORM;
 
-use FastD\Database\ORM\Entity\Builder;
+use FastD\Database\ORM\Builder;
 
 class BuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,15 +32,13 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
                 'engine' => 'innodb', // 默认innodb
                 'charset' => 'utf8', // 默认utf8
                 'primary' => [
-                    'id' => [
-                        'name' => 'id', // 默认值 name 拆分
-                        'type' => 'int',
-                        'length' => 10,
-                        'default' => 0,
-                        'comment' => '',
-                        'increment' => 10, // 起始值
-                        'unsigned' => true, // 默认false
-                    ],
+                    'name' => 'id', // 默认值 name 拆分
+                    'type' => 'int',
+                    'length' => 10,
+                    'default' => 0,
+                    'comment' => '',
+                    'increment' => 10, // 起始值
+                    'unsigned' => true, // 默认false
                 ],
                 'fields' => [
                     'nickname' => [

@@ -100,7 +100,7 @@ class Struct
                     break;
                 }
 
-                $this->fields[] = new Field($value);
+                $this->fields[] = new Field($value, $key);
             }
         }
     }
@@ -198,6 +198,18 @@ class Struct
      */
     public function makeStructSQL()
     {
+        $sql = 'CREATE TABLE `%s` (%s) DEFAULT CHARSET=%s ENGINE=%s;';
 
+        $primaryAndFields = [
+            "{$this->primary->getName()}",
+        ];
+
+        foreach ($this->getFileds() as $field) {
+
+        }
+
+        $sql = sprintf($sql, $this->getTable(), '', $this->getCharset(), $this->getEngine());
+
+        return $sql;
     }
 }

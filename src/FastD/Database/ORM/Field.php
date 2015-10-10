@@ -68,10 +68,11 @@ class Field
 
     /**
      * @param array $field
+     * @param string $name
      */
-    public function __construct(array $field)
+    public function __construct(array $field, $name = '')
     {
-        $this->name = isset($field['name']) ? $field['name'] : null;
+        $this->name = isset($field['name']) ? $field['name'] : $this->parseName($name);
 
         $this->type = isset($field['type']) ? $field['type'] : null;
 
@@ -160,5 +161,10 @@ class Field
     public function isNotnull()
     {
         return $this->notnull;
+    }
+
+    public function parseName($name)
+    {
+        return $name;
     }
 }

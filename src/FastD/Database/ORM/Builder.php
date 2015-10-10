@@ -18,6 +18,9 @@ class Builder
 {
     protected $structs = [];
 
+    /**
+     * @return Struct[]
+     */
     public function getSturct()
     {
         return $this->structs;
@@ -25,14 +28,16 @@ class Builder
 
     public function addStruct(array $structs)
     {
-        $this->structs[] = $structs;
+        $this->structs[] = new Struct($structs);
 
         return $this;
     }
 
     public function setStruct(array $strusts)
     {
-        $this->structs = $strusts;
+        foreach ($strusts as $strust) {
+            $this->addStruct($strust);
+        }
 
         return $this;
     }
@@ -42,9 +47,13 @@ class Builder
 
     public function buildSql()
     {
-        foreach ($this->getSturct() as $struct) {
+        $sql = [];
 
+        foreach ($this->getSturct() as $struct) {
+            $sql = $struct->makeStructSQL();
         }
+
+        print_r($sql);
     }
 
     public function buildEntity()
