@@ -31,7 +31,6 @@ class Builder extends Command
     {
         $this->setOption('bundle');
         $this->setOption('force');
-        $this->setOption('entity');
     }
 
     public function execute(Input $input, Output $output)
@@ -47,7 +46,7 @@ class Builder extends Command
         try {
             $table = $config->get('table');
         } catch (\Exception $e) {
-            throw new \RuntimeException('Table name is unset.');
+            throw new \RuntimeException('Table name is unsetting.');
         }
 
         $suffix = $config->hasGet('suffix', '');
@@ -64,8 +63,9 @@ class Builder extends Command
     protected function createTableSql($table, array $primary, array $fields, $charset = 'utf8', $engine = 'innodb', array $options = [])
     {
         $makeFields = function () use ($primary, $fields) {
-            $sql = [];
-            $fields = array_merge($primary, $fields);
+            $sql = [
+                ''
+            ];
             foreach ($fields as $key => $value) {
                 $length = (array_key_exists('length', $value) ? '(' . $value['length'] . ')' : '');
                 $default = (array_key_exists('default', $value) ? ' DEFAULT "' . $value['default'] . '"' : '');
