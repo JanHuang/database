@@ -22,7 +22,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     {
         $builder = new Builder();
 
-        $builder->setStruct([
+        $builder->addStruct(
             [
                 'table' => 'demo',
                 'suffix' => '',
@@ -53,11 +53,51 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
                         'name' => 'category_id',
                         'type' => 'int',
                         'default' => 0,
-                    ]
+                        'index' => 'index',
+                    ],
+                    'trueName' => [
+                        'name' => 'true_name',
+                        'type' => 'varchar',
+                        'default' => '',
+                    ],
                 ]
             ]
-        ]);
+        );
 
-        $builder->buildSql();
+        $builder->addStruct(
+            [
+                'table' => 'demo',
+                'suffix' => '',
+                'preffix' => '',
+                'repository' => '', // 默认值 Entity/../Repository
+                'cache' => '', // 默认值 Entity/cache/md5.php
+                'engine' => 'innodb', // 默认innodb
+                'charset' => 'utf8', // 默认utf8
+                'fields' => [
+                    'nickname' => [
+                        'name' => 'nickname',
+                        'type' => 'varchar',
+                        'length' => 20,
+                        'notnull' => true, // 默认true
+                        'default' => '',
+                        'index' => 'unique' // 默认索引名为 name_unique_key
+                    ],
+                    'catId' => [
+                        'name' => 'category_id',
+                        'type' => 'int',
+                        'default' => 0,
+                        'index' => 'index',
+                    ],
+                    'trueName' => [
+                        'name' => 'true_name',
+                        'type' => 'varchar',
+                        'default' => '',
+                    ],
+                ]
+            ]
+        );
+
+        $createTableSql = $builder->buildSql();
+        print_r($createTableSql);
     }
 }

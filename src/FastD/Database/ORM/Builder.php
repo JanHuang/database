@@ -50,14 +50,16 @@ class Builder
         $sql = [];
 
         foreach ($this->getSturct() as $struct) {
-            $sql = $struct->makeStructSQL();
+            $sql[] = $struct->makeStructSQL();
         }
 
-        print_r($sql);
+        return $sql;
     }
 
     public function buildEntity()
-    {}
+    {
+
+    }
 
     public function buildRepository()
     {

@@ -34,7 +34,7 @@ class Field
     /**
      * @var int
      */
-    protected $length = 0;
+    protected $length = null;
 
     /**
      * @var string
@@ -76,7 +76,7 @@ class Field
 
         $this->type = isset($field['type']) ? $field['type'] : null;
 
-        $this->length = isset($field['length']) ? $field['length'] : 0;
+        $this->length = isset($field['length']) ? $field['length'] : null;
 
         $this->default = isset($field['default']) ? $field['default'] : '';
 
@@ -165,6 +165,49 @@ class Field
 
     public function parseName($name)
     {
+        if (empty($name)) {
+
+        }
         return $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        switch (strtolower($this->getIndex())) {
+            case 'index':
+                $key = "KEY `{$this->getName()}_index` (`{$this->getName()}`)";
+                break;
+            case 'unique':
+                $key = "UNIQUE KEY `{$this->getName()}_unique_index` (`{$this->getName()}`)";
+                break;
+            default:
+                $key = '';
+        }
+        return $key;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $unsigned = $this->isUnsigned() ? ' unsigned' : '';
+        $notnull = $this->isNotnull() ? ' NOT NULL' : '';
+        if (null === ($defaultValue = $this->getDefault()) || '' === $defaultValue ) {
+            if (is_string($this->getDefault())) {
+                $defaultValue = '"' . (string)($defaultValue) . '"';
+            }
+        }
+        $default = ' DEFAULT ' . $defaultValue;
+        $comment = ' COMMENT ' . (('' == $this->getComment() || null == $this->getComment()) ? '""' : '"' . $this->getComment() . '"');
+        $length = (null == $this->getLength() || $this->getLength() <= 0) ? '(10)' : "({$this->getLength()})";
+        $isIncrement = in_array($this->getName(), ['primary', 'id']) ? ' AUTO_INCREMENT' : '';
+        if (in_array($this->getName(), ['primary', 'id'])) {
+            $default = '';
+        }
+        return "`{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$notnull}{$default}{$comment}{$isIncrement}";
     }
 }

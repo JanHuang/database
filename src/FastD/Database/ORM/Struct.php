@@ -92,7 +92,7 @@ class Struct
 
         $this->charset = isset($struct['charset']) ? $struct['charset'] : null;
 
-        $this->primary = isset($struct['primary']) ? new Field($struct['primary']) : null;
+        $this->primary = isset($struct['primary']) ? new Field($struct['primary'], 'primary') : null;
 
         if (isset($struct['fields']) && is_array($struct['fields'])) {
             foreach ($struct['fields'] as $key => $value) {
@@ -122,7 +122,7 @@ class Struct
     }
 
     /**
-     * @return Field
+     * @return Field[]
      */
     public function getFields()
     {
@@ -198,17 +198,33 @@ class Struct
      */
     public function makeStructSQL()
     {
-        $sql = 'CREATE TABLE `%s` (%s) DEFAULT CHARSET=%s ENGINE=%s;';
+        $sql = <<<T
+CREATE TABLE `%s` (
+%s
+) DEFAULT CHARSET=%s ENGINE=%s;
+T;
 
-        $primaryAndFields = [
-            "{$this->primary->getName()}",
-        ];
-
-        foreach ($this->getFileds() as $field) {
-
+        $indexKey = [];
+        $fields = [];
+        if ($this->primary instanceof Field) {
+            $indexKey[] = "PRIMARY KEY (`{$this->primary->getName()}`)";
+            $fields[] = $this->primary->__toString();
         }
 
-        $sql = sprintf($sql, $this->getTable(), '', $this->getCharset(), $this->getEngine());
+        foreach ($this->getFields() as $field) {
+            if ('' != ($key = $field->getKey())) {
+                $indexKey[] = $field->getKey();
+            }
+            $fields[] = $field->__toString();
+        }
+
+        $sql = sprintf(
+            $sql,
+            $this->getTable(),
+            implode(',' . PHP_EOL, $fields) . ',' . PHP_EOL . implode(',' . PHP_EOL, $indexKey),
+            $this->getCharset(),
+            $this->getEngine()
+        );
 
         return $sql;
     }
