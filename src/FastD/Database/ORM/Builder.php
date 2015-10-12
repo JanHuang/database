@@ -50,7 +50,7 @@ class Builder
         $sql = [];
 
         foreach ($this->getSturct() as $struct) {
-            $sql[] = $struct->makeStructSQL();
+            $sql[$struct->getTable()] = $struct->makeStructSQL();
         }
 
         return $sql;

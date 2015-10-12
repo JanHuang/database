@@ -66,7 +66,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
         $builder->addStruct(
             [
-                'table' => 'demo',
+                'table' => 'test',
                 'suffix' => '',
                 'preffix' => '',
                 'repository' => '', // 默认值 Entity/../Repository
