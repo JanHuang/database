@@ -4,6 +4,10 @@ namespace Test;
 
 class Test
 {
+    /**
+     * @var string|null
+     */
+    protected $repository;
     
     /**
      * @var string

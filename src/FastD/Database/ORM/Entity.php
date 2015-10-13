@@ -66,11 +66,17 @@ class Entity
 
         $name = ucfirst($name);
 
+        $repository = null === ($repository = $this->struct->getRepository()) ? '' : (' = ' . $repository);
+
         $entity = <<<E
 <?php
 {$namespace}
 class {$name}
 {
+    /**
+     * @var string|null
+     */
+    protected \$repository{$repository};
     {$property}
     {$construct}
     {$methods}

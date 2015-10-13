@@ -4,6 +4,10 @@ namespace Demo;
 
 class Demo
 {
+    /**
+     * @var string|null
+     */
+    protected $repository;
     
     /**
      * @var string
@@ -20,7 +24,7 @@ class Demo
      */
     protected $trueName;
 
-            
+    
     /**
      * @var int
      */
@@ -29,7 +33,7 @@ class Demo
     /**
      * @param int $id
      */
-    public function __construct($id)
+    public function __construct($id = null)
     {
         $this->primary = $id;
     }
