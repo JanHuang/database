@@ -14,8 +14,6 @@
 namespace FastD\Database\Repository;
 
 use FastD\Database\Driver\Driver;
-use FastD\Database\ORM\Entity\Entity;
-use FastD\Database\ORM\Entity\EntityAbstract;
 
 /**
  * Class Repository

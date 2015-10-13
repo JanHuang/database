@@ -63,9 +63,4 @@ class Builder
             $entity->buildEntity($namespace . $struct->getTable());
         }
     }
-
-    public function buildRepository()
-    {
-
-    }
 }

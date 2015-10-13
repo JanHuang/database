@@ -51,7 +51,7 @@ class Entity
         $namespace = '';
         if (false !== ($index = strpos($name, '\\'))) {
             $name = substr($name, $index + 1);
-            $namespace = PHP_EOL . 'namespace ' . ucfirst(substr($name, 0, $index)) . ';' . PHP_EOL;
+            $namespace = ucfirst(substr($name, 0, $index));
         }
 
         $property = '';
@@ -66,7 +66,12 @@ class Entity
 
         $name = ucfirst($name);
 
-        $repository = null === ($repository = $this->struct->getRepository()) ? '' : (' = ' . $repository);
+        $repository = " = '{$namespace}\\Repository\\{$name}Repository'";
+        $this->buildRepository($namespace, $name);
+
+        if (!empty($namespace)) {
+            $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Entity;' . PHP_EOL;
+        }
 
         $entity = <<<E
 <?php
@@ -83,7 +88,11 @@ class {$name}
 }
 E;
 
-        file_put_contents($this->dir . '/' . $name . '.php', $entity);
+        if (!is_dir($entityDir = $this->dir . '/Entity')) {
+            mkdir($entityDir, 0755, true);
+        }
+
+        file_put_contents($this->dir . '/Entity/' . $name . '.php', $entity);
     }
 
     protected function buildConstruct()
@@ -166,5 +175,29 @@ P;
 GS;
 
         return $getSetter;
+    }
+
+    protected function buildRepository($namespace, $name)
+    {
+        if (!empty($namespace)) {
+            $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Repository;' . PHP_EOL;
+        }
+
+        $repository = <<<R
+<?php
+{$namespace}
+use FastD\Database\Repository\Repository;
+
+class {$name}Repository extends Repository
+{
+    protected \$struct = [];
+}
+R;
+
+        if (!is_dir($repositoryDir = $this->dir . '/Repository')) {
+            mkdir($repositoryDir, 0755, true);
+        }
+
+        file_put_contents($this->dir . '/Repository/' . $name . 'Repository.php', $repository);
     }
 }

@@ -27,7 +27,6 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
                 'table' => 'demo',
                 'suffix' => '',
                 'preffix' => '',
-                'repository' => '', // 默认值 Entity/../Repository
                 'cache' => '', // 默认值 Entity/cache/md5.php
                 'engine' => 'innodb', // 默认innodb
                 'charset' => 'utf8', // 默认utf8
@@ -69,7 +68,6 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
                 'table' => 'test',
                 'suffix' => '',
                 'preffix' => '',
-                'repository' => '', // 默认值 Entity/../Repository
                 'cache' => '', // 默认值 Entity/cache/md5.php
                 'engine' => 'innodb', // 默认innodb
                 'charset' => 'utf8', // 默认utf8
@@ -99,7 +97,9 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
         $createTableSql = $builder->buildSql();
 
-        $builder->buildEntity(__DIR__ . '/../Entity', 'Deme\\');
+        $namespace = 'Deme\\';
+
+        $builder->buildEntity(__DIR__ . '/..', $namespace);
 
 //        $this->getConnection()->getRepository()->findAll(); // return Entity[]
     }

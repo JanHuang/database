@@ -44,11 +44,6 @@ class Struct
     /**
      * @var null
      */
-    protected $repository;
-
-    /**
-     * @var null
-     */
     protected $cache;
 
     /**
@@ -83,8 +78,6 @@ class Struct
         $this->suffix = isset($struct['suffix']) ? $struct['suffix'] : null;
 
         $this->prefix = isset($struct['prefix']) ? $struct['prefix'] : null;
-
-        $this->repository = isset($struct['repository']) ? $struct['repository'] : null;
 
         $this->cache = isset($struct['cache']) ? $struct['cache'] : null;
 
@@ -167,14 +160,6 @@ class Struct
     public function getCache()
     {
         return $this->cache;
-    }
-
-    /**
-     * @return null
-     */
-    public function getRepository()
-    {
-        return $this->repository;
     }
 
     /**
