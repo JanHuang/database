@@ -99,6 +99,8 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
         $createTableSql = $builder->buildSql();
 
-        $builder->buildEntity((__DIR__ . '/../Entity'));
+        $builder->buildEntity(__DIR__ . '/../Entity', 'Deme\\');
+
+//        $this->getConnection()->getRepository()->findAll(); // return Entity[]
     }
 }

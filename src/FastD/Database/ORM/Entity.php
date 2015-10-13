@@ -53,7 +53,7 @@ class Entity
         $namespace = '';
         if (false !== ($index = strpos($name, '\\'))) {
             $name = substr($name, $index + 1);
-            $namespace = PHP_EOL . 'namespace ' . substr($name, 0, $index) . ';' . PHP_EOL;
+            $namespace = PHP_EOL . 'namespace ' . ucfirst(substr($name, 0, $index)) . ';' . PHP_EOL;
         }
 
         $property = '';
