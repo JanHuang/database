@@ -21,6 +21,7 @@ class Test
     protected $trueName;
 
     
+    
     /**
      * @param string nickname
      * @return $this

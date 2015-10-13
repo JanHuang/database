@@ -20,6 +20,19 @@ class Demo
      */
     protected $trueName;
 
+            
+    /**
+     * @var int
+     */
+    protected $id;
+
+    /**
+     * @param int $id
+     */
+    public function __construct($id)
+    {
+        $this->primary = $id;
+    }
     
     /**
      * @param string nickname

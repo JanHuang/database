@@ -35,14 +35,12 @@ class Entity
             case 'text':
             case 'blod':
                 return 'string';
-                break;
             case 'int':
             case 'tinyint':
             case 'smallint':
             case 'float':
             case 'double':
                 return 'int';
-                break;
         }
 
         return 'mixed';
@@ -64,6 +62,8 @@ class Entity
             $methods .= PHP_EOL . $this->buildGetSetter($field->getName(), $field->getType()) . PHP_EOL;
         }
 
+        $construct = $this->buildConstruct();
+
         $name = ucfirst($name);
 
         $entity = <<<E
@@ -72,11 +72,35 @@ class Entity
 class {$name}
 {
     {$property}
+    {$construct}
     {$methods}
 }
 E;
 
         file_put_contents($this->dir . '/' . $name . '.php', $entity);
+    }
+
+    protected function buildConstruct()
+    {
+        if (null === $this->struct->getPrimary()) {
+            return '';
+        }
+
+        return <<<C
+
+    /**
+     * @var int
+     */
+    protected \$id;
+
+    /**
+     * @param int \$id
+     */
+    public function __construct(\$id)
+    {
+        \$this->primary = \$id;
+    }
+C;
     }
 
     protected function buildProperty($name, $type = '')
