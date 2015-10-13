@@ -56,8 +56,12 @@ class Builder
         return $sql;
     }
 
-    public function buildEntity()
+    public function buildEntity($dir)
     {
+        foreach ($this->getSturct() as $struct) {
+            $entity = new Entity($struct, $dir);
+            $entity->buildEntity($struct->getTable());
+        }
 
     }
 

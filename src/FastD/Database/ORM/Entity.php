@@ -16,5 +16,125 @@ namespace FastD\Database\ORM;
 
 class Entity
 {
+    protected $dir;
 
+    protected $struct;
+
+    public function __construct(Struct $struct, $dir = '')
+    {
+        $this->struct = $struct;
+
+        $this->dir = $dir;
+    }
+
+    protected function parseType($type)
+    {
+        switch (strtolower($type)) {
+            case 'varchar':
+            case 'char':
+            case 'text':
+            case 'blod':
+                return 'string';
+                break;
+            case 'int':
+            case 'tinyint':
+            case 'smallint':
+            case 'float':
+            case 'double':
+                return 'int';
+                break;
+        }
+
+        return 'mixed';
+    }
+
+    public function buildEntity($name)
+    {
+        $namespace = '';
+        if (false !== ($index = strpos($name, '\\'))) {
+            $name = substr($name, $index + 1);
+            $namespace = PHP_EOL . 'namespace ' . substr($name, 0, $index) . ';' . PHP_EOL;
+        }
+
+        $property = '';
+        $methods = '';
+
+        foreach ($this->struct->getFields() as $field) {
+            $property .= PHP_EOL . $this->buildProperty($field->getName(), $field->getType()) . PHP_EOL;
+            $methods .= PHP_EOL . $this->buildGetSetter($field->getName(), $field->getType()) . PHP_EOL;
+        }
+
+        $name = ucfirst($name);
+
+        $entity = <<<E
+<?php
+{$namespace}
+class {$name}
+{
+    {$property}
+    {$methods}
+}
+E;
+
+        file_put_contents($this->dir . '/' . $name . '.php', $entity);
+    }
+
+    protected function buildProperty($name, $type = '')
+    {
+        if (strpos($name, '_')) {
+            $arr = explode('_', $name);
+            $name = array_shift($arr);
+            foreach ($arr as $value) {
+                $name .= ucfirst($value);
+            }
+        }
+
+        $type = $this->parseType($type);
+
+        return  <<<P
+    /**
+     * @var {$type}
+     */
+    protected \${$name};
+P;
+
+    }
+
+    protected function buildGetSetter($name, $type = '')
+    {
+        if (strpos($name, '_')) {
+            $arr = explode('_', $name);
+            $name = array_shift($arr);
+            foreach ($arr as $value) {
+                $name .= ucfirst($value);
+            }
+        }
+
+        $method = ucfirst($name);
+
+        $type = $this->parseType($type);
+
+        $getSetter = <<<GS
+    /**
+     * @param {$type} {$name}
+     * @return \$this
+     */
+    public function set{$method}(\${$name})
+    {
+        \$this->{$name} = \${$name};
+
+        return \$this;
+    }
+
+    /**
+     * @return {$type}
+     */
+    public function get{$method}()
+    {
+        return \$this->{$name};
+    }
+GS;
+
+        return $getSetter;
+    }
 }

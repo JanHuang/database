@@ -98,6 +98,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         );
 
         $createTableSql = $builder->buildSql();
-        print_r($createTableSql);
+
+        $builder->buildEntity((__DIR__ . '/../Entity'));
     }
 }
