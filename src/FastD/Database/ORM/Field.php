@@ -67,7 +67,12 @@ class Field
     protected $notnull = true;
 
     /**
-     * @param array $field
+     * @var string
+     */
+    protected $mapName;
+
+    /**
+     * @param array  $field
      * @param string $name
      */
     public function __construct(array $field, $name = '')
@@ -87,7 +92,7 @@ class Field
         $this->unsigned = isset($field['unsigned']) ? $field['unsigned'] : false;
 
         $this->index = isset($field['index']) ? $field['index'] : false;
-        
+
         $this->notnull = isset($field['notnull']) ? $field['notnull'] : true;
     }
 
@@ -163,8 +168,22 @@ class Field
         return $this->notnull;
     }
 
+    /**
+     * @return string
+     */
+    public function getMapName()
+    {
+        return $this->mapName;
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function parseName($name)
     {
+        $this->mapName = $name;
+
         if (empty($name)) {
 
         }

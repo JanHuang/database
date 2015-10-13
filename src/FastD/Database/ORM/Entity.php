@@ -183,6 +183,33 @@ GS;
             $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Repository;' . PHP_EOL;
         }
 
+        $primary = $this->struct->getPrimary();
+        $fields = $this->struct->getFields();
+
+        if (!empty($primary)) {
+            array_unshift($fields, $primary);
+        }
+
+        $maps = [];
+        $mapKeys = [];
+        foreach ($fields as $field) {
+            $mapName = $field->getMapName();
+            if (empty($mapName)) {
+                $mapName = $field->getName();
+            }
+            $mapKeys[] = $mapName;
+            $maps[] = <<<M
+        '{$mapName}' => [
+            'type' => '{$field->getType()}',
+            'name' => '{$field->getName()}',
+        ],
+M;
+        }
+
+        $mapKeys = '\''. implode("', '", $mapKeys) . '\'';
+
+        $maps = implode(PHP_EOL, $maps);
+
         $repository = <<<R
 <?php
 {$namespace}
@@ -190,7 +217,11 @@ use FastD\Database\Repository\Repository;
 
 class {$name}Repository extends Repository
 {
-    protected \$struct = [];
+    protected \$struct = [
+{$maps}
+    ];
+
+    protected \$keys = [{$mapKeys}];
 }
 R;
 
