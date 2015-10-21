@@ -33,7 +33,7 @@ class Repository
     protected $connection;
 
     /**
-     * @var Entity
+     * @var string
      */
     protected $entity;
 
@@ -181,9 +181,17 @@ class Repository
         return $this->connection->pagination($this->getTable(), $page, $showList, $showPage, $lastId);
     }
 
-    public function persist(EntityAbstract $entityAbstract)
+    /**
+     * Insert、Update、Delete or IMPORTQ operation.
+     * It's return entity.
+     * Get information from this param entity.
+     *
+     * @param $entity
+     */
+    public function persist(&$entity)
     {
+        if (!($entity instanceof $this->entity)) {
 
-        $connection = $this->connection->table($entityAbstract->getTable());
+        }
     }
 }
