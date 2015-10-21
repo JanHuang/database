@@ -69,14 +69,6 @@ class Repository implements RepositoryInterface
     }
 
     /**
-     * @return Driver
-     */
-    public function getConnection()
-    {
-        return $this->connection;
-    }
-
-    /**
      * @param array $where
      * @param array $field
      * @return array|bool

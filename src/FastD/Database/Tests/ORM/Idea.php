@@ -29,7 +29,7 @@
  * $this->getConnection()->getRepository()->find(1);
  * 
  * Repository 相当于数据表
- * Entity 相当于数据航
+ * Entity 相当于数据行
  * Entity 里面的属性相当于数据列
  *
  */
