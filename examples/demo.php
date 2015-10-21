@@ -18,7 +18,18 @@
 
 include __DIR__ . '/../vendor/autoload.php';
 
-function createTable($db)
+$db = new \FastD\Database\Database([
+    'test' => [
+        'database_type' => 'mysql',
+        'database_user' => 'root',
+        'database_pwd'  => '123456',
+        'database_host' => '127.0.0.1',
+        'database_port' => 3306,
+        'database_name' => 'demo',
+    ]
+]);
+
+function createTable(\FastD\Database\Driver\Driver $driver)
 {
     $builder = new \FastD\Database\ORM\Mapper\Builder();
     $builder->addStruct([
@@ -28,16 +39,17 @@ function createTable($db)
         'cache' => '', // 默认值 Entity/cache/md5.php
         'engine' => 'innodb', // 默认innodb
         'charset' => 'utf8', // 默认utf8
-        'primary' => [
-            'name' => 'id', // 默认值 name 拆分
-            'type' => 'int',
-            'length' => 10,
-            'default' => 0,
-            'comment' => '',
-            'increment' => 10, // 起始值
-            'unsigned' => true, // 默认false
-        ],
         'fields' => [
+            'id' => [
+                'name' => 'id', // 默认值 name 拆分
+                'type' => 'int',
+                'length' => 10,
+                'default' => 0,
+                'comment' => '',
+                'increment' => 10, // 起始值
+                'unsigned' => true, // 默认false
+                'primary' => true
+            ],
             'nickname' => [
                 'name' => 'nickname',
                 'type' => 'varchar',
@@ -59,8 +71,16 @@ function createTable($db)
             ],
         ]
     ]);
+
+    $result = [];
+
+    foreach ($builder->buildSql() as $sql) {
+        $result[] = $driver->createQuery($sql)->getQuery()->getQueryString();
+    }
+
+    return $result;
 }
 
+$createResult = createTable($db->getConnection('test'));
 
-
-
+var_dump($createResult);

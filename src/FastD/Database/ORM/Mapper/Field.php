@@ -64,6 +64,11 @@ class Field
     /**
      * @var bool
      */
+    protected $primary = false;
+
+    /**
+     * @var bool
+     */
     protected $notnull = true;
 
     /**
@@ -94,6 +99,16 @@ class Field
         $this->index        = isset($field['index']) ? $field['index'] : false;
 
         $this->notnull      = isset($field['notnull']) ? $field['notnull'] : true;
+
+        $this->primary      = (isset($field['primary']) && true === $field['primary']) ? true : false;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isPrimary()
+    {
+        return $this->primary;
     }
 
     /**

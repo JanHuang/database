@@ -92,7 +92,7 @@ class Struct
                 }
 
                 if (isset($value['primary']) && true === $value['primary']) {
-                    $this->primary = new Field($value);
+                    $this->primary = new Field($value, $key);
                 }
 
                 $this->fields[] = new Field($value, $key);
@@ -193,15 +193,14 @@ T;
 
         $indexKey = [];
         $fields = [];
-        if ($this->primary instanceof Field) {
-            $indexKey[] = "PRIMARY KEY (`{$this->primary->getName()}`)";
-            $fields[] = $this->primary->__toString();
-        }
 
         foreach ($this->getFields() as $field) {
-            if ('' != ($key = $field->getKey())) {
+            if ($field->isPrimary()) {
+                $indexKey[] = "PRIMARY KEY (`{$this->primary->getName()}`)";
+            } else if ('' != ($key = $field->getKey())) {
                 $indexKey[] = $field->getKey();
             }
+
             $fields[] = $field->__toString();
         }
 
