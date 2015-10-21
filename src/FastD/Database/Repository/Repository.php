@@ -20,7 +20,7 @@ use FastD\Database\Driver\Driver;
  *
  * @package FastD\Database\Repository
  */
-class Repository implements RepositoryInterface
+class Repository
 {
     /**
      * @var
