@@ -67,7 +67,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
             [
                 'table' => 'test',
                 'suffix' => '',
-                'preffix' => '',
+                'prefix' => '',
                 'cache' => '', // 默认值 Entity/cache/md5.php
                 'engine' => 'innodb', // 默认innodb
                 'charset' => 'utf8', // 默认utf8

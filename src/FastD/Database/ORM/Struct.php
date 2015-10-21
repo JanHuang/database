@@ -71,21 +71,21 @@ class Struct
      */
     public function __construct($struct)
     {
-        $this->struct = $struct;
+        $this->struct   = $struct;
 
-        $this->table = isset($struct['table']) ? $struct['table'] : null;
+        $this->table    = isset($struct['table']) ? $struct['table'] : null;
 
-        $this->suffix = isset($struct['suffix']) ? $struct['suffix'] : null;
+        $this->suffix   = isset($struct['suffix']) ? $struct['suffix'] : null;
 
-        $this->prefix = isset($struct['prefix']) ? $struct['prefix'] : null;
+        $this->prefix   = isset($struct['prefix']) ? $struct['prefix'] : null;
 
-        $this->cache = isset($struct['cache']) ? $struct['cache'] : null;
+        $this->cache    = isset($struct['cache']) ? $struct['cache'] : null;
 
-        $this->engine = isset($struct['engine']) ? $struct['engine'] : null;
+        $this->engine   = isset($struct['engine']) ? $struct['engine'] : null;
 
-        $this->charset = isset($struct['charset']) ? $struct['charset'] : null;
+        $this->charset  = isset($struct['charset']) ? $struct['charset'] : null;
 
-        $this->primary = isset($struct['primary']) ? new Field($struct['primary'], 'primary') : null;
+        $this->primary  = isset($struct['primary']) ? new Field($struct['primary'], 'primary') : null;
 
         if (isset($struct['fields']) && is_array($struct['fields'])) {
             foreach ($struct['fields'] as $key => $value) {
