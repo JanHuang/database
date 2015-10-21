@@ -14,8 +14,16 @@
 
 namespace FastD\Database\ORM\Mapper;
 
+/**
+ * Class Builder
+ *
+ * @package FastD\Database\ORM\Mapper
+ */
 class Builder
 {
+    /**
+     * @var array
+     */
     protected $structs = [];
 
     /**
@@ -26,6 +34,10 @@ class Builder
         return $this->structs;
     }
 
+    /**
+     * @param array $structs
+     * @return $this
+     */
     public function addStruct(array $structs)
     {
         $this->structs[] = new Struct($structs);
@@ -33,6 +45,10 @@ class Builder
         return $this;
     }
 
+    /**
+     * @param array $strusts
+     * @return $this
+     */
     public function setStruct(array $strusts)
     {
         foreach ($strusts as $strust) {
@@ -45,17 +61,24 @@ class Builder
     public function checkTableStatus()
     {}
 
+    /**
+     * @return array
+     */
     public function buildSql()
     {
         $sql = [];
 
         foreach ($this->getSturct() as $struct) {
-            $sql[$struct->getTable()] = $struct->makeStructSQL();
+            $sql[$struct->getTable()] = $struct->makestructsQL();
         }
 
         return $sql;
     }
 
+    /**
+     * @param        $dir
+     * @param string $namespace
+     */
     public function buildEntity($dir, $namespace = '')
     {
         foreach ($this->getSturct() as $struct) {
