@@ -2,7 +2,7 @@
 
 namespace Test\Repository;
 
-use FastD\Database\Repository\Repository;
+use FastD\Database\ORM\Repository\Repository;
 
 class TestRepository extends Repository
 {

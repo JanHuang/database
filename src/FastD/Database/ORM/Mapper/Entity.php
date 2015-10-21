@@ -176,7 +176,7 @@ GS;
         return $getSetter;
     }
 
-    protected function buildRepository($namespace, $name)
+    protected function buildRepository($name, $namespace = '')
     {
         if (!empty($namespace)) {
             $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Repository;' . PHP_EOL;
@@ -212,7 +212,7 @@ M;
         $repository = <<<R
 <?php
 {$namespace}
-use FastD\Database\Repository\Repository;
+use FastD\Database\ORM\Repository\Repository;
 
 class {$name}Repository extends Repository
 {
