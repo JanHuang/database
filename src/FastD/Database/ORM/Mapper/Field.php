@@ -12,7 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\ORM;
+namespace FastD\Database\ORM\Mapper;
 
 /**
  * Class Field
@@ -77,23 +77,23 @@ class Field
      */
     public function __construct(array $field, $name = '')
     {
-        $this->name = isset($field['name']) ? $field['name'] : $this->parseName($name);
+        $this->name         = isset($field['name']) ? $field['name'] : $this->parseName($name);
 
-        $this->type = isset($field['type']) ? $field['type'] : null;
+        $this->type         = isset($field['type']) ? $field['type'] : null;
 
-        $this->length = isset($field['length']) ? $field['length'] : null;
+        $this->length       = isset($field['length']) ? $field['length'] : null;
 
-        $this->default = isset($field['default']) ? $field['default'] : '';
+        $this->default      = isset($field['default']) ? $field['default'] : '';
 
-        $this->comment = isset($field['comment']) ? $field['comment'] : '';
+        $this->comment      = isset($field['comment']) ? $field['comment'] : '';
 
-        $this->increment = isset($field['increment']) ? $field['increment'] : 1;
+        $this->increment    = isset($field['increment']) ? $field['increment'] : 1;
 
-        $this->unsigned = isset($field['unsigned']) ? $field['unsigned'] : false;
+        $this->unsigned     = isset($field['unsigned']) ? $field['unsigned'] : false;
 
-        $this->index = isset($field['index']) ? $field['index'] : false;
+        $this->index        = isset($field['index']) ? $field['index'] : false;
 
-        $this->notnull = isset($field['notnull']) ? $field['notnull'] : true;
+        $this->notnull      = isset($field['notnull']) ? $field['notnull'] : true;
     }
 
     /**

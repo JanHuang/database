@@ -14,7 +14,7 @@
 
 namespace FastD\Database\Tests\ORM;
 
-use FastD\Database\ORM\Builder;
+use FastD\Database\ORM\Mapper\Builder;
 
 class BuilderTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,7 +26,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
             [
                 'table' => 'demo',
                 'suffix' => '',
-                'preffix' => '',
+                'prefix' => '',
                 'cache' => '', // 默认值 Entity/cache/md5.php
                 'engine' => 'innodb', // 默认innodb
                 'charset' => 'utf8', // 默认utf8

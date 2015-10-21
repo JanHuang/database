@@ -12,7 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\ORM;
+namespace FastD\Database\ORM\Mapper;
 
 class Entity
 {
@@ -56,8 +56,12 @@ class Entity
 
         $property = '';
         $methods = '';
+        $fields = $this->struct->getFields();
+        if (null !== $this->struct->getPrimary()) {
+            array_unshift($fields, $this->struct->getPrimary());
+        }
 
-        foreach ($this->struct->getFields() as $field) {
+        foreach ($fields as $field) {
             $property .= PHP_EOL . $this->buildProperty($field->getName(), $field->getType()) . PHP_EOL;
             $methods .= PHP_EOL . $this->buildGetSetter($field->getName(), $field->getType()) . PHP_EOL;
         }
@@ -104,16 +108,11 @@ E;
         return <<<C
 
     /**
-     * @var int
-     */
-    protected \$id;
-
-    /**
      * @param int \$id
      */
     public function __construct(\$id = null)
     {
-        \$this->primary = \$id;
+        \$this->{$this->struct->getPrimary()->getName()} = \$id;
     }
 C;
     }
@@ -155,7 +154,7 @@ P;
 
         $getSetter = <<<GS
     /**
-     * @param {$type} {$name}
+     * @param {$type} \${$name}
      * @return \$this
      */
     public function set{$method}(\${$name})

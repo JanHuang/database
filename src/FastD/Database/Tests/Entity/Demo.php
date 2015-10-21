@@ -10,6 +10,11 @@ class Demo
     protected $repository = 'Demo\Repository\DemoRepository';
     
     /**
+     * @var int
+     */
+    protected $id;
+
+    /**
      * @var string
      */
     protected $nickname;
@@ -26,20 +31,34 @@ class Demo
 
     
     /**
-     * @var int
-     */
-    protected $id;
-
-    /**
      * @param int $id
      */
     public function __construct($id = null)
     {
-        $this->primary = $id;
+        $this->id = $id;
     }
     
     /**
-     * @param string nickname
+     * @param int $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $nickname
      * @return $this
      */
     public function setNickname($nickname)
@@ -58,7 +77,7 @@ class Demo
     }
 
     /**
-     * @param int categoryId
+     * @param int $categoryId
      * @return $this
      */
     public function setCategoryId($categoryId)
@@ -77,7 +96,7 @@ class Demo
     }
 
     /**
-     * @param string trueName
+     * @param string $trueName
      * @return $this
      */
     public function setTrueName($trueName)

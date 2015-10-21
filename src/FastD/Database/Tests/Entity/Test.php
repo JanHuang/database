@@ -27,7 +27,7 @@ class Test
     
     
     /**
-     * @param string nickname
+     * @param string $nickname
      * @return $this
      */
     public function setNickname($nickname)
@@ -46,7 +46,7 @@ class Test
     }
 
     /**
-     * @param int categoryId
+     * @param int $categoryId
      * @return $this
      */
     public function setCategoryId($categoryId)
@@ -65,7 +65,7 @@ class Test
     }
 
     /**
-     * @param string trueName
+     * @param string $trueName
      * @return $this
      */
     public function setTrueName($trueName)
