@@ -78,9 +78,19 @@ function createTable(\FastD\Database\Driver\Driver $driver)
         $result[] = $driver->createQuery($sql)->getQuery()->getQueryString();
     }
 
-    return $result;
+    return createMapper($builder, $driver);
 }
 
-$createResult = createTable($db->getConnection('test'));
+function createMapper(\FastD\Database\ORM\Mapper\Builder $builder, \FastD\Database\Driver\Driver $driver)
+{
+    $builder->buildEntity('./', 'Examples\\');
 
-var_dump($createResult);
+    return true;
+}
+
+$connection = $db->getConnection('test');
+
+$createResult = createTable($connection);
+
+
+

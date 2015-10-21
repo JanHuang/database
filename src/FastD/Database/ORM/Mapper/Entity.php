@@ -49,9 +49,9 @@ class Entity
     public function buildEntity($name)
     {
         $namespace = '';
-        if (false !== ($index = strpos($name, '\\'))) {
-            $name = substr($name, $index + 1);
+        if (false !== ($index = strrpos($name, '\\'))) {
             $namespace = ucfirst(substr($name, 0, $index));
+            $name = substr($name, $index + 1);
         }
 
         $property = '';
@@ -67,7 +67,7 @@ class Entity
         $name = ucfirst($name);
 
         $repository = " = '{$namespace}\\Repository\\{$name}Repository'";
-        $this->buildRepository($namespace, $name);
+        $this->buildRepository($name, $namespace);
 
         if (!empty($namespace)) {
             $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Entity;' . PHP_EOL;
@@ -178,16 +178,9 @@ GS;
             $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Repository;' . PHP_EOL;
         }
 
-        $primary = $this->struct->getPrimary();
-        $fields = $this->struct->getFields();
-
-        if (!empty($primary)) {
-            array_unshift($fields, $primary);
-        }
-
         $maps = [];
         $mapKeys = [];
-        foreach ($fields as $field) {
+        foreach ($this->struct->getFields() as $field) {
             $mapName = $field->getMapName();
             if (empty($mapName)) {
                 $mapName = $field->getName();
