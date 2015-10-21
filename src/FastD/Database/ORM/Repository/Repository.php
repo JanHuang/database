@@ -11,7 +11,7 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace FastD\Database\Repository;
+namespace FastD\Database\ORM\Repository;
 
 use FastD\Database\Driver\Driver;
 
