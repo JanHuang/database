@@ -56,12 +56,8 @@ class Entity
 
         $property = '';
         $methods = '';
-        $fields = $this->struct->getFields();
-        if (null !== $this->struct->getPrimary()) {
-            array_unshift($fields, $this->struct->getPrimary());
-        }
 
-        foreach ($fields as $field) {
+        foreach ($this->struct->getFields() as $field) {
             $property .= PHP_EOL . $this->buildProperty($field->getName(), $field->getType()) . PHP_EOL;
             $methods .= PHP_EOL . $this->buildGetSetter($field->getName(), $field->getType()) . PHP_EOL;
         }

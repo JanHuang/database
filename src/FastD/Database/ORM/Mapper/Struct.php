@@ -85,12 +85,14 @@ class Struct
 
         $this->charset  = isset($struct['charset']) ? $struct['charset'] : null;
 
-        $this->primary  = isset($struct['primary']) ? new Field($struct['primary'], 'primary') : null;
-
         if (isset($struct['fields']) && is_array($struct['fields'])) {
             foreach ($struct['fields'] as $key => $value) {
                 if (!is_array($value)) {
                     break;
+                }
+
+                if (isset($value['primary']) && true === $value['primary']) {
+                    $this->primary = new Field($value);
                 }
 
                 $this->fields[] = new Field($value, $key);

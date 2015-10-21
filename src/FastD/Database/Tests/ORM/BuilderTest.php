@@ -30,16 +30,17 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
                 'cache' => '', // 默认值 Entity/cache/md5.php
                 'engine' => 'innodb', // 默认innodb
                 'charset' => 'utf8', // 默认utf8
-                'primary' => [
-                    'name' => 'id', // 默认值 name 拆分
-                    'type' => 'int',
-                    'length' => 10,
-                    'default' => 0,
-                    'comment' => '',
-                    'increment' => 10, // 起始值
-                    'unsigned' => true, // 默认false
-                ],
                 'fields' => [
+                    'id' => [
+                        'name' => 'id', // 默认值 name 拆分
+                        'type' => 'int',
+                        'length' => 10,
+                        'default' => 0,
+                        'comment' => '',
+                        'increment' => 10, // 起始值
+                        'unsigned' => true, // 默认false
+                        'primary' => true,
+                    ],
                     'nickname' => [
                         'name' => 'nickname',
                         'type' => 'varchar',

@@ -11,6 +11,10 @@ class DemoRepository extends Repository
             'type' => 'int',
             'name' => 'id',
         ],
+        'id' => [
+            'type' => 'int',
+            'name' => 'id',
+        ],
         'nickname' => [
             'type' => 'varchar',
             'name' => 'nickname',
@@ -25,5 +29,5 @@ class DemoRepository extends Repository
         ],
     ];
 
-    protected $keys = ['id', 'nickname', 'category_id', 'true_name'];
+    protected $keys = ['id', 'id', 'nickname', 'category_id', 'true_name'];
 }
