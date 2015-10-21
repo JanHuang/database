@@ -92,5 +92,11 @@ $connection = $db->getConnection('test');
 
 $createResult = createTable($connection);
 
+$demoRepository = $connection->getRepository('Examples:Repository:Demo');
 
+echo '<pre>';
+
+print_r($demoRepository);
+
+print_r(new \Examples\Entity\Demo());
 
