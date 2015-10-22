@@ -166,7 +166,6 @@ class Repository extends ORM
         $data = [];
 
         foreach ($this->fields as $name => $filed) {
-
             $method = 'get' . ucfirst($name);
             if (null === ($value = $entity->$method())) {
                 continue;
@@ -181,6 +180,13 @@ class Repository extends ORM
         }
 
         $this->update($data, ['id' => $entity->getId()]);
+    }
+
+    public function remove(&$entity)
+    {
+        if (!($entity instanceof $this->entity)) {
+            throw new \InvalidArgumentException(sprintf('The parameters type should be use "%s"', $this->entity));
+        }
     }
 
     /**

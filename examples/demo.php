@@ -94,10 +94,13 @@ $createResult = createTable($connection);
 
 $demoRepository = $connection->getRepository('Examples:Repository:Demo');
 
-$demo = new \Examples\Entity\Demo();
-$demo->setNickname('janhuang2');
+$demo = new \Examples\Entity\Demo(1);
+$demo->setNickname('janhuang' . mt_rand());
+$demo->setCatId(mt_rand());
+$demo->setTrueName(mt_rand());
 
 $demoRepository->persist($demo); // update, insert or delete
 
 echo '<pre>';
 print_r($demo);
+print_r($demoRepository->getErrors());
