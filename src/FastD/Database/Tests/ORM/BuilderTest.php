@@ -14,7 +14,7 @@
 
 namespace FastD\Database\Tests\ORM;
 
-use FastD\Database\ORM\Mapper\Builder;
+use FastD\Database\ORM\Generator\Builder;
 
 class BuilderTest extends \PHPUnit_Framework_TestCase
 {

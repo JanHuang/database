@@ -12,7 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\ORM\Mapper;
+namespace FastD\Database\ORM\Generator;
 
 /**
  * Class Field

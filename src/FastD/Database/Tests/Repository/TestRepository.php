@@ -6,6 +6,8 @@ use FastD\Database\ORM\Repository;
 
 class TestRepository extends Repository
 {
+    protected $table = 'test';
+
     protected $fields = [
         'nickname' => [
             'type' => 'varchar',
@@ -21,7 +23,7 @@ class TestRepository extends Repository
         ],
     ];
 
-    protected $keys = ['nickname', 'catId', 'trueName'];
+    protected $keys = ['nickname' => 'nickname','catId' => 'category_id','trueName' => 'true_name'];
 
     protected $entity = 'Deme\Entity\Test';
 }

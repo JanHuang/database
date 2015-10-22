@@ -174,6 +174,18 @@ class Driver
     /**
      * @param       $table
      * @param array $where
+     * @return false|int
+     */
+    public function remove($table, array $where)
+    {
+        $sql = $this->queryContext->table($table)->where($where)->delete()->getSql();
+
+        return $this->connection->prepare($sql)->getQuery()->getAffectedRow();
+    }
+
+    /**
+     * @param       $table
+     * @param array $where
      * @return array|bool|mixed
      */
     public function count($table, array $where = [])

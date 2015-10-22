@@ -2,6 +2,7 @@
 
 namespace Examples\Repository;
 
+use Examples\Entity\Demo;
 use FastD\Database\ORM\Repository;
 
 class DemoRepository extends Repository
@@ -30,4 +31,10 @@ class DemoRepository extends Repository
     protected $keys = ['id' => 'id','nickname' => 'nickname','catId' => 'category_id','trueName' => 'true_name'];
 
     protected $entity = 'Examples\Entity\Demo';
+
+    public function persist(Demo $demo)
+    {}
+
+    public function remove(Demo $demo)
+    {}
 }

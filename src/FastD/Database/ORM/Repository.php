@@ -14,14 +14,13 @@
 namespace FastD\Database\ORM;
 
 use FastD\Database\Driver\Driver;
-use FastD\Database\ORM\Mapping as ORM;
 
 /**
  * Class Repository
  *
  * @package FastD\Database\Repository
  */
-class Repository extends ORM
+class Repository
 {
     /**
      * @var
@@ -83,20 +82,7 @@ class Repository extends ORM
      */
     public function find(array $where = [], array $field = [])
     {
-        $row = $this->connection->find($this->getTable(), $where, $field);
-
-        if (false === $row) {
-            return false;
-        }
-
-        $entity = new $this->entity();
-
-        foreach ($this->keys as $name => $field) {
-            $method = 'set' . ucfirst($name);
-            $entity->$method(isset($row[$field]) ? $row[$field] : null);
-        }
-
-        return $entity;
+        return $this->connection->find($this->getTable(), $where, $field);
     }
 
     /**
@@ -108,26 +94,7 @@ class Repository extends ORM
      */
     public function findAll(array $where = [],  array $field = [])
     {
-        $list = $this->connection->findAll($this->getTable(), $where, $field);
-
-        if (false === $list) {
-            return false;
-        }
-
-        $entities = [];
-
-        foreach ($list as $row) {
-            $entity = new $this->entity();
-
-            foreach ($this->keys as $name => $field) {
-                $method = 'set' . ucfirst($name);
-                $entity->$method(isset($row[$field]) ? $row[$field] : null);
-            }
-
-            $entities[] = $entity;
-        }
-
-        return $entities;
+        return $this->connection->findAll($this->getTable(), $where, $field);
     }
 
     /**
@@ -176,49 +143,6 @@ class Repository extends ORM
     public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
         return $this->connection->pagination($this->getTable(), $page, $showList, $showPage, $lastId);
-    }
-
-    /**
-     * Encapsulates a simple layer of ORM.
-     *
-     * Insert、Update、Delete or IMPORTQ operation.
-     * It's return entity.
-     * Get information from this param entity.
-     *
-     * @param object $entity The found object
-     * @return void
-     * @throws \InvalidArgumentException
-     */
-    public function persist(&$entity)
-    {
-        if (!($entity instanceof $this->entity)) {
-            throw new \InvalidArgumentException(sprintf('The parameters type should be use "%s"', $this->entity));
-        }
-
-        $data = [];
-
-        foreach ($this->fields as $name => $filed) {
-            $method = 'get' . ucfirst($name);
-            if (null === ($value = $entity->$method())) {
-                continue;
-            }
-
-            $data[$filed['name']] = $entity->$method();
-        }
-
-        if (null === $entity->getId()) {
-            $entity->setId($this->insert($data));
-            return;
-        }
-
-        $this->update($data, ['id' => $entity->getId()]);
-    }
-
-    public function remove(&$entity)
-    {
-        if (!($entity instanceof $this->entity)) {
-            throw new \InvalidArgumentException(sprintf('The parameters type should be use "%s"', $this->entity));
-        }
     }
 
     /**

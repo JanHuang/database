@@ -17,7 +17,7 @@ class Test
     /**
      * @var int
      */
-    protected $categoryId;
+    protected $catId;
 
     /**
      * @var string
@@ -46,12 +46,12 @@ class Test
     }
 
     /**
-     * @param int $categoryId
+     * @param int $catId
      * @return $this
      */
-    public function setCategoryId($categoryId)
+    public function setCatId($catId)
     {
-        $this->categoryId = $categoryId;
+        $this->catId = $catId;
 
         return $this;
     }
@@ -59,9 +59,9 @@ class Test
     /**
      * @return int
      */
-    public function getCategoryId()
+    public function getCatId()
     {
-        return $this->categoryId;
+        return $this->catId;
     }
 
     /**
