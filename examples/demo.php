@@ -94,6 +94,21 @@ $createResult = createTable($connection);
 
 $demoRepository = $connection->getRepository('Examples:Repository:Demo');
 
+// insert
+//$demo = new \Examples\Entity\Demo();
+//$demo->setCatId(mt_rand());
+//$demo->setNickname('jan' . mt_rand());
+//$demo->setTrueName('janhuang' . mt_rand());
+//$demoRepository->persist($demo);
+
+// update entity
+//$demo = new \Examples\Entity\Demo(1);
+//$demo->setCatId(10);
+//$demo->setTrueName('janhuang');
+//$demo->setTrueName('jan');
+//$demoRepository->persist($demo);
+
+// get entity
 $demo = $demoRepository->find(['id' => 1]);
 echo '<pre>';
 print_r($demo->getId());
