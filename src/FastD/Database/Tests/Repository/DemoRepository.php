@@ -1,16 +1,12 @@
 <?php
 
-namespace Demo\Repository;
+namespace Deme\Repository;
 
-use FastD\Database\ORM\Repository\Repository;
+use FastD\Database\ORM\Repository;
 
 class DemoRepository extends Repository
 {
     protected $struct = [
-        'id' => [
-            'type' => 'int',
-            'name' => 'id',
-        ],
         'id' => [
             'type' => 'int',
             'name' => 'id',
@@ -29,5 +25,5 @@ class DemoRepository extends Repository
         ],
     ];
 
-    protected $keys = ['id', 'id', 'nickname', 'category_id', 'true_name'];
+    protected $keys = ['id', 'nickname', 'category_id', 'true_name'];
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace Demo\Entity;
+namespace Deme\Entity;
 
 class Demo
 {
     /**
      * @var string|null
      */
-    protected $repository = 'Demo\Repository\DemoRepository';
+    protected $repository = 'Deme\Repository\DemoRepository';
     
     /**
      * @var int

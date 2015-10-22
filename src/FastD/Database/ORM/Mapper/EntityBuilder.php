@@ -14,13 +14,13 @@
 
 namespace FastD\Database\ORM\Mapper;
 
-class Entity
+class EntityBuilder
 {
     protected $dir;
 
     protected $struct;
 
-    public function __construct(Struct $struct, $dir = '')
+    public function __construct(StructBuilder $struct, $dir = '')
     {
         $this->struct = $struct;
 
@@ -201,7 +201,7 @@ M;
         $repository = <<<R
 <?php
 {$namespace}
-use FastD\Database\ORM\Repository\Repository;
+use FastD\Database\ORM\Repository;
 
 class {$name}Repository extends Repository
 {

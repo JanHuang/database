@@ -27,7 +27,7 @@ class Builder
     protected $structs = [];
 
     /**
-     * @return Struct[]
+     * @return StructBuilder[]
      */
     public function getSturct()
     {
@@ -40,7 +40,7 @@ class Builder
      */
     public function addStruct(array $structs)
     {
-        $this->structs[] = new Struct($structs);
+        $this->structs[] = new StructBuilder($structs);
 
         return $this;
     }
@@ -82,7 +82,7 @@ class Builder
     public function buildEntity($dir, $namespace = '')
     {
         foreach ($this->getSturct() as $struct) {
-            $entity = new Entity($struct, $dir);
+            $entity = new EntityBuilder($struct, $dir);
             $entity->buildEntity($namespace . $struct->getTable());
         }
     }

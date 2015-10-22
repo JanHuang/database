@@ -1,8 +1,8 @@
 <?php
 
-namespace Test\Repository;
+namespace Deme\Repository;
 
-use FastD\Database\ORM\Repository\Repository;
+use FastD\Database\ORM\Repository;
 
 class TestRepository extends Repository
 {

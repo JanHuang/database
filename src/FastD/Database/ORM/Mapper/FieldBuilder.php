@@ -19,7 +19,7 @@ namespace FastD\Database\ORM\Mapper;
  *
  * @package FastD\Database\ORM
  */
-class Field
+class FieldBuilder
 {
     /**
      * @var null

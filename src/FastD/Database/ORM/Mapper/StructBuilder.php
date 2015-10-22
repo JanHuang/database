@@ -19,7 +19,7 @@ namespace FastD\Database\ORM\Mapper;
  *
  * @package FastD\Database\ORM
  */
-class Struct
+class StructBuilder
 {
     /**
      * @var array
@@ -57,12 +57,12 @@ class Struct
     protected $charset;
 
     /**
-     * @var Field|null
+     * @var FieldBuilder|null
      */
     protected $primary;
 
     /**
-     * @var Field[]|array
+     * @var FieldBuilder[]|array
      */
     protected $fileds = [];
 
@@ -92,10 +92,10 @@ class Struct
                 }
 
                 if (isset($value['primary']) && true === $value['primary']) {
-                    $this->primary = new Field($value, $key);
+                    $this->primary = new FieldBuilder($value, $key);
                 }
 
-                $this->fields[] = new Field($value, $key);
+                $this->fields[] = new FieldBuilder($value, $key);
             }
         }
     }
@@ -117,7 +117,7 @@ class Struct
     }
 
     /**
-     * @return Field[]
+     * @return FieldBuilder[]
      */
     public function getFields()
     {
@@ -125,7 +125,7 @@ class Struct
     }
 
     /**
-     * @return array|Field[]
+     * @return array|FieldBuilder[]
      */
     public function getFileds()
     {
@@ -133,7 +133,7 @@ class Struct
     }
 
     /**
-     * @return Field|null
+     * @return FieldBuilder|null
      */
     public function getPrimary()
     {
