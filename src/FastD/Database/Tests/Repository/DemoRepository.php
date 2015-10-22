@@ -6,7 +6,7 @@ use FastD\Database\ORM\Repository;
 
 class DemoRepository extends Repository
 {
-    protected $struct = [
+    protected $fields = [
         'id' => [
             'type' => 'int',
             'name' => 'id',
@@ -26,4 +26,8 @@ class DemoRepository extends Repository
     ];
 
     protected $keys = ['id', 'nickname', 'category_id', 'true_name'];
+
+    protected $entity = ' = '
+namespace Deme\Repository;
+\Entity\Demo'';
 }

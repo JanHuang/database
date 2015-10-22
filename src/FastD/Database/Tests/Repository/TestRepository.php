@@ -6,7 +6,7 @@ use FastD\Database\ORM\Repository;
 
 class TestRepository extends Repository
 {
-    protected $struct = [
+    protected $fields = [
         'nickname' => [
             'type' => 'varchar',
             'name' => 'nickname',
@@ -22,4 +22,8 @@ class TestRepository extends Repository
     ];
 
     protected $keys = ['nickname', 'category_id', 'true_name'];
+
+    protected $entity = ' = '
+namespace Deme\Repository;
+\Entity\Test'';
 }

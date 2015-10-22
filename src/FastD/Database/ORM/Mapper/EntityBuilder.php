@@ -66,7 +66,11 @@ class EntityBuilder
 
         $name = ucfirst($name);
 
-        $repository = " = '{$namespace}\\Repository\\{$name}Repository'";
+        $repository = " = '{$name}Repository'";
+        if (!empty($namespace)) {
+            $repository = " = '{$namespace}\\Repository\\{$name}Repository'";
+        }
+
         $this->buildRepository($name, $namespace);
 
         if (!empty($namespace)) {
@@ -174,7 +178,9 @@ GS;
 
     protected function buildRepository($name, $namespace = '')
     {
+        $entity = $name;
         if (!empty($namespace)) {
+            $entity = "{$namespace}\\Entity\\{$name}";
             $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Repository;' . PHP_EOL;
         }
 
@@ -205,11 +211,13 @@ use FastD\Database\ORM\Repository;
 
 class {$name}Repository extends Repository
 {
-    protected \$struct = [
+    protected \$fields = [
 {$maps}
     ];
 
     protected \$keys = [{$mapKeys}];
+
+    protected \$entity = '{$entity}';
 }
 R;
 
