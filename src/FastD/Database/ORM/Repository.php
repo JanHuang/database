@@ -83,7 +83,20 @@ class Repository extends ORM
      */
     public function find(array $where = [], array $field = [])
     {
-        return $this->connection->find($this->getTable(), $where, $field);
+        $row = $this->connection->find($this->getTable(), $where, $field);
+
+        if (false === $row) {
+            return false;
+        }
+
+        $entity = new $this->entity();
+
+        foreach ($this->keys as $name => $field) {
+            $method = 'set' . ucfirst($name);
+            $entity->$method(isset($row[$field]) ? $row[$field] : null);
+        }
+
+        return $entity;
     }
 
     /**
@@ -95,7 +108,26 @@ class Repository extends ORM
      */
     public function findAll(array $where = [],  array $field = [])
     {
-        return $this->connection->findAll($this->getTable(), $where, $field);
+        $list = $this->connection->findAll($this->getTable(), $where, $field);
+
+        if (false === $list) {
+            return false;
+        }
+
+        $entities = [];
+
+        foreach ($list as $row) {
+            $entity = new $this->entity();
+
+            foreach ($this->keys as $name => $field) {
+                $method = 'set' . ucfirst($name);
+                $entity->$method(isset($row[$field]) ? $row[$field] : null);
+            }
+
+            $entities[] = $entity;
+        }
+
+        return $entities;
     }
 
     /**

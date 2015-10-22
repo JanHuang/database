@@ -27,7 +27,7 @@ class DemoRepository extends Repository
         ],
     ];
 
-    protected $keys = ['id', 'nickname', 'catId', 'trueName'];
+    protected $keys = ['id' => 'id','nickname' => 'nickname','catId' => 'category_id','trueName' => 'true_name'];
 
     protected $entity = 'Examples\Entity\Demo';
 }

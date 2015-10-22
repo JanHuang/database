@@ -191,7 +191,7 @@ GS;
             if (empty($mapName)) {
                 $mapName = $field->getName();
             }
-            $mapKeys[] = $mapName;
+            $mapKeys[] = "'" . $mapName . '\' => ' . "'" . $field->getName() . "'";
             $maps[] = <<<M
         '{$mapName}' => [
             'type' => '{$field->getType()}',
@@ -200,7 +200,7 @@ GS;
 M;
         }
 
-        $mapKeys = '\''. implode("', '", $mapKeys) . '\'';
+        $mapKeys = implode(',', $mapKeys);
 
         $maps = implode(PHP_EOL, $maps);
 
