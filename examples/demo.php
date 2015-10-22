@@ -31,7 +31,7 @@ $db = new \FastD\Database\Database([
 
 function createTable(\FastD\Database\Driver\Driver $driver)
 {
-    $builder = new \FastD\Database\ORM\Mapper\Builder();
+    $builder = new \FastD\Database\ORM\Generator\Builder();
     $builder->addStruct([
         'table' => 'demo',
         'suffix' => '',
@@ -81,7 +81,7 @@ function createTable(\FastD\Database\Driver\Driver $driver)
     return createMapper($builder);
 }
 
-function createMapper(\FastD\Database\ORM\Mapper\Builder $builder)
+function createMapper(\FastD\Database\ORM\Generator\Builder $builder)
 {
     $builder->buildEntity('./', 'Examples\\');
 
@@ -92,24 +92,28 @@ $connection = $db->getConnection('test');
 
 $createResult = createTable($connection);
 
-$demoRepository = $connection->getRepository('Examples:Repository:Demo');
+$demoRepository = new \Examples\Repository\DemoRepository($connection);
 
 // insert
-//$demo = new \Examples\Entity\Demo();
-//$demo->setCatId(mt_rand());
-//$demo->setNickname('jan' . mt_rand());
-//$demo->setTrueName('janhuang' . mt_rand());
-//$demoRepository->persist($demo);
+$demo = new \Examples\Entity\Demo();
+$demo->setCatId(mt_rand());
+$demo->setNickname('jan' . mt_rand());
+$demo->setTrueName('janhuang' . mt_rand());
+$demoRepository->save($demo);
 
 // update entity
-//$demo = new \Examples\Entity\Demo(1);
-//$demo->setCatId(10);
-//$demo->setTrueName('janhuang');
-//$demo->setTrueName('jan');
-//$demoRepository->persist($demo);
+$demo = new \Examples\Entity\Demo(1);
+$demo->setCatId(11);
+$demo->setTrueName('janhuang');
+$demo->setTrueName('jan');
+$demoRepository->save($demo);
+
+// remove
+$demo = new \Examples\Entity\Demo(15);
+$demoRepository->remove($demo);
 
 // get entity
 $demo = $demoRepository->find(['id' => 1]);
+
 echo '<pre>';
 print_r($demo->getId());
-print_r($demoRepository->findAll());
