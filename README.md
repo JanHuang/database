@@ -1,1 +1,8 @@
-#database 数据库驱动操作AR组件
+#FD database and simple ORM
+
+##Install 
+
+```
+composer require fastd/database [version]
+```
+
