@@ -204,6 +204,8 @@ M;
 
         $maps = implode(PHP_EOL, $maps);
 
+        $table = $this->struct->getPrefix() . $this->struct->getTable() . $this->struct->getSuffix();
+
         $repository = <<<R
 <?php
 {$namespace}
@@ -211,6 +213,8 @@ use FastD\Database\ORM\Repository;
 
 class {$name}Repository extends Repository
 {
+    protected \$table = '{$table}';
+
     protected \$fields = [
 {$maps}
     ];

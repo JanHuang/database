@@ -90,7 +90,6 @@ class StructBuilder
                 if (!is_array($value)) {
                     break;
                 }
-
                 if (isset($value['primary']) && true === $value['primary']) {
                     $this->primary = new FieldBuilder($value, $key);
                 }

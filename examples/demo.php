@@ -78,10 +78,10 @@ function createTable(\FastD\Database\Driver\Driver $driver)
         $result[] = $driver->createQuery($sql)->getQuery()->getQueryString();
     }
 
-    return createMapper($builder, $driver);
+    return createMapper($builder);
 }
 
-function createMapper(\FastD\Database\ORM\Mapper\Builder $builder, \FastD\Database\Driver\Driver $driver)
+function createMapper(\FastD\Database\ORM\Mapper\Builder $builder)
 {
     $builder->buildEntity('./', 'Examples\\');
 
@@ -90,13 +90,16 @@ function createMapper(\FastD\Database\ORM\Mapper\Builder $builder, \FastD\Databa
 
 $connection = $db->getConnection('test');
 
-$createResult = createTable($connection);
+//$createResult = createTable($connection);
 
 $demoRepository = $connection->getRepository('Examples:Repository:Demo');
 
-echo '<pre>';
+$demo = new \Examples\Entity\Demo();
+$demo->setNickname('janhuang');
+$demo->setCategoryId(1);
+$demo->setTrueName('家俊');
 
-print_r($demoRepository);
+$affected = $demoRepository->save($demo); // update, insert or delete
 
-print_r(new \Examples\Entity\Demo());
+$demoRepository->find();
 

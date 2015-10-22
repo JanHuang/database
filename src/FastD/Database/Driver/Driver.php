@@ -19,7 +19,7 @@ use FastD\Database\Connection\ConnectionInterface;
 use FastD\Database\Connection\Mysql\MysqlConnection;
 use FastD\Database\Pagination\QueryPagination;
 use FastD\Database\Query\QueryContext;
-use FastD\Database\Repository\Repository;
+use FastD\Database\ORM\Repository;
 
 /**
  * Class Driver
@@ -362,13 +362,13 @@ class Driver
             return $this->repositories[$name];
         }
         $repository = new $name($this);
-        if (null === $repository->getTable()) {
-            $repositoryArray = explode('\\', $name);
-            $defaultName = end($repositoryArray); unset($repositoryArray);
-            $defaultName = str_replace('Repository', '', $defaultName);
-            $defaultName = strtolower(trim(preg_replace('/([A-Z])/', '_$1', $defaultName), '_'));
-            $repository->setTable($this->config->getDatabasePrefix() . $defaultName . $this->config->getDatabaseSuffix());
-        }
+//        if (null === $repository->getTable()) {
+//            $repositoryArray = explode('\\', $name);
+//            $defaultName = end($repositoryArray); unset($repositoryArray);
+//            $defaultName = str_replace('Repository', '', $defaultName);
+//            $defaultName = strtolower(trim(preg_replace('/([A-Z])/', '_$1', $defaultName), '_'));
+//            $repository->setTable($this->config->getDatabasePrefix() . $defaultName . $this->config->getDatabaseSuffix());
+//        }
         $this->repositories[$name] = $repository;
         return $this->repositories[$name];
     }

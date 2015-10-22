@@ -15,19 +15,17 @@ class DemoRepository extends Repository
             'type' => 'varchar',
             'name' => 'nickname',
         ],
-        'category_id' => [
+        'catId' => [
             'type' => 'int',
             'name' => 'category_id',
         ],
-        'true_name' => [
+        'trueName' => [
             'type' => 'varchar',
             'name' => 'true_name',
         ],
     ];
 
-    protected $keys = ['id', 'nickname', 'category_id', 'true_name'];
+    protected $keys = ['id', 'nickname', 'catId', 'trueName'];
 
-    protected $entity = ' = '
-namespace Deme\Repository;
-\Entity\Demo'';
+    protected $entity = 'Deme\Entity\Demo';
 }

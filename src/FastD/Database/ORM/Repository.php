@@ -33,6 +33,16 @@ class Repository
     protected $connection;
 
     /**
+     * @var array
+     */
+    protected $fields;
+
+    /**
+     * @var array
+     */
+    protected $keys;
+
+    /**
      * @var string
      */
     protected $entity;
@@ -56,75 +66,35 @@ class Repository
     }
 
     /**
-     * Reset database table mapping related.
-     *
-     * @param string $table
-     * @return $this
+     * @return array
      */
-    public function setTable($table)
+    public function getFields()
     {
-        $this->table = $table;
-
-        return $this;
+        return null === $this->fields ? [] : $this->fields;
     }
 
     /**
+     * Fetch one row.
+     *
      * @param array $where
      * @param array $field
-     * @return array|bool
+     * @return object The found object.
      */
     public function find(array $where = [], array $field = [])
     {
-        if (!is_array($where)) {
-            $where = array('id' => $where);
-        }
-
-        $row = $this->connection->find($this->getTable(), $where, $field);
-
-        return null === $this->getFields() ? $row : $this->parseTableFieldsData($row, $this->getFields());
+        return $this->connection->find($this->getTable(), $where, $field);
     }
 
     /**
+     * Fetch all rows.
+     *
      * @param array $where
      * @param array|string $field
-     * @return array|bool
+     * @return object The found object.
      */
     public function findAll(array $where = [],  array $field = [])
     {
-        if (!is_array($where)) {
-            $where = array('id' => $where);
-        }
-
-        $list = $this->connection->findAll($this->getTable(), $where, $field);
-
-        if (null === $this->getFields()) {
-            return $list;
-        }
-
-        foreach ($list as $key => $value) {
-            $list[$key] = $this->parseTableFieldsData($value, $this->getFields());
-        }
-
-        return $list;
-    }
-
-    /**
-     * @param array $data
-     * @return int|bool
-     */
-    public function insert(array $data = array())
-    {
-        return $this->connection->insert($this->getTable(), $data);
-    }
-
-    /**
-     * @param array $data
-     * @param array $where
-     * @return int|bool
-     */
-    public function update(array $data = [], array $where = [])
-    {
-        return $this->connection->update($this->getTable(), $data, $where);
+        return $this->connection->findAll($this->getTable(), $where, $field);
     }
 
     /**
@@ -134,30 +104,6 @@ class Repository
     public function count(array $where = [])
     {
         return $this->connection->count($this->getTable(), $where);
-    }
-
-    /**
-     * @return array
-     */
-    public function getErrors()
-    {
-        return $this->connection->getErrors();
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastQuery()
-    {
-        return $this->connection->getQueryString();
-    }
-
-    /**
-     * @return array
-     */
-    public function getQueryLogs()
-    {
-        return $this->connection->getLogs();
     }
 
     /**
@@ -182,16 +128,69 @@ class Repository
     }
 
     /**
+     * Method persist alias.
+     *
+     * @param $entity
+     * @return void
+     */
+    public function save(&$entity)
+    {
+        $this->persist($entity);
+    }
+
+    /**
+     * Encapsulates a simple layer of ORM.
+     *
      * Insert、Update、Delete or IMPORTQ operation.
      * It's return entity.
      * Get information from this param entity.
      *
      * @param $entity
+     * @return void
+     * @throws \InvalidArgumentException
      */
     public function persist(&$entity)
     {
         if (!($entity instanceof $this->entity)) {
+            throw new \InvalidArgumentException(sprintf('The parameters type should be use "%s"', $this->entity));
+        }
+
+        $data = [];
+
+        foreach ($this->fields as $filed) {
 
         }
+
+
+    }
+
+    /**
+     * Return query errors.
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->connection->getErrors();
+    }
+
+    /**
+     * Return last query log.
+     *
+     * @return string
+     */
+    public function getLastQuery()
+    {
+        return $this->connection->getQueryString();
+    }
+
+    /**
+     * Return all query logs.
+     *
+     * @return array
+     */
+    public function getQueryLogs()
+    {
+        return $this->connection->getLogs();
     }
 }

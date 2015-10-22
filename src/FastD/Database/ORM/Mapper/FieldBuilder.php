@@ -101,6 +101,8 @@ class FieldBuilder
         $this->notnull      = isset($field['notnull']) ? $field['notnull'] : true;
 
         $this->primary      = (isset($field['primary']) && true === $field['primary']) ? true : false;
+
+        $this->mapName      = $name;
     }
 
     /**
@@ -197,11 +199,10 @@ class FieldBuilder
      */
     public function parseName($name)
     {
-        $this->mapName = $name;
-
-        if (empty($name)) {
-
+        if (!empty($name)) {
+            $name = strtolower(trim(preg_replace('/([A-Z])/', '_$1', $name), '_'));
         }
+
         return $name;
     }
 

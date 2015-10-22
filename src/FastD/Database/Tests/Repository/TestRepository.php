@@ -11,19 +11,17 @@ class TestRepository extends Repository
             'type' => 'varchar',
             'name' => 'nickname',
         ],
-        'category_id' => [
+        'catId' => [
             'type' => 'int',
             'name' => 'category_id',
         ],
-        'true_name' => [
+        'trueName' => [
             'type' => 'varchar',
             'name' => 'true_name',
         ],
     ];
 
-    protected $keys = ['nickname', 'category_id', 'true_name'];
+    protected $keys = ['nickname', 'catId', 'trueName'];
 
-    protected $entity = ' = '
-namespace Deme\Repository;
-\Entity\Test'';
+    protected $entity = 'Deme\Entity\Test';
 }
