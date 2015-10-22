@@ -90,16 +90,14 @@ function createMapper(\FastD\Database\ORM\Mapper\Builder $builder)
 
 $connection = $db->getConnection('test');
 
-//$createResult = createTable($connection);
+$createResult = createTable($connection);
 
 $demoRepository = $connection->getRepository('Examples:Repository:Demo');
 
 $demo = new \Examples\Entity\Demo();
-$demo->setNickname('janhuang');
-$demo->setCategoryId(1);
-$demo->setTrueName('家俊');
+$demo->setNickname('janhuang2');
 
-$affected = $demoRepository->save($demo); // update, insert or delete
+$demoRepository->persist($demo); // update, insert or delete
 
-$demoRepository->find();
-
+echo '<pre>';
+print_r($demo);

@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: janhuang
  * Date: 15/10/22
- * Time: 上午10:03
+ * Time: 下午12:08
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -14,9 +14,7 @@
 
 namespace FastD\Database\ORM;
 
-use FastD\Database\ORM\Mapping as ORM;
-
-class Entity extends ORM
+class Mapping
 {
 
 }

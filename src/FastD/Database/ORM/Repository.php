@@ -14,23 +14,19 @@
 namespace FastD\Database\ORM;
 
 use FastD\Database\Driver\Driver;
+use FastD\Database\ORM\Mapping as ORM;
 
 /**
  * Class Repository
  *
  * @package FastD\Database\Repository
  */
-class Repository
+class Repository extends ORM
 {
     /**
      * @var
      */
     protected $table;
-
-    /**
-     * @var Driver
-     */
-    protected $connection;
 
     /**
      * @var array
@@ -46,6 +42,11 @@ class Repository
      * @var string
      */
     protected $entity;
+
+    /**
+     * @var Driver
+     */
+    protected $connection;
 
     /**
      * @param Driver $driver
@@ -70,7 +71,7 @@ class Repository
      */
     public function getFields()
     {
-        return null === $this->fields ? [] : $this->fields;
+        return $this->fields;
     }
 
     /**
@@ -95,6 +96,24 @@ class Repository
     public function findAll(array $where = [],  array $field = [])
     {
         return $this->connection->findAll($this->getTable(), $where, $field);
+    }
+
+    /**
+     * @param array $data
+     * @return int|bool
+     */
+    public function insert(array $data = array())
+    {
+        return $this->connection->insert($this->getTable(), $data);
+    }
+    /**
+     * @param array $data
+     * @param array $where
+     * @return int|bool
+     */
+    public function update(array $data = [], array $where = [])
+    {
+        return $this->connection->update($this->getTable(), $data, $where);
     }
 
     /**
@@ -128,24 +147,13 @@ class Repository
     }
 
     /**
-     * Method persist alias.
-     *
-     * @param $entity
-     * @return void
-     */
-    public function save(&$entity)
-    {
-        $this->persist($entity);
-    }
-
-    /**
      * Encapsulates a simple layer of ORM.
      *
      * Insert、Update、Delete or IMPORTQ operation.
      * It's return entity.
      * Get information from this param entity.
      *
-     * @param $entity
+     * @param object $entity The found object
      * @return void
      * @throws \InvalidArgumentException
      */
@@ -157,11 +165,22 @@ class Repository
 
         $data = [];
 
-        foreach ($this->fields as $filed) {
+        foreach ($this->fields as $name => $filed) {
 
+            $method = 'get' . ucfirst($name);
+            if (null === ($value = $entity->$method())) {
+                continue;
+            }
+
+            $data[$filed['name']] = $entity->$method();
         }
 
+        if (null === $entity->getId()) {
+            $entity->setId($this->insert($data));
+            return;
+        }
 
+        $this->update($data, ['id' => $entity->getId()]);
     }
 
     /**

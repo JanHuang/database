@@ -58,8 +58,8 @@ class EntityBuilder
         $methods = '';
 
         foreach ($this->struct->getFields() as $field) {
-            $property .= PHP_EOL . $this->buildProperty($field->getName(), $field->getType()) . PHP_EOL;
-            $methods .= PHP_EOL . $this->buildGetSetter($field->getName(), $field->getType()) . PHP_EOL;
+            $property .= PHP_EOL . $this->buildProperty($field->getMapName(), $field->getType()) . PHP_EOL;
+            $methods .= PHP_EOL . $this->buildGetSetter($field->getMapName(), $field->getType()) . PHP_EOL;
         }
 
         $construct = $this->buildConstruct();
