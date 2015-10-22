@@ -357,19 +357,14 @@ class Driver
         if ('Repository' != substr($name, -10)) {
             $name .= 'Repository';
         }
+
         $name = str_replace(':', '\\', $name);
         if (isset($this->repositories[$name])) {
             return $this->repositories[$name];
         }
-        $repository = new $name($this);
-//        if (null === $repository->getTable()) {
-//            $repositoryArray = explode('\\', $name);
-//            $defaultName = end($repositoryArray); unset($repositoryArray);
-//            $defaultName = str_replace('Repository', '', $defaultName);
-//            $defaultName = strtolower(trim(preg_replace('/([A-Z])/', '_$1', $defaultName), '_'));
-//            $repository->setTable($this->config->getDatabasePrefix() . $defaultName . $this->config->getDatabaseSuffix());
-//        }
-        $this->repositories[$name] = $repository;
+
+        $this->repositories[$name] = new $name($this);
+
         return $this->repositories[$name];
     }
 
