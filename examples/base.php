@@ -23,8 +23,11 @@ $db = new Database([
         'database_pwd'  => '123456',
         'database_host' => '127.0.0.1',
         'database_port' => 3306,
-        'database_name' => 'demo',
+        'database_name' => 'test',
     ]
 ]);
 
-$db->getConnection('test');
+$connection = $db->getConnection('test');
+echo '<pre>';
+print_r($connection);
+

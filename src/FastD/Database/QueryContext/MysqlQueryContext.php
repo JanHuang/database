@@ -12,14 +12,14 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database;
+namespace FastD\Database\QueryContext;
 
 /**
  * Class QueryContext
  *
  * @package FastD\Database\Query
  */
-class QueryContext
+class MysqlQueryContext extends QueryContext
 {
     /**
      * @var string

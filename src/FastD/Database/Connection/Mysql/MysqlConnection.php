@@ -14,7 +14,7 @@
 namespace FastD\Database\Connection\Mysql;
 
 use FastD\Database\Connection\ConnectionInterface;
-use FastD\Database\QueryContext;
+use FastD\Database\QueryContext\QueryContextInterface;
 
 /**
  * Class MysqlConnection
@@ -29,7 +29,7 @@ class MysqlConnection implements ConnectionInterface
     protected $pdo;
 
     /**
-     * @var QueryContext
+     * @var QueryContextInterface
      */
     protected $queryContext;
 
@@ -38,16 +38,13 @@ class MysqlConnection implements ConnectionInterface
      */
     protected $statement;
 
-    /**
-     * @var array
-     */
-    protected $logs = [];
-
-    public function __construct(array $config = [], $dsn, $user, $password, $charset = 'utf8', array $options = [])
+    public function __construct(array $config = [], QueryContextInterface $contextInterface)
     {
-        $this->pdo = new \PDO($dsn, $user, $password);
+        $this->queryContext = $contextInterface;
+        $dsn = 'mysql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
+        $this->pdo = new \PDO($dsn, $config['database_user'], $config['database_pwd']);
         $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-        $this->pdo->exec('SET NAMES ' . $charset);
+        $this->pdo->exec('SET NAMES ' . (isset($config['database_charset']) ? $config['database_charset'] : 'utf8'));
     }
 
     /**
@@ -222,5 +219,22 @@ class MysqlConnection implements ConnectionInterface
     public function __toString()
     {
         return $this->getConnectionInfo();
+    }
+
+    /**
+     * @param $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        // TODO: Implement setName() method.
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        // TODO: Implement getName() method.
     }
 }

@@ -21,6 +21,17 @@ namespace FastD\Database\Connection;
 interface ConnectionInterface
 {
     /**
+     * @param $name
+     * @return $this
+     */
+    public function setName($name);
+
+    /**
+     * @return string
+     */
+    public function getName();
+
+    /**
      * Start database transaction.
      *
      * @return bool

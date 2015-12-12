@@ -13,8 +13,10 @@
 
 namespace FastD\Database;
 
+use FastD\Database\Connection\ConnectionInterface;
+use FastD\Database\Connection\Mysql\MysqlConnection;
+use FastD\Database\QueryContext\MysqlQueryContext;
 use FastD\Database\Driver\Driver;
-use FastD\Database\Query\QueryContext;
 
 /**
  * Class Database
@@ -33,11 +35,16 @@ class Database implements \Iterator
     /**
      * Database connection collection.
      *
-     * @var ConnectionInterface
+     * @var ConnectionInterface[]
      */
     private $collections = [];
 
-    private $queryContext;
+    /**
+     * @var array
+     */
+    private $queryContext = [
+        'mysql' => MysqlQueryContext::class
+    ];
 
     /**
      * @param array $config
@@ -45,13 +52,37 @@ class Database implements \Iterator
     public function __construct(array $config)
     {
         $this->config = $config;
+    }
 
-        $this->queryContext = new QueryContext();
+    /**
+     * @param       $name
+     * @param array $config
+     * @return ConnectionInterface
+     */
+    public function createConnection($name, array $config)
+    {
+        if (!isset($config['database_type'])) {
+            throw new \RuntimeException('Database type is undefined.');
+        }
+
+        switch ($config['database_type']) {
+            case 'mysql':
+            case 'maraidb':
+            default:
+                $queryContext = new MysqlQueryContext($name);
+                $connection = new MysqlConnection($config, $queryContext);
+        }
+
+        $connection->setName($name);
+
+        $this->setConnection($name, $connection);
+
+        return $connection;
     }
 
     /**
      * @param null $connection
-     * @return Driver
+     * @return ConnectionInterface
      */
     public function getConnection($connection = null)
     {
@@ -59,12 +90,7 @@ class Database implements \Iterator
             return $this->collections[$connection];
         }
 
-        $config = new Config($this->config[$connection]);
-
-        return $this
-            ->setConnection($connection, new Driver($config))
-            ->getConnection($connection)
-            ;
+        return $this->createConnection($connection, $this->config[$connection]);
     }
 
     /**
@@ -83,9 +109,9 @@ class Database implements \Iterator
      * @param Driver $driver
      * @return $this
      */
-    public function setConnection($connection, Driver $driver)
+    public function setConnection($connection, ConnectionInterface $connectionInterface)
     {
-        $this->collections[$connection] = $driver;
+        $this->collections[$connection] = $connectionInterface;
 
         return $this;
     }
