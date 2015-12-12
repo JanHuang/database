@@ -13,6 +13,8 @@
 
 namespace FastD\Database\Connection;
 
+use FastD\Database\QueryContext\QueryContextInterface;
+
 /**
  * Interface ConnectionInterface
  *
@@ -20,6 +22,17 @@ namespace FastD\Database\Connection;
  */
 interface ConnectionInterface
 {
+    /**
+     * @return \PDOStatement
+     */
+    public function getStatement();
+
+    /**
+     * @param \PDOStatement $statement
+     * @return $this
+     */
+    public function setStatement(\PDOStatement $statement);
+
     /**
      * @return \PDO
      */
@@ -43,11 +56,19 @@ interface ConnectionInterface
     public function getName();
 
     /**
+     * Begin server transaction.
+     *
+     * @param \Closure $closure
+     * @return mixed
+     */
+    public function transaction(\Closure $closure);
+
+    /**
      * Start database transaction.
      *
      * @return bool
      */
-    public function beginTransaction();
+    public function begin();
 
     /**
      * Commit database transaction.
@@ -82,6 +103,16 @@ interface ConnectionInterface
      * @return $this
      */
     public function getQuery();
+
+    /**
+     * @return array|bool
+     */
+    public function getColumn();
+
+    /**
+     * @return int|bool
+     */
+    public function getCount();
 
     /**
      * @return array|bool
@@ -121,15 +152,21 @@ interface ConnectionInterface
     /**
      * @return array
      */
-    public function getSql();
+    public function getQueryLogs();
 
     /**
-     * @return array
+     * @return QueryContextInterface
      */
-    public function getLogs();
+    public function getQueryContext();
 
     /**
+     * @param QueryContextInterface $contextInterface
      * @return mixed
+     */
+    public function setQueryContext(QueryContextInterface $contextInterface);
+
+    /**
+     * @return void
      */
     public function close();
 }
