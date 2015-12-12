@@ -12,7 +12,6 @@
  */
 
 namespace FastD\Database\Connection;
-use FastD\Database\Entity\EntityInterface;
 
 /**
  * Interface ConnectionInterface
@@ -21,20 +20,6 @@ use FastD\Database\Entity\EntityInterface;
  */
 interface ConnectionInterface
 {
-    /**
-     * Constructor.
-     * Initialize database connection.
-     *
-     * @param string $dsn The connection dsn.
-     * @param string $user The connection username.
-     * @param string $password The connection user password.
-     * @param string $charset The connection default charset.
-     * @param array  $options The connection initialize execute options array.
-     *
-     * @api
-     */
-    public function __construct($dsn, $user, $password, $charset = 'utf8', array $options = []);
-
     /**
      * Start database transaction.
      *

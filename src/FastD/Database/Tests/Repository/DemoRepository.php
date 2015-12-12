@@ -80,11 +80,9 @@ class DemoRepository extends Repository
 
         if (null === $entity->getId()) {
             $entity->setId($this->insert($data));
-            return $this;
+        } else {
+            $this->update($data, ['id' => $entity->getId()]);
         }
-
-        $this->update($data, ['id' => $entity->getId()]);
-        return $this;
     }
 
     /**
@@ -120,7 +118,7 @@ class DemoRepository extends Repository
     public function findAll(array $where = [],  array $field = [])
     {
         $list = parent::findAll($where, $field);
-        
+
         $entities = [];
         foreach ($list as $row) {
             $entity = new $this->entity();

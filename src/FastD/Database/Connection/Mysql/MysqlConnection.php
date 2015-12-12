@@ -14,18 +14,24 @@
 namespace FastD\Database\Connection\Mysql;
 
 use FastD\Database\Connection\ConnectionInterface;
+use FastD\Database\QueryContext;
 
 /**
  * Class MysqlConnection
  *
- * @package FastD\Kernel\Configuration\Drivers\Db\Mysql
+ * @package FastD\Kernel\Configuration\pdos\Db\Mysql
  */
 class MysqlConnection implements ConnectionInterface
 {
     /**
      * @var \PDO
      */
-    protected $driver;
+    protected $pdo;
+
+    /**
+     * @var QueryContext
+     */
+    protected $queryContext;
 
     /**
      * @var \PDOStatement
@@ -37,18 +43,11 @@ class MysqlConnection implements ConnectionInterface
      */
     protected $logs = [];
 
-    /**
-     * @param string $dsn
-     * @param string $user
-     * @param string $password
-     * @param string $charset
-     * @param array  $options
-     */
-    public function __construct($dsn, $user, $password, $charset = 'utf8', array $options = [])
+    public function __construct(array $config = [], $dsn, $user, $password, $charset = 'utf8', array $options = [])
     {
-        $this->driver = new \PDO($dsn, $user, $password);
-        $this->driver->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-        $this->driver->exec('SET NAMES ' . $charset);
+        $this->pdo = new \PDO($dsn, $user, $password);
+        $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+        $this->pdo->exec('SET NAMES ' . $charset);
     }
 
     /**
@@ -58,7 +57,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function beginTransaction()
     {
-        return $this->driver->beginTransaction();
+        return $this->pdo->beginTransaction();
     }
 
     /**
@@ -68,7 +67,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function commit()
     {
-        return $this->driver->commit();
+        return $this->pdo->commit();
     }
 
     /**
@@ -78,7 +77,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function rollback()
     {
-        return $this->driver->rollBack();
+        return $this->pdo->rollBack();
     }
 
     /**
@@ -99,7 +98,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function prepare($sql)
     {
-        $this->statement = $this->driver->prepare($sql);
+        $this->statement = $this->pdo->prepare($sql);
 
         $this->logs[] = $sql;
 
@@ -144,7 +143,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function getErrors()
     {
-        return null === $this->statement ? $this->driver->errorInfo() : $this->statement->errorInfo();
+        return null === $this->statement ? $this->pdo->errorInfo() : $this->statement->errorInfo();
     }
 
     /**
@@ -172,7 +171,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function close()
     {
-        $this->driver = null;
+        $this->pdo = null;
         $this->statement = null;
     }
 
@@ -186,14 +185,14 @@ class MysqlConnection implements ConnectionInterface
         $attributes = '';
 
         foreach ([
-                    'driver'            => 'DRIVER_NAME',
+                    'pdo'            => 'pdo_NAME',
                     'client version'    => 'CLIENT_VERSION',
                     'connection status' => 'CONNECTION_STATUS',
                     'server info'       => 'SERVER_INFO',
                     'server version'    => 'SERVER_VERSION',
                     'timeout'           => 'TIMEOUT',
                  ] as $name => $value) {
-            $attributes .= $name . ': ' . $this->driver->getAttribute(constant('PDO::ATTR_' . $value)) . PHP_EOL;
+            $attributes .= $name . ': ' . $this->pdo->getAttribute(constant('PDO::ATTR_' . $value)) . PHP_EOL;
         }
 
         return $attributes;
@@ -214,7 +213,7 @@ class MysqlConnection implements ConnectionInterface
      */
     public function getLastId()
     {
-        return $this->driver->lastInsertId();
+        return $this->pdo->lastInsertId();
     }
 
     /**
