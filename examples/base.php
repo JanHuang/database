@@ -28,6 +28,9 @@ $db = new Database([
 ]);
 
 $connection = $db->getConnection('test');
+
+
 echo '<pre>';
+echo $connection->getName();
 print_r($connection);
 

@@ -13,7 +13,8 @@
 
 namespace FastD\Database\Connection\Mysql;
 
-use FastD\Database\Connection\ConnectionInterface;
+use FastD\Database\Connection\Connection;
+
 use FastD\Database\QueryContext\QueryContextInterface;
 
 /**
@@ -21,22 +22,13 @@ use FastD\Database\QueryContext\QueryContextInterface;
  *
  * @package FastD\Kernel\Configuration\pdos\Db\Mysql
  */
-class MysqlConnection implements ConnectionInterface
+class MysqlConnection extends Connection
 {
-    /**
-     * @var \PDO
-     */
-    protected $pdo;
-
     /**
      * @var QueryContextInterface
      */
     protected $queryContext;
 
-    /**
-     * @var \PDOStatement
-     */
-    protected $statement;
 
     public function __construct(array $config = [], QueryContextInterface $contextInterface)
     {
@@ -219,22 +211,5 @@ class MysqlConnection implements ConnectionInterface
     public function __toString()
     {
         return $this->getConnectionInfo();
-    }
-
-    /**
-     * @param $name
-     * @return $this
-     */
-    public function setName($name)
-    {
-        // TODO: Implement setName() method.
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        // TODO: Implement getName() method.
     }
 }

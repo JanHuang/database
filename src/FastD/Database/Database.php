@@ -37,14 +37,7 @@ class Database implements \Iterator
      *
      * @var ConnectionInterface[]
      */
-    private $collections = [];
-
-    /**
-     * @var array
-     */
-    private $queryContext = [
-        'mysql' => MysqlQueryContext::class
-    ];
+    private $connections = [];
 
     /**
      * @param array $config
@@ -59,7 +52,7 @@ class Database implements \Iterator
      * @param array $config
      * @return ConnectionInterface
      */
-    public function createConnection($name, array $config)
+    public function addConnection($name, array $config)
     {
         if (!isset($config['database_type'])) {
             throw new \RuntimeException('Database type is undefined.');
@@ -69,8 +62,7 @@ class Database implements \Iterator
             case 'mysql':
             case 'maraidb':
             default:
-                $queryContext = new MysqlQueryContext($name);
-                $connection = new MysqlConnection($config, $queryContext);
+                $connection = new MysqlConnection($config, new MysqlQueryContext($name));
         }
 
         $connection->setName($name);
@@ -87,10 +79,10 @@ class Database implements \Iterator
     public function getConnection($connection = null)
     {
         if ($this->hasConnection($connection)) {
-            return $this->collections[$connection];
+            return $this->connections[$connection];
         }
 
-        return $this->createConnection($connection, $this->config[$connection]);
+        return $this->addConnection($connection, $this->config[$connection]);
     }
 
     /**
@@ -99,7 +91,7 @@ class Database implements \Iterator
      */
     public function hasConnection($connection)
     {
-        return isset($this->collections[$connection]);
+        return isset($this->connections[$connection]);
     }
 
     /**
@@ -111,7 +103,7 @@ class Database implements \Iterator
      */
     public function setConnection($connection, ConnectionInterface $connectionInterface)
     {
-        $this->collections[$connection] = $connectionInterface;
+        $this->connections[$connection] = $connectionInterface;
 
         return $this;
     }
@@ -120,12 +112,12 @@ class Database implements \Iterator
      * Return the current element
      *
      * @link  http://php.net/manual/en/iterator.current.php
-     * @return mixed Can return any type.
+     * @return ConnectionInterface Can return any type.
      * @since 5.0.0
      */
     public function current()
     {
-        // TODO: Implement current() method.
+        return current($this->connections);
     }
 
     /**
@@ -137,19 +129,19 @@ class Database implements \Iterator
      */
     public function next()
     {
-        // TODO: Implement next() method.
+        next($this->connections);
     }
 
     /**
      * Return the key of the current element
      *
      * @link  http://php.net/manual/en/iterator.key.php
-     * @return mixed scalar on success, or null on failure.
+     * @return string scalar on success, or null on failure.
      * @since 5.0.0
      */
     public function key()
     {
-        // TODO: Implement key() method.
+        return key($this->connections);
     }
 
     /**
@@ -162,7 +154,7 @@ class Database implements \Iterator
      */
     public function valid()
     {
-        // TODO: Implement valid() method.
+        return isset($this->connections[$this->key()]);
     }
 
     /**
@@ -174,6 +166,6 @@ class Database implements \Iterator
      */
     public function rewind()
     {
-        // TODO: Implement rewind() method.
+        reset($this->connections);
     }
 }

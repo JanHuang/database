@@ -14,12 +14,51 @@
 
 namespace FastD\Database\Connection;
 
+/**
+ * Class Connection
+ *
+ * @package FastD\Database\Connection
+ */
 abstract class Connection implements ConnectionInterface
 {
+    /**
+     * @var string
+     */
     protected $name;
 
+    /**
+     * @var \PDO
+     */
     protected $pdo;
 
+    /**
+     * @var \PDOStatement
+     */
+    protected $statement;
+
+    /**
+     * @return \PDOStatement
+     */
+    public function getStatement()
+    {
+        return $this->statement;
+    }
+
+    /**
+     * @param \PDOStatement $statement
+     * @return $this
+     */
+    public function setStatement(\PDOStatement $statement)
+    {
+        $this->statement = $statement;
+
+        return $this;
+    }
+
+    /**
+     * @param \PDO $PDO
+     * @return $this
+     */
     public function setPDO(\PDO $PDO)
     {
         $this->pdo = $PDO;
@@ -27,6 +66,9 @@ abstract class Connection implements ConnectionInterface
         return $this;
     }
 
+    /**
+     * @return \PDO
+     */
     public function getPDO()
     {
         return $this->pdo;
@@ -51,8 +93,17 @@ abstract class Connection implements ConnectionInterface
         return $this->name;
     }
 
+    /**
+     * Close pdo connection.
+     */
     public function close()
     {
+        $this->pdo = null;
+        $this->statement = null;
+    }
 
+    public function __destruct()
+    {
+        $this->close();
     }
 }
