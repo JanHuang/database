@@ -15,7 +15,6 @@ namespace FastD\Database;
 
 use FastD\Database\Connection\ConnectionInterface;
 use FastD\Database\Connection\Mysql\MysqlConnection;
-use FastD\Database\Driver\Driver;
 
 /**
  * Class Database
@@ -27,7 +26,7 @@ class Database implements \Iterator
     /**
      * All database configuration information.
      *
-     * @var Config
+     * @var array
      */
     private $config;
 
@@ -49,7 +48,7 @@ class Database implements \Iterator
     /**
      * @param       $name
      * @param array $config
-     * @return ConnectionInterface
+     * @return Connection
      */
     public function addConnection($name, array $config)
     {
@@ -97,7 +96,7 @@ class Database implements \Iterator
      * @inheritdoc
      *
      * @param        $connection
-     * @param Driver $driver
+     * @param ConnectionInterface $connectionInterface
      * @return $this
      */
     public function setConnection($connection, ConnectionInterface $connectionInterface)

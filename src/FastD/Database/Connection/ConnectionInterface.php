@@ -21,6 +21,17 @@ namespace FastD\Database\Connection;
 interface ConnectionInterface
 {
     /**
+     * @return \PDO
+     */
+    public function getPDO();
+
+    /**
+     * @param \PDO $PDO
+     * @return $this
+     */
+    public function setPDO(\PDO $PDO);
+
+    /**
      * @param $name
      * @return $this
      */
