@@ -15,7 +15,6 @@ namespace FastD\Database;
 
 use FastD\Database\Connection\ConnectionInterface;
 use FastD\Database\Connection\Mysql\MysqlConnection;
-use FastD\Database\QueryContext\MysqlQueryContext;
 use FastD\Database\Driver\Driver;
 
 /**
@@ -62,7 +61,7 @@ class Database implements \Iterator
             case 'mysql':
             case 'maraidb':
             default:
-                $connection = new MysqlConnection($config, new MysqlQueryContext($name));
+                $connection = new MysqlConnection($config);
         }
 
         $connection->setName($name);

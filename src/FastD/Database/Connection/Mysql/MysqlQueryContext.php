@@ -12,7 +12,9 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\QueryContext;
+namespace FastD\Database\Connection\Mysql;
+
+use FastD\Database\QueryContext\QueryContext;
 
 /**
  * Class QueryContext

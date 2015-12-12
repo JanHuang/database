@@ -15,8 +15,6 @@ namespace FastD\Database\Connection\Mysql;
 
 use FastD\Database\Connection\Connection;
 
-use FastD\Database\QueryContext\QueryContextInterface;
-
 /**
  * Class MysqlConnection
  *
@@ -24,15 +22,11 @@ use FastD\Database\QueryContext\QueryContextInterface;
  */
 class MysqlConnection extends Connection
 {
-    /**
-     * @var QueryContextInterface
-     */
     protected $queryContext;
 
-
-    public function __construct(array $config = [], QueryContextInterface $contextInterface)
+    public function __construct(array $config = [])
     {
-        $this->queryContext = $contextInterface;
+        $this->queryContext = new MysqlQueryContext();
         $dsn = 'mysql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
         $this->pdo = new \PDO($dsn, $config['database_user'], $config['database_pwd']);
         $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
