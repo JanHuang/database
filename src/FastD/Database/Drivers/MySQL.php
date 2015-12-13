@@ -23,6 +23,11 @@ use FastD\Database\Drivers\QueryContext\MySQLQueryContext;
  */
 class MySQL extends Driver
 {
+    /**
+     * MySQL constructor.
+     *
+     * @param array $config
+     */
     public function __construct(array $config)
     {
         $dsn = 'mysql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];

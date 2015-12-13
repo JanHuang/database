@@ -135,16 +135,16 @@ class MySQLQueryContext implements QueryContextInterface
      * @param int   $operation
      * @return $this
      */
-    public function data(array $data, $operation = QueryContext::CONTEXT_UPDATE)
+    public function data(array $data, $operation = self::CONTEXT_UPDATE)
     {
         switch ($operation) {
-            case QueryContext::CONTEXT_INSERT:
+            case self::CONTEXT_INSERT:
                 $keys = array_keys($data);
                 $values = array_values($data);
                 $this->keys = '(`' . implode('`,`', $keys) . '`)';
                 $this->value = '(\'' . implode('\',\'', $values) . '\')';
                 break;
-            case QueryContext::CONTEXT_UPDATE:
+            case self::CONTEXT_UPDATE:
             default:
                 $values = [];
                 foreach ($data as $name => $value) {

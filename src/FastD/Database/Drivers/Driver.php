@@ -15,7 +15,6 @@
 namespace FastD\Database\Drivers;
 
 use FastD\Database\Drivers\QueryContext\QueryContextInterface;
-use FastD\Database\Drivers\QueryContext\MySQLQueryContext;
 
 /**
  * Class DriverAbstract
