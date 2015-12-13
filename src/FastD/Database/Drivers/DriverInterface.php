@@ -16,5 +16,19 @@ namespace FastD\Database\Drivers;
 
 interface DriverInterface
 {
+    public function setName($name);
 
+    public function getName();
+
+    public function where($where);
+
+    public function field(array $fields);
+
+    public function limit($offset, $limit);
+
+    public function table($name);
+
+    public function join($table, $join = 'LEFT');
+
+    public function group();
 }

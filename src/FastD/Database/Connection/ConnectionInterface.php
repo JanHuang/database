@@ -45,17 +45,6 @@ interface ConnectionInterface
     public function setPDO(\PDO $PDO);
 
     /**
-     * @param $name
-     * @return $this
-     */
-    public function setName($name);
-
-    /**
-     * @return string
-     */
-    public function getName();
-
-    /**
      * Begin server transaction.
      *
      * @param \Closure $closure
@@ -148,22 +137,6 @@ interface ConnectionInterface
      * @return array
      */
     public function getErrors();
-
-    /**
-     * @return array
-     */
-    public function getQueryLogs();
-
-    /**
-     * @return QueryContextInterface
-     */
-    public function getQueryContext();
-
-    /**
-     * @param QueryContextInterface $contextInterface
-     * @return mixed
-     */
-    public function setQueryContext(QueryContextInterface $contextInterface);
 
     /**
      * @return void

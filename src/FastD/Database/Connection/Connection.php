@@ -14,8 +14,6 @@
 
 namespace FastD\Database\Connection;
 
-use FastD\Database\QueryContext\QueryContextInterface;
-
 /**
  * Class Connection
  *
@@ -23,11 +21,6 @@ use FastD\Database\QueryContext\QueryContextInterface;
  */
 class Connection implements ConnectionInterface
 {
-    /**
-     * @var string
-     */
-    protected $name;
-
     /**
      * @var \PDO
      */
@@ -39,27 +32,13 @@ class Connection implements ConnectionInterface
     protected $statement;
 
     /**
-     * @var QueryContextInterface
+     * Connection constructor.
+     *
+     * @param \PDO $PDO
      */
-    protected $queryContext;
-
-    /**
-     * @param QueryContextInterface $contextInterface
-     * @return $this
-     */
-    public function setQueryContext(QueryContextInterface $contextInterface)
+    public function __construct(\PDO $PDO)
     {
-        $this->queryContext = $contextInterface;
-
-        return $this;
-    }
-
-    /**
-     * @return QueryContextInterface
-     */
-    public function getQueryContext()
-    {
-        return $this->queryContext;
+        $this->setPDO($PDO);
     }
 
     /**
@@ -98,25 +77,6 @@ class Connection implements ConnectionInterface
     public function getPDO()
     {
         return $this->pdo;
-    }
-
-    /**
-     * @param $name
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -283,14 +243,6 @@ class Connection implements ConnectionInterface
         }
 
         return $attributes;
-    }
-
-    /**
-     * @return array
-     */
-    public function getQueryLogs()
-    {
-        return $this->queryContext;
     }
 
     /**
