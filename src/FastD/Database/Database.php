@@ -35,7 +35,7 @@ class Database implements \Iterator
      *
      * @var ConnectionInterface[]
      */
-    private $connections = [];
+    private $drivers = [];
 
     /**
      * @param array $config
@@ -45,12 +45,28 @@ class Database implements \Iterator
         $this->config = $config;
     }
 
-    /**
-     * @param       $name
-     * @param array $config
-     * @return Connection
-     */
-    public function addConnection($name, array $config)
+    public function getDriver($name)
+    {
+        if ($this->hasDriver($name)) {
+            return $this->drivers[$name];
+        }
+
+        return $this->addDriver($name, $this->config[$name]);
+    }
+
+    public function hasDriver($name)
+    {
+        return isset($this->drivers[$name]);
+    }
+
+    public function setDriver($name, ConnectionInterface $connectionInterface)
+    {
+        $this->drivers[$name] = $connectionInterface;
+
+        return $this;
+    }
+
+    public function addDriver($name, array $config)
     {
         if (!isset($config['database_type'])) {
             throw new \RuntimeException('Database type is undefined.');
@@ -58,52 +74,16 @@ class Database implements \Iterator
 
         switch ($config['database_type']) {
             case 'mysql':
-            case 'maraidb':
+            case 'mariadb':
             default:
                 $connection = new MysqlConnection($config);
         }
 
         $connection->setName($name);
 
-        $this->setConnection($name, $connection);
+        $this->setDriver($name, $connection);
 
         return $connection;
-    }
-
-    /**
-     * @param null $connection
-     * @return ConnectionInterface
-     */
-    public function getConnection($connection = null)
-    {
-        if ($this->hasConnection($connection)) {
-            return $this->connections[$connection];
-        }
-
-        return $this->addConnection($connection, $this->config[$connection]);
-    }
-
-    /**
-     * @param $connection
-     * @return bool
-     */
-    public function hasConnection($connection)
-    {
-        return isset($this->connections[$connection]);
-    }
-
-    /**
-     * @inheritdoc
-     *
-     * @param        $connection
-     * @param ConnectionInterface $connectionInterface
-     * @return $this
-     */
-    public function setConnection($connection, ConnectionInterface $connectionInterface)
-    {
-        $this->connections[$connection] = $connectionInterface;
-
-        return $this;
     }
 
     /**
@@ -115,7 +95,7 @@ class Database implements \Iterator
      */
     public function current()
     {
-        return current($this->connections);
+        return current($this->drivers);
     }
 
     /**
@@ -127,7 +107,7 @@ class Database implements \Iterator
      */
     public function next()
     {
-        next($this->connections);
+        next($this->drivers);
     }
 
     /**
@@ -139,7 +119,7 @@ class Database implements \Iterator
      */
     public function key()
     {
-        return key($this->connections);
+        return key($this->drivers);
     }
 
     /**
@@ -152,7 +132,7 @@ class Database implements \Iterator
      */
     public function valid()
     {
-        return isset($this->connections[$this->key()]);
+        return isset($this->drivers[$this->key()]);
     }
 
     /**
@@ -164,6 +144,6 @@ class Database implements \Iterator
      */
     public function rewind()
     {
-        reset($this->connections);
+        reset($this->drivers);
     }
 }
