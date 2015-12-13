@@ -27,11 +27,6 @@ use FastD\Database\Drivers\Connection\ConnectionInterface;
 abstract class DriverAbstract implements DriverInterface
 {
     /**
-     * @var string
-     */
-    protected $name;
-
-    /**
      * @var ConnectionInterface
      */
     protected $connection;
@@ -39,8 +34,13 @@ abstract class DriverAbstract implements DriverInterface
     /**
      * @var QueryContextInterface
      */
-    protected $context;
+    protected $queryContext;
 
+    /**
+     * DriverAbstract constructor.
+     *
+     * @param array $config
+     */
     public function __construct(array $config)
     {
         switch ($config['database_type']) {
@@ -60,24 +60,24 @@ abstract class DriverAbstract implements DriverInterface
         }
 
         $this->setConnection(new Connection(new \PDO($dsn, $config['database_user'], $config['database_pwd'])));
-        $this->setContext($queryContext);
+        $this->setQueryContext($queryContext);
     }
 
     /**
      * @return QueryContextInterface
      */
-    public function getContext()
+    public function getQueryContext()
     {
-        return $this->context;
+        return $this->queryContext;
     }
 
     /**
      * @param QueryContextInterface $context
      * @return $this
      */
-    public function setContext(QueryContextInterface $context)
+    public function setQueryContext(QueryContextInterface $context)
     {
-        $this->context = $context;
+        $this->queryContext = $context;
 
         return $this;
     }
@@ -102,25 +102,6 @@ abstract class DriverAbstract implements DriverInterface
     }
 
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
      * Query select where condition.
      *
      * @param array $where
@@ -128,7 +109,9 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function where(array $where)
     {
-        // TODO: Implement where() method.
+        $this->queryContext->where($where);
+
+        return $this;
     }
 
     /**
@@ -139,7 +122,9 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function field(array $field = ['*'])
     {
-        // TODO: Implement field() method.
+        $this->queryContext->field($field);
+
+        return $this;
     }
 
     /**
@@ -152,7 +137,9 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function join($table, $on, $type = 'LEFT')
     {
-        // TODO: Implement join() method.
+        $this->queryContext->join($table, $on, $type);
+
+        return $this;
     }
 
     /**
@@ -163,7 +150,9 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function table($table)
     {
-        // TODO: Implement table() method.
+        $this->queryContext->table($table);
+
+        return $this;
     }
 
     /**
@@ -173,7 +162,9 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function limit($offset, $limit)
     {
-        // TODO: Implement limit() method.
+        $this->queryContext->limit($offset, $limit);
+
+        return $this;
     }
 
     /**
@@ -182,7 +173,9 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function groupBy(array $groupBy)
     {
-        // TODO: Implement groupBy() method.
+        $this->queryContext->groupBy($groupBy);
+
+        return $this;
     }
 
     /**
@@ -191,7 +184,9 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function orderBy(array $orderBy)
     {
-        // TODO: Implement orderBy() method.
+        $this->queryContext->orderBy($orderBy);
+
+        return $this;
     }
 
     /**
@@ -200,7 +195,9 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function having(array $having)
     {
-        // TODO: Implement having() method.
+        $this->queryContext->having($having);
+
+        return $this;
     }
 
     /**
@@ -209,7 +206,9 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function like(array $like)
     {
-        // TODO: Implement like() method.
+        $this->queryContext->like($like);
+
+        return $this;
     }
 
     /**
@@ -218,7 +217,9 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function between(array $between)
     {
-        // TODO: Implement between() method.
+        $this->queryContext->between($between);
+
+        return $this;
     }
 
     /**
@@ -227,6 +228,8 @@ abstract class DriverAbstract implements DriverInterface
      */
     public function createQuery($sql)
     {
-        // TODO: Implement createQuery() method.
+        $this->queryContext->custom($sql);
+
+        return $this;
     }
 }
