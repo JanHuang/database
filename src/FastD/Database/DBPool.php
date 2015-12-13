@@ -14,6 +14,7 @@
 namespace FastD\Database;
 
 use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\Drivers\MySQL;
 use FastD\Database\Drivers\MySQL\Driver;
 
 /**
@@ -94,7 +95,7 @@ class DBPool implements \Iterator
             case 'mysql':
             case 'mariadb':
             default:
-                $driver = new Driver($name, $config);
+                $driver = new MySQL($config);
         }
 
         $this->setDriver($name, $driver);

@@ -14,9 +14,9 @@
 
 include __DIR__ . '/../vendor/autoload.php';
 
-use FastD\Database\Database;
+use FastD\Database\DBPool;
 
-$db = new Database([
+$db = new DBPool([
     'test' => [
         'database_type' => 'mysql',
         'database_user' => 'root',

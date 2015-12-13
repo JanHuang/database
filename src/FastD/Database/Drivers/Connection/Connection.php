@@ -245,6 +245,8 @@ class Connection implements ConnectionInterface
         return $attributes;
     }
 
+    
+
     /**
      * @return void
      */

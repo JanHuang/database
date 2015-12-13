@@ -31,38 +31,4 @@ class MySQL extends DriverAbstract
         $this->setConnection(new MySQLConnection($config));
         $this->setContext(new MysqlQueryContext());
     }
-
-    public function where($where)
-    {
-        $this->context->where($where);
-
-        return $this;
-    }
-
-    public function field(array $fields)
-    {
-        $this->context->field($fields);
-
-        return $this;
-    }
-
-    public function limit($offset, $limit)
-    {
-        // TODO: Implement limit() method.
-    }
-
-    public function table($name)
-    {
-        // TODO: Implement table() method.
-    }
-
-    public function join($table, $join = 'LEFT')
-    {
-        // TODO: Implement join() method.
-    }
-
-    public function group()
-    {
-        // TODO: Implement group() method.
-    }
 }

@@ -22,7 +22,7 @@ use FastD\Database\QueryContext\QueryContextInterface;
  *
  * @package FastD\Database\Drivers
  */
-abstract class DriverAbstract implements DriverInterface
+abstract class DriverAbstract implements DriverInterface, QueryContextInterface
 {
     /**
      * @var string
@@ -94,5 +94,39 @@ abstract class DriverAbstract implements DriverInterface
         $this->name = $name;
 
         return $this;
+    }
+
+    public function where($where)
+    {
+        $this->context->where($where);
+
+        return $this;
+    }
+
+    public function field(array $fields)
+    {
+        $this->context->field($fields);
+
+        return $this;
+    }
+
+    public function limit($offset, $limit)
+    {
+        // TODO: Implement limit() method.
+    }
+
+    public function table($name)
+    {
+        // TODO: Implement table() method.
+    }
+
+    public function join($table, $join = 'LEFT')
+    {
+        // TODO: Implement join() method.
+    }
+
+    public function group()
+    {
+        // TODO: Implement group() method.
     }
 }
