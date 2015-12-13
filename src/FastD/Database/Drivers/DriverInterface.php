@@ -33,6 +33,17 @@ interface DriverInterface
     public function getName();
 
     /**
+     * @param \PDO $PDO
+     * @return mixed
+     */
+    public function setPDO(\PDO $PDO);
+
+    /**
+     * @return \PDO
+     */
+    public function getPDO();
+
+    /**
      * Query select where condition.
      *
      * @param array $where

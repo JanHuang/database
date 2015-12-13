@@ -14,13 +14,56 @@
 
 namespace FastD\Database\Tests\QueryContext;
 
+use FastD\Database\Drivers\QueryContext\MySQLQueryContext;
+
+/**
+ * Class MySQLQueryContextTest
+ *
+ * @package FastD\Database\Tests\QueryContext
+ */
 class MySQLQueryContextTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var MySQLQueryContext
+     */
+    protected $queryContext;
+
+    public function setUp()
+    {
+        $this->queryContext = new MySQLQueryContext();
+    }
+
     public function testTable()
     {
+        $this->queryContext->table('test')->select();
 
+        $this->assertEquals(
+            'SELECT * FROM `test`;',
+            $this->queryContext->table('test')->getSql()
+        );
     }
 
     public function testWhere()
-    {}
+    {
+        $this->queryContext->table('test')->where(['a' => 'b'])->select();
+
+        $this->assertEquals(
+            'SELECT * FROM `test` WHERE `a`=\'b\';',
+            $this->queryContext->getSql()
+        );
+
+        $this->queryContext->table('test')->where(
+            [
+                'AND' => [
+                    'a' => 'b',
+                    'b' => 'c'
+                ]
+            ]
+        )->select();
+
+        $this->assertEquals(
+            'SELECT * FROM `test` WHERE `a`=\'b\' AND `b`=\'c\';',
+            $this->queryContext->getSql()
+        );
+    }
 }

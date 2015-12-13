@@ -14,17 +14,15 @@
 
 namespace FastD\Database\Drivers;
 
-use FastD\Database\Drivers\Connection\Connection;
-use FastD\Database\Drivers\QueryContext\MySQLQueryContext;
 use FastD\Database\Drivers\QueryContext\QueryContextInterface;
-use FastD\Database\Drivers\Connection\ConnectionInterface;
+use FastD\Database\Drivers\QueryContext\MySQLQueryContext;
 
 /**
  * Class DriverAbstract
  *
  * @package FastD\Database\Drivers
  */
-abstract class DriverAbstract implements DriverInterface
+class Driver implements DriverInterface
 {
     /**
      * @var string
@@ -32,9 +30,9 @@ abstract class DriverAbstract implements DriverInterface
     protected $name;
 
     /**
-     * @var ConnectionInterface
+     * @var \PDO
      */
-    protected $connection;
+    protected $pdo;
 
     /**
      * @var QueryContextInterface
@@ -42,7 +40,7 @@ abstract class DriverAbstract implements DriverInterface
     protected $queryContext;
 
     /**
-     * DriverAbstract constructor.
+     * Driver constructor.
      *
      * @param array $config
      */
@@ -64,7 +62,7 @@ abstract class DriverAbstract implements DriverInterface
                 $dsn = 'mysql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
         }
 
-        $this->setConnection(new Connection(new \PDO($dsn, $config['database_user'], $config['database_pwd'])));
+        $this->setPDO(new \PDO($dsn, $config['database_user'], $config['database_pwd']));
         $this->setQueryContext($queryContext);
     }
 
@@ -88,6 +86,25 @@ abstract class DriverAbstract implements DriverInterface
     }
 
     /**
+     * @return \PDO
+     */
+    public function getPDO()
+    {
+        return $this->pdo;
+    }
+
+    /**
+     * @param \PDO $PDO
+     * @return $this
+     */
+    public function setPDO(\PDO $PDO)
+    {
+        $this->pdo = $PDO;
+
+        return $this;
+    }
+
+    /**
      * @return QueryContextInterface
      */
     public function getQueryContext()
@@ -102,25 +119,6 @@ abstract class DriverAbstract implements DriverInterface
     public function setQueryContext(QueryContextInterface $context)
     {
         $this->queryContext = $context;
-
-        return $this;
-    }
-
-    /**
-     * @return ConnectionInterface
-     */
-    public function getConnection()
-    {
-        return $this->connection;
-    }
-
-    /**
-     * @param ConnectionInterface $connection
-     * @return $this
-     */
-    public function setConnection(ConnectionInterface $connection)
-    {
-        $this->connection = $connection;
 
         return $this;
     }

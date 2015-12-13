@@ -14,11 +14,19 @@
 
 namespace FastD\Database\Drivers;
 
+use FastD\Database\Drivers\QueryContext\MySQLQueryContext;
+
 /**
  * Class MySQL
  *
  * @package FastD\Database\Drivers
  */
-class MySQL extends DriverAbstract
+class MySQL extends Driver
 {
+    public function __construct(array $config)
+    {
+        $dsn = 'mysql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
+        $this->setPDO(new \PDO($dsn, $config['database_user'], $config['database_pwd']));
+        $this->setQueryContext(new MySQLQueryContext());
+    }
 }

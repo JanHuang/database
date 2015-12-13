@@ -299,6 +299,8 @@ class MySQLQueryContext extends QueryContext
      */
     public function getSql()
     {
+        $sql = $this->sql;
+
         $this->fields   = '*';
         $this->where    = null;
         $this->group    = null;
@@ -309,6 +311,6 @@ class MySQLQueryContext extends QueryContext
         $this->value    = null;
         $this->join     = null;
 
-        return $this->sql;
+        return $sql;
     }
 }
