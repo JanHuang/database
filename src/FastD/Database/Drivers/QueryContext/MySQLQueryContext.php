@@ -206,34 +206,12 @@ class MySQLQueryContext implements QueryContextInterface
     }
 
     /**
-     * @param $group
-     * @return $this
-     */
-    public function group($group)
-    {
-        $this->group = ' GROUP BY ' . $group;
-
-        return $this;
-    }
-
-    /**
      * @param array $having
      * @return $this
      */
     public function having(array $having)
     {
         $this->having = ' HAVING ' . $this->parseWhere($having);
-
-        return $this;
-    }
-
-    /**
-     * @param $order
-     * @return $this
-     */
-    public function order($order)
-    {
-        $this->order = ' ORDER BY ' . $order;
 
         return $this;
     }
@@ -344,7 +322,9 @@ class MySQLQueryContext implements QueryContextInterface
      */
     public function groupBy(array $groupBy)
     {
-        // TODO: Implement groupBy() method.
+        $this->group = ' GROUP BY ' . implode(',', $groupBy);
+
+        return $this;
     }
 
     /**
@@ -353,7 +333,9 @@ class MySQLQueryContext implements QueryContextInterface
      */
     public function orderBy(array $orderBy)
     {
-        // TODO: Implement orderBy() method.
+        $this->order = ' ORDER BY ' . implode(',', $orderBy);
+
+        return $this;
     }
 
     /**

@@ -14,8 +14,8 @@
 
 namespace FastD\Database\Pagination;
 
-use FastD\Database\Driver\Driver;
-use FastD\Database\Query\QueryContext;
+use FastD\Database\Drivers\Driver;
+use FastD\Database\Drivers\QueryContext\QueryContextInterface;
 
 /**
  * Class QueryPagination
@@ -231,10 +231,10 @@ class QueryPagination
     }
 
     /**
-     * @param QueryContext $context
+     * @param QueryContextInterface $context
      * @return array|bool|mixed
      */
-    public function fetchQueryContextTotalRows(QueryContext $context)
+    public function fetchQueryContextTotalRows(QueryContextInterface $context)
     {
         $sql = $context->limit(1)->fields(['COUNT(1) as total'])->select()->getSql();
         return $this->driver->createQuery($sql)->getQuery()->getOne('total');
