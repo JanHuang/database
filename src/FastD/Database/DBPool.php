@@ -15,7 +15,6 @@ namespace FastD\Database;
 
 use FastD\Database\Drivers\Driver;
 use FastD\Database\Drivers\DriverInterface;
-use FastD\Database\Drivers\MySQL;
 
 /**
  * Class Database
