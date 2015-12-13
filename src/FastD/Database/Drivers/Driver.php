@@ -40,30 +40,17 @@ class Driver implements DriverInterface
     protected $queryContext;
 
     /**
-     * Driver constructor.
-     *
      * @param array $config
+     * @return MySQL
      */
-    public function __construct(array $config)
+    public static function createDriver(array $config)
     {
         switch ($config['database_type']) {
-            case 'pgsql':
-                $queryContext = null;
-                $dsn = 'pgsql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
-                break;
-            case 'sybase':
-                $queryContext = null;
-                $dsn = 'dblib:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
-                break;
             case 'mariadb':
             case 'mysql':
             default:
-                $queryContext = new MySQLQueryContext();
-                $dsn = 'mysql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
+                return new MySQL($config);
         }
-
-        $this->setPDO(new \PDO($dsn, $config['database_user'], $config['database_pwd']));
-        $this->setQueryContext($queryContext);
     }
 
     /**

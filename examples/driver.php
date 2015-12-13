@@ -13,7 +13,3 @@
  */
 
 include __DIR__ . '/../vendor/autoload.php';
-
-$driver = new \FastD\Database\Drivers\Driver([
-
-]);

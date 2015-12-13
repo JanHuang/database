@@ -13,6 +13,7 @@
 
 namespace FastD\Database;
 
+use FastD\Database\Drivers\Driver;
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\Drivers\MySQL;
 
@@ -86,18 +87,10 @@ class DBPool implements \Iterator
      */
     public function addDriver($name, array $config)
     {
-        if (!isset($config['database_type'])) {
-            throw new \RuntimeException('Database type is undefined.');
-        }
-
-        switch ($config['database_type']) {
-            case 'mysql':
-            case 'mariadb':
-            default:
-                $driver = new MySQL($config);
-        }
+        $driver = Driver::createDriver($config);
 
         $driver->setName($name);
+
         $this->setDriver($name, $driver);
 
         return $driver;
