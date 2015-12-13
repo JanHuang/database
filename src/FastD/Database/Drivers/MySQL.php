@@ -21,14 +21,4 @@ namespace FastD\Database\Drivers;
  */
 class MySQL extends DriverAbstract
 {
-    /**
-     * MySQL constructor.
-     *
-     * @param array $config
-     */
-    public function __construct(array $config)
-    {
-        $this->setConnection(new MySQLConnection($config));
-        $this->setContext(new MysqlQueryContext());
-    }
 }

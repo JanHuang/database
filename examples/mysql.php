@@ -25,6 +25,8 @@ $mysql = new MySQL([
     'database_name' => 'test',
 ]);
 
+$mysql->setName('mysql');
+
 echo '<pre>';
 print_r($mysql);
 

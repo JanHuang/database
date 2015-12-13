@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/12/13
- * Time: 上午11:09
+ * Date: 15/12/12
+ * Time: 下午5:35
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,20 +12,20 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Drivers;
+namespace FastD\Database\Drivers\QueryContext;
 
 /**
- * Interface DriverInterface
+ * Interface QueryContextInterface
  *
- * @package FastD\Database\Drivers
+ * @package FastD\Database\Drivers\QueryContext
  */
-interface DriverInterface
+interface QueryContextInterface
 {
     /**
      * Query select where condition.
      *
      * @param array $where
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
     public function where(array $where);
 
@@ -33,7 +33,7 @@ interface DriverInterface
      * Query fields.
      *
      * @param array $field
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
     public function field(array $field = ['*']);
 
@@ -43,7 +43,7 @@ interface DriverInterface
      * @param        $table
      * @param        $on
      * @param string $type
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
     public function join($table, $on, $type = 'LEFT');
 
@@ -51,50 +51,50 @@ interface DriverInterface
      * Select to table name.
      *
      * @param $table
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
     public function table($table);
 
     /**
      * @param $offset
      * @param $limit
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
     public function limit($offset, $limit);
 
     /**
      * @param array $groupBy
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
     public function groupBy(array $groupBy);
 
     /**
      * @param array $orderBy
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
     public function orderBy(array $orderBy);
 
     /**
      * @param array $having
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
     public function having(array $having);
 
     /**
      * @param array $like
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
     public function like(array $like);
 
     /**
      * @param array $between
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
     public function between(array $between);
 
     /**
      * @param $sql
-     * @return DriverInterface
+     * @return QueryContextInterface
      */
-    public function createQuery($sql);
+    public function custom($sql);
 }

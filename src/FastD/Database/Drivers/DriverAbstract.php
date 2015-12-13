@@ -14,15 +14,17 @@
 
 namespace FastD\Database\Drivers;
 
+use FastD\Database\Drivers\Connection\Connection;
+use FastD\Database\Drivers\QueryContext\MySQLQueryContext;
+use FastD\Database\Drivers\QueryContext\QueryContextInterface;
 use FastD\Database\Drivers\Connection\ConnectionInterface;
-use FastD\Database\QueryContext\QueryContextInterface;
 
 /**
  * Class DriverAbstract
  *
  * @package FastD\Database\Drivers
  */
-abstract class DriverAbstract implements DriverInterface, QueryContextInterface
+abstract class DriverAbstract implements DriverInterface
 {
     /**
      * @var string
@@ -38,6 +40,28 @@ abstract class DriverAbstract implements DriverInterface, QueryContextInterface
      * @var QueryContextInterface
      */
     protected $context;
+
+    public function __construct(array $config)
+    {
+        switch ($config['database_type']) {
+            case 'pgsql':
+                $queryContext = null;
+                $dsn = 'pgsql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
+                break;
+            case 'sybase':
+                $queryContext = null;
+                $dsn = 'dblib:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
+                break;
+            case 'mariadb':
+            case 'mysql':
+            default:
+                $queryContext = new MySQLQueryContext();
+                $dsn = 'mysql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
+        }
+
+        $this->setConnection(new Connection(new \PDO($dsn, $config['database_user'], $config['database_pwd'])));
+        $this->setContext($queryContext);
+    }
 
     /**
      * @return QueryContextInterface
@@ -96,37 +120,113 @@ abstract class DriverAbstract implements DriverInterface, QueryContextInterface
         return $this;
     }
 
-    public function where($where)
+    /**
+     * Query select where condition.
+     *
+     * @param array $where
+     * @return DriverInterface
+     */
+    public function where(array $where)
     {
-        $this->context->where($where);
-
-        return $this;
+        // TODO: Implement where() method.
     }
 
-    public function field(array $fields)
+    /**
+     * Query fields.
+     *
+     * @param array $field
+     * @return DriverInterface
+     */
+    public function field(array $field = ['*'])
     {
-        $this->context->field($fields);
-
-        return $this;
+        // TODO: Implement field() method.
     }
 
+    /**
+     * Select join.
+     *
+     * @param        $table
+     * @param        $on
+     * @param string $type
+     * @return DriverInterface
+     */
+    public function join($table, $on, $type = 'LEFT')
+    {
+        // TODO: Implement join() method.
+    }
+
+    /**
+     * Select to table name.
+     *
+     * @param $table
+     * @return DriverInterface
+     */
+    public function table($table)
+    {
+        // TODO: Implement table() method.
+    }
+
+    /**
+     * @param $offset
+     * @param $limit
+     * @return DriverInterface
+     */
     public function limit($offset, $limit)
     {
         // TODO: Implement limit() method.
     }
 
-    public function table($name)
+    /**
+     * @param array $groupBy
+     * @return DriverInterface
+     */
+    public function groupBy(array $groupBy)
     {
-        // TODO: Implement table() method.
+        // TODO: Implement groupBy() method.
     }
 
-    public function join($table, $join = 'LEFT')
+    /**
+     * @param array $orderBy
+     * @return DriverInterface
+     */
+    public function orderBy(array $orderBy)
     {
-        // TODO: Implement join() method.
+        // TODO: Implement orderBy() method.
     }
 
-    public function group()
+    /**
+     * @param array $having
+     * @return DriverInterface
+     */
+    public function having(array $having)
     {
-        // TODO: Implement group() method.
+        // TODO: Implement having() method.
+    }
+
+    /**
+     * @param array $like
+     * @return DriverInterface
+     */
+    public function like(array $like)
+    {
+        // TODO: Implement like() method.
+    }
+
+    /**
+     * @param array $between
+     * @return DriverInterface
+     */
+    public function between(array $between)
+    {
+        // TODO: Implement between() method.
+    }
+
+    /**
+     * @param $sql
+     * @return DriverInterface
+     */
+    public function createQuery($sql)
+    {
+        // TODO: Implement createQuery() method.
     }
 }
