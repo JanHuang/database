@@ -13,7 +13,6 @@
 
 namespace FastD\Database;
 
-use FastD\Database\Connection\ConnectionInterface;
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\Drivers\MySQL;
 
@@ -107,7 +106,7 @@ class Database implements \Iterator
      * Return the current element
      *
      * @link  http://php.net/manual/en/iterator.current.php
-     * @return ConnectionInterface Can return any type.
+     * @return DriverInterface Can return any type.
      * @since 5.0.0
      */
     public function current()

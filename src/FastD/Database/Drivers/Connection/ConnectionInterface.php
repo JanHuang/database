@@ -11,9 +11,7 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace FastD\Database\Connection;
-
-use FastD\Database\QueryContext\QueryContextInterface;
+namespace FastD\Database\Drivers\Connection;
 
 /**
  * Interface ConnectionInterface

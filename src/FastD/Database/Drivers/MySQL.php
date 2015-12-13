@@ -14,8 +14,8 @@
 
 namespace FastD\Database\Drivers;
 
-use FastD\Database\Connection\Connection;
 use FastD\Database\QueryContext\MysqlQueryContext;
+use FastD\Database\Drivers\Connection\Connection;
 
 /**
  * Class MySQL
@@ -35,7 +35,6 @@ class MySQL extends DriverAbstract
         $this->setName($name);
         $dsn = 'mysql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
         $pdo = new \PDO($dsn, $config['database_user'], $config['database_pwd']);
-        $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
         $pdo->exec('SET NAMES ' . (isset($config['database_charset']) ? $config['database_charset'] : 'utf8'));
         $this->setConnection(new Connection($pdo));
         $this->setContext(new MysqlQueryContext());

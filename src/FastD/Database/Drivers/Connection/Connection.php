@@ -12,7 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Connection;
+namespace FastD\Database\Drivers\Connection;
 
 /**
  * Class Connection

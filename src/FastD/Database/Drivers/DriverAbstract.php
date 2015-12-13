@@ -14,9 +14,14 @@
 
 namespace FastD\Database\Drivers;
 
-use FastD\Database\Connection\ConnectionInterface;
+use FastD\Database\Drivers\Connection\ConnectionInterface;
 use FastD\Database\QueryContext\QueryContextInterface;
 
+/**
+ * Class DriverAbstract
+ *
+ * @package FastD\Database\Drivers
+ */
 abstract class DriverAbstract implements DriverInterface
 {
     /**
