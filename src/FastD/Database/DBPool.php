@@ -14,14 +14,14 @@
 namespace FastD\Database;
 
 use FastD\Database\Drivers\DriverInterface;
-use FastD\Database\Drivers\MySQL;
+use FastD\Database\Drivers\MySQL\Driver;
 
 /**
  * Class Database
  *
  * @package FastD\Database
  */
-class Database implements \Iterator
+class DBPool implements \Iterator
 {
     /**
      * All database configuration information.
@@ -94,7 +94,7 @@ class Database implements \Iterator
             case 'mysql':
             case 'mariadb':
             default:
-                $driver = new MySQL($name, $config);
+                $driver = new Driver($name, $config);
         }
 
         $this->setDriver($name, $driver);

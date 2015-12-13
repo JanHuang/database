@@ -14,9 +14,6 @@
 
 namespace FastD\Database\Drivers;
 
-use FastD\Database\QueryContext\MysqlQueryContext;
-use FastD\Database\Drivers\Connection\Connection;
-
 /**
  * Class MySQL
  *
@@ -27,27 +24,26 @@ class MySQL extends DriverAbstract
     /**
      * MySQL constructor.
      *
-     * @param       $name
      * @param array $config
      */
-    public function __construct($name, array $config)
+    public function __construct(array $config)
     {
-        $this->setName($name);
-        $dsn = 'mysql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
-        $pdo = new \PDO($dsn, $config['database_user'], $config['database_pwd']);
-        $pdo->exec('SET NAMES ' . (isset($config['database_charset']) ? $config['database_charset'] : 'utf8'));
-        $this->setConnection(new Connection($pdo));
+        $this->setConnection(new MySQLConnection($config));
         $this->setContext(new MysqlQueryContext());
     }
 
     public function where($where)
     {
-        // TODO: Implement where() method.
+        $this->context->where($where);
+
+        return $this;
     }
 
     public function field(array $fields)
     {
-        // TODO: Implement field() method.
+        $this->context->field($fields);
+
+        return $this;
     }
 
     public function limit($offset, $limit)
