@@ -15,7 +15,6 @@
 namespace FastD\Database\Drivers;
 
 use FastD\Database\Connection\Connection;
-use FastD\Database\Connection\Mysql\MysqlConnection;
 
 class MySQL implements DriverInterface
 {
