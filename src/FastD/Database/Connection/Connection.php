@@ -21,7 +21,7 @@ use FastD\Database\QueryContext\QueryContextInterface;
  *
  * @package FastD\Database\Connection
  */
-abstract class Connection implements ConnectionInterface
+class Connection implements ConnectionInterface
 {
     /**
      * @var string

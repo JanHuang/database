@@ -14,7 +14,8 @@
 namespace FastD\Database;
 
 use FastD\Database\Connection\ConnectionInterface;
-use FastD\Database\Connection\Mysql\MysqlConnection;
+use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\Drivers\MySQL;
 
 /**
  * Class Database
@@ -33,7 +34,7 @@ class Database implements \Iterator
     /**
      * Database connection collection.
      *
-     * @var ConnectionInterface[]
+     * @var DriverInterface[]
      */
     private $drivers = [];
 
@@ -45,6 +46,10 @@ class Database implements \Iterator
         $this->config = $config;
     }
 
+    /**
+     * @param $name
+     * @return DriverInterface
+     */
     public function getDriver($name)
     {
         if ($this->hasDriver($name)) {
@@ -54,18 +59,32 @@ class Database implements \Iterator
         return $this->addDriver($name, $this->config[$name]);
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
     public function hasDriver($name)
     {
         return isset($this->drivers[$name]);
     }
 
-    public function setDriver($name, ConnectionInterface $connectionInterface)
+    /**
+     * @param                 $name
+     * @param DriverInterface $driverInterface
+     * @return $this
+     */
+    public function setDriver($name, DriverInterface $driverInterface)
     {
-        $this->drivers[$name] = $connectionInterface;
+        $this->drivers[$name] = $driverInterface;
 
         return $this;
     }
 
+    /**
+     * @param       $name
+     * @param array $config
+     * @return DriverInterface
+     */
     public function addDriver($name, array $config)
     {
         if (!isset($config['database_type'])) {
@@ -76,14 +95,12 @@ class Database implements \Iterator
             case 'mysql':
             case 'mariadb':
             default:
-                $connection = new MysqlConnection($config);
+                $driver = new MySQL($name, $config);
         }
 
-        $connection->setName($name);
+        $this->setDriver($name, $driver);
 
-        $this->setDriver($name, $connection);
-
-        return $connection;
+        return $driver;
     }
 
     /**

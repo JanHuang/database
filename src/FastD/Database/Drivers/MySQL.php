@@ -14,7 +14,23 @@
 
 namespace FastD\Database\Drivers;
 
+use FastD\Database\Connection\Connection;
+use FastD\Database\Connection\Mysql\MysqlConnection;
+
 class MySQL implements DriverInterface
 {
+    protected $connection;
 
+    protected $context;
+
+    public function __construct($name, array $config)
+    {
+        $dsn = 'mysql:host=' . $config['database_host'] . ';port=' . $config['database_port'] . ';dbname=' . $config['database_name'];
+        $pdo = new \PDO($dsn, $config['database_user'], $config['database_pwd']);
+        $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+        $pdo->exec('SET NAMES ' . (isset($config['database_charset']) ? $config['database_charset'] : 'utf8'));
+        $this->connection = new Connection();
+        $this->connection->setPDO($pdo);
+        unset($pdo);
+    }
 }

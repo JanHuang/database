@@ -27,11 +27,7 @@ $db = new Database([
     ]
 ]);
 
-$connection = $db->getConnection('test');
-
-
+$driver = $db->getDriver('test');
 echo '<pre>';
-echo $connection->getName();
-print_r($connection->getConnectionInfo());
-print_r($connection);
+print_r($driver);
 
