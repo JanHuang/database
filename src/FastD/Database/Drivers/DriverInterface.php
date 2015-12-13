@@ -22,6 +22,17 @@ namespace FastD\Database\Drivers;
 interface DriverInterface
 {
     /**
+     * @param $name
+     * @return $this
+     */
+    public function setName($name);
+
+    /**
+     * @return string
+     */
+    public function getName();
+
+    /**
      * Query select where condition.
      *
      * @param array $where

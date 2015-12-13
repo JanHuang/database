@@ -27,6 +27,11 @@ use FastD\Database\Drivers\Connection\ConnectionInterface;
 abstract class DriverAbstract implements DriverInterface
 {
     /**
+     * @var string
+     */
+    protected $name;
+
+    /**
      * @var ConnectionInterface
      */
     protected $connection;
@@ -61,6 +66,25 @@ abstract class DriverAbstract implements DriverInterface
 
         $this->setConnection(new Connection(new \PDO($dsn, $config['database_user'], $config['database_pwd'])));
         $this->setQueryContext($queryContext);
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     /**

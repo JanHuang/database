@@ -15,7 +15,6 @@ namespace FastD\Database;
 
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\Drivers\MySQL;
-use FastD\Database\Drivers\MySQL\Driver;
 
 /**
  * Class Database
@@ -98,6 +97,7 @@ class DBPool implements \Iterator
                 $driver = new MySQL($config);
         }
 
+        $driver->setName($name);
         $this->setDriver($name, $driver);
 
         return $driver;

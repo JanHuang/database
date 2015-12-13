@@ -14,9 +14,8 @@
 
 namespace FastD\Database\Tests;
 
-use FastD\Database\Database;
-use FastD\Database\Connection\Connection;
-use FastD\Database\Connection\ConnectionInterface;
+
+use FastD\Database\DBPool;
 
 class DatabaseTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,21 +40,11 @@ class DatabaseTest extends \PHPUnit_Framework_TestCase
             ],
         ];
 
-        $db = new Database($config);
+        $db = new DBPool($config);
 
-        $testConnection = $db->getConnection('test');
-        $demoConnection = $db->getConnection('demo');
+        $testDriver = $db->getDriver('test');
+        $demoDriver = $db->getDriver('demo');
 
-        $this->assertInstanceOf(Connection::class, $testConnection);
-        $this->assertInstanceOf(Connection::class, $demoConnection);
-
-        $this->assertTrue($testConnection instanceof $demoConnection);
-        $this->assertTrue($testConnection->getName() != $demoConnection->getName());
-        $this->assertInstanceOf(\PDO::class, $testConnection->getPDO());
-
-        foreach ($db as $connectionInterface) {
-            $this->assertInstanceOf(Connection::class, $connectionInterface);
-            $this->assertInstanceOf(ConnectionInterface::class, $connectionInterface);
-        }
+        $this->assertFalse($testDriver->getName() === $demoDriver->getName());
     }
 }
