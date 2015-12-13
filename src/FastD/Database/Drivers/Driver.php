@@ -21,7 +21,7 @@ use FastD\Database\Drivers\QueryContext\QueryContextInterface;
  *
  * @package FastD\Database\Drivers
  */
-class Driver implements DriverInterface
+abstract class Driver implements DriverInterface
 {
     /**
      * @var string
@@ -37,20 +37,6 @@ class Driver implements DriverInterface
      * @var QueryContextInterface
      */
     protected $queryContext;
-
-    /**
-     * @param array $config
-     * @return MySQL
-     */
-    public static function createDriver(array $config)
-    {
-        switch ($config['database_type']) {
-            case 'mariadb':
-            case 'mysql':
-            default:
-                return new MySQL($config);
-        }
-    }
 
     /**
      * @return string
