@@ -219,51 +219,6 @@ abstract class Connection implements ConnectionInterface
     }
 
     /**
-     * Get connection operation error information.
-     *
-     * @return array
-     */
-    public function getErrors()
-    {
-        return null === $this->statement ? $this->pdo->errorInfo() : $this->statement->errorInfo();
-    }
-
-    /**
-     * @return array
-     */
-    public function getSql()
-    {
-        if (null === $this->statement) {
-            return false;
-        }
-
-        return $this->statement->queryString;
-    }
-
-    /**
-     * Get connection detail information.
-     *
-     * @return string
-     */
-    public function getConnectionInfo()
-    {
-        $attributes = '';
-
-        foreach ([
-                     'pdo'               => 'pdo_NAME',
-                     'client version'    => 'CLIENT_VERSION',
-                     'connection status' => 'CONNECTION_STATUS',
-                     'server info'       => 'SERVER_INFO',
-                     'server version'    => 'SERVER_VERSION',
-                     'timeout'           => 'TIMEOUT',
-                 ] as $name => $value) {
-            $attributes .= $name . ': ' . $this->pdo->getAttribute(constant('\PDO::ATTR_' . $value)) . PHP_EOL;
-        }
-
-        return $attributes;
-    }
-
-    /**
      * @return int|false
      */
     public function getAffectedRow()
@@ -296,6 +251,38 @@ abstract class Connection implements ConnectionInterface
     public function getCount()
     {
         // TODO: Implement getCount() method.
+    }
+
+    /**
+     * Get connection operation error information.
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        return null === $this->statement ? $this->pdo->errorInfo() : $this->statement->errorInfo();
+    }
+
+    /**
+     * Get connection detail information.
+     *
+     * @return string
+     */
+    public function getConnectionInfo()
+    {
+        $attributes = '';
+
+        foreach ([
+                     'pdo'               => 'DRIVER_NAME',
+                     'client version'    => 'CLIENT_VERSION',
+                     'connection status' => 'CONNECTION_STATUS',
+                     'server info'       => 'SERVER_INFO',
+                     'server version'    => 'SERVER_VERSION',
+                 ] as $name => $value) {
+            $attributes .= $name . ': ' . $this->pdo->getAttribute(constant('\PDO::ATTR_' . $value)) . PHP_EOL;
+        }
+
+        return $attributes;
     }
 
     /**
