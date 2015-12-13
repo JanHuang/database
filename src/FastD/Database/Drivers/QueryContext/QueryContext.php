@@ -14,20 +14,37 @@
 
 namespace FastD\Database\Drivers\QueryContext;
 
+/**
+ * Class QueryContext
+ *
+ * @package FastD\Database\Drivers\QueryContext
+ */
 class QueryContext implements QueryContextInterface
 {
+    /**
+     * @var string
+     */
     protected $name;
 
+    /**
+     * @param $name
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @return $this
+     */
     public function __clone()
     {
         return $this;

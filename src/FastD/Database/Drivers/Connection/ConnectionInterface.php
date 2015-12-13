@@ -16,7 +16,7 @@ namespace FastD\Database\Drivers\Connection;
 /**
  * Interface ConnectionInterface
  *
- * @package FastD\Database\Connection
+ * @package FastD\Database\Drivers\Connection
  */
 interface ConnectionInterface
 {

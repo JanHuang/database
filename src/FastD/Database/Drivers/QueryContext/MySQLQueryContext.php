@@ -15,9 +15,9 @@
 namespace FastD\Database\Drivers\QueryContext;
 
 /**
- * Class QueryContext
+ * Class MySQLQueryContext
  *
- * @package FastD\Database\Query
+ * @package FastD\Database\Drivers\QueryContext
  */
 class MySQLQueryContext extends QueryContext
 {
