@@ -226,4 +226,24 @@ abstract class Driver implements DriverInterface
 
         return $this;
     }
+
+    public function find()
+    {
+
+    }
+
+    public function findAll()
+    {
+
+    }
+
+    public function remove()
+    {
+
+    }
+
+    public function save()
+    {
+
+    }
 }

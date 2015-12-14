@@ -45,14 +45,14 @@ class Repository
     /**
      * @var Driver
      */
-    protected $connection;
+    protected $driver;
 
     /**
      * @param Driver $driver
      */
     public function __construct(Driver $driver = null)
     {
-        $this->connection = $driver;
+        $this->driver = $driver;
     }
 
     /**
@@ -82,7 +82,7 @@ class Repository
      */
     public function find(array $where = [], array $field = [])
     {
-        return $this->connection->find($this->getTable(), $where, $field);
+        return $this->driver->find($this->getTable(), $where, $field);
     }
 
     /**
@@ -94,7 +94,7 @@ class Repository
      */
     public function findAll(array $where = [],  array $field = [])
     {
-        return $this->connection->findAll($this->getTable(), $where, $field);
+        return $this->driver->findAll($this->getTable(), $where, $field);
     }
 
     /**
@@ -103,7 +103,7 @@ class Repository
      */
     public function insert(array $data = array())
     {
-        return $this->connection->insert($this->getTable(), $data);
+        return $this->driver->insert($this->getTable(), $data);
     }
     /**
      * @param array $data
@@ -112,7 +112,7 @@ class Repository
      */
     public function update(array $data = [], array $where = [])
     {
-        return $this->connection->update($this->getTable(), $data, $where);
+        return $this->driver->update($this->getTable(), $data, $where);
     }
 
     /**
@@ -121,7 +121,7 @@ class Repository
      */
     public function count(array $where = [])
     {
-        return $this->connection->count($this->getTable(), $where);
+        return $this->driver->count($this->getTable(), $where);
     }
 
     /**
@@ -130,7 +130,7 @@ class Repository
      */
     public function createQuery($dql)
     {
-        return $this->connection->createQuery($dql);
+        return $this->driver->createQuery($dql);
     }
 
     /**
@@ -142,7 +142,7 @@ class Repository
      */
     public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
-        return $this->connection->pagination($this->getTable(), $page, $showList, $showPage, $lastId);
+        return $this->driver->pagination($this->getTable(), $page, $showList, $showPage, $lastId);
     }
 
     /**
@@ -152,7 +152,7 @@ class Repository
      */
     public function getErrors()
     {
-        return $this->connection->getErrors();
+        return $this->driver->getErrors();
     }
 
     /**
@@ -162,7 +162,7 @@ class Repository
      */
     public function getLastQuery()
     {
-        return $this->connection->getQueryString();
+        return $this->driver->getQueryString();
     }
 
     /**
@@ -172,6 +172,6 @@ class Repository
      */
     public function getQueryLogs()
     {
-        return $this->connection->getLogs();
+        return $this->driver->getLogs();
     }
 }
