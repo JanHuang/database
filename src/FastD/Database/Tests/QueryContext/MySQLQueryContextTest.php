@@ -66,4 +66,21 @@ class MySQLQueryContextTest extends \PHPUnit_Framework_TestCase
             $this->queryContext->getSql()
         );
     }
+
+    public function testFields()
+    {
+        $this->queryContext
+            ->fields([
+                'id',
+                'name' => 'nickname'
+            ])
+            ->table('test')
+            ->select()
+        ;
+
+        $this->assertEquals(
+            'SELECT `id`,`name` AS `nickname` FROM `test`;',
+            $this->queryContext->getSql()
+        );
+    }
 }

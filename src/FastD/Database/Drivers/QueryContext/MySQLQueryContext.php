@@ -24,37 +24,47 @@ class MySQLQueryContext implements QueryContextInterface
     /**
      * @var string
      */
-    public $table;
+    protected $table;
 
     /**
      * @var string
      */
-    public $where;
+    protected $where;
 
     /**
      * @var string
      */
-    public $fields = '*';
+    protected $fields = '*';
 
     /**
      * @var string
      */
-    public $limit;
+    protected $limit;
 
     /**
      * @var string
      */
-    public $join;
+    protected $join;
 
     /**
      * @var string
      */
-    public $group;
+    protected $group;
 
     /**
      * @var string
      */
-    public $order;
+    protected $order;
+
+    /**
+     * @var string
+     */
+    protected $like;
+
+    /**
+     * @var string
+     */
+    protected $not_like;
 
     /**
      * @var string
@@ -190,11 +200,15 @@ class MySQLQueryContext implements QueryContextInterface
     {
         if (array() !== $fields) {
             $this->fields = '';
-            foreach ($fields as $value) {
-                if (false === strpos($value, ' ')) {
-                    $this->fields .= '`' . $value . '`,';
+            foreach ($fields as $name => $alias) {
+                if (is_integer($name)) {
+                    if (false === strpos($alias, ' ')) {
+                        $this->fields .= '`' . $alias . '`,';
+                    } else {
+                        $this->fields .= $alias . ',';
+                    }
                 } else {
-                    $this->fields .= $value . ',';
+                    $this->fields .= '`' . $name . '` AS `' . $alias . '`,';
                 }
             }
             $this->fields = trim($this->fields, ',');
@@ -273,37 +287,6 @@ class MySQLQueryContext implements QueryContextInterface
     }
 
     /**
-     * @return string
-     */
-    public function getSql()
-    {
-        $sql = $this->sql;
-
-        $this->fields   = '*';
-        $this->where    = null;
-        $this->group    = null;
-        $this->limit    = null;
-        $this->having   = null;
-        $this->order    = null;
-        $this->keys     = null;
-        $this->value    = null;
-        $this->join     = null;
-
-        return $sql;
-    }
-
-    /**
-     * Query fields.
-     *
-     * @param array $field
-     * @return QueryContextInterface
-     */
-    public function field(array $field = ['*'])
-    {
-        // TODO: Implement field() method.
-    }
-
-    /**
      * Select join.
      *
      * @param        $table
@@ -313,7 +296,9 @@ class MySQLQueryContext implements QueryContextInterface
      */
     public function join($table, $on, $type = 'LEFT')
     {
-        // TODO: Implement join() method.
+        $this->join = ' ' . $type . ' JOIN ' . $table . ' ON ' . $on;
+
+        return $this;
     }
 
     /**
@@ -344,7 +329,20 @@ class MySQLQueryContext implements QueryContextInterface
      */
     public function like(array $like)
     {
-        // TODO: Implement like() method.
+        $this->like = ' LIKE ' . implode(',', $like);
+
+        return $this;
+    }
+
+    /**
+     * @param array $like
+     * @return QueryContextInterface
+     */
+    public function notLike(array $like)
+    {
+        $this->not_like = ' NOT LIKE ' . implode(',', $like);
+
+        return $this;
     }
 
     /**
@@ -362,6 +360,28 @@ class MySQLQueryContext implements QueryContextInterface
      */
     public function custom($sql)
     {
-        // TODO: Implement custom() method.
+        $this->sql = $sql;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSql()
+    {
+        $sql = $this->sql;
+
+        $this->fields   = '*';
+        $this->where    = null;
+        $this->group    = null;
+        $this->limit    = null;
+        $this->having   = null;
+        $this->order    = null;
+        $this->keys     = null;
+        $this->value    = null;
+        $this->join     = null;
+
+        return $sql;
     }
 }

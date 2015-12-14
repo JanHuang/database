@@ -35,7 +35,7 @@ interface QueryContextInterface
      * @param array $field
      * @return QueryContextInterface
      */
-    public function field(array $field = ['*']);
+    public function fields(array $field = ['*']);
 
     /**
      * Select join.
@@ -85,6 +85,12 @@ interface QueryContextInterface
      * @return QueryContextInterface
      */
     public function like(array $like);
+
+    /**
+     * @param array $like
+     * @return QueryContextInterface
+     */
+    public function notLike(array $like);
 
     /**
      * @param array $between
