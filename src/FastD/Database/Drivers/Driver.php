@@ -116,7 +116,7 @@ abstract class Driver implements DriverInterface
      */
     public function field(array $field = ['*'])
     {
-        $this->queryContext->field($field);
+        $this->queryContext->fields($field);
 
         return $this;
     }

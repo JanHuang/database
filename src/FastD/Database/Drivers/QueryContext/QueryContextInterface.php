@@ -93,12 +93,6 @@ interface QueryContextInterface
     public function notLike(array $like);
 
     /**
-     * @param array $between
-     * @return QueryContextInterface
-     */
-    public function between(array $between);
-
-    /**
      * @param $sql
      * @return QueryContextInterface
      */

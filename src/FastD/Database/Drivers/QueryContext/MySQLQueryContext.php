@@ -346,15 +346,6 @@ class MySQLQueryContext implements QueryContextInterface
     }
 
     /**
-     * @param array $between
-     * @return QueryContextInterface
-     */
-    public function between(array $between)
-    {
-        // TODO: Implement between() method.
-    }
-
-    /**
      * @param $sql
      * @return QueryContextInterface
      */
