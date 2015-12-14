@@ -14,19 +14,49 @@
 
 namespace FastD\Database\ORM;
 
-use FastD\Database\Connection\ConnectionInterface;
+use FastD\Database\Drivers\DriverInterface;
 
+/**
+ * Class Entity
+ *
+ * @package FastD\Database\ORM
+ */
 class Entity
 {
+    /**
+     * @var mixed
+     */
     protected $primary_key;
 
-    protected $connection;
+    /**
+     * @var DriverInterface
+     */
+    protected $driver;
 
-    public function __construct($primaryKey, ConnectionInterface $connection = null)
+    /**
+     * Entity constructor.
+     *
+     * @param                 $primaryKey
+     * @param DriverInterface $driverInterface
+     */
+    public function __construct($primaryKey, DriverInterface $driverInterface)
     {
         $this->primary_key = $primaryKey;
 
-        $this->connection = $connection;
+        $this->setDriver($driverInterface);
+    }
+
+    public function getPrimaryKey()
+    {
+
+    }
+
+    public function getId()
+    {}
+
+    public function setDriver(DriverInterface $driverInterface)
+    {
+
     }
 
     /**

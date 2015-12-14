@@ -13,7 +13,7 @@
 
 namespace FastD\Database\ORM;
 
-use FastD\Database\Driver\Driver;
+use FastD\Database\Drivers\Driver;
 
 /**
  * Class Repository
