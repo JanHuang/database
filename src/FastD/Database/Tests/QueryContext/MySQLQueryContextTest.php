@@ -83,4 +83,47 @@ class MySQLQueryContextTest extends \PHPUnit_Framework_TestCase
             $this->queryContext->getSql()
         );
     }
+
+    public function testGroupBy()
+    {
+        $this->queryContext
+            ->table('test')
+            ->groupBy(['id'])
+            ->select()
+        ;
+
+        $this->assertEquals(
+            'SELECT * FROM `test` GROUP BY `id`;',
+            $this->queryContext->getSql()
+        );
+    }
+
+    public function testOrderBy()
+    {
+        $this->queryContext
+            ->table('test')
+            ->orderBy(['id' => 'DESC'])
+            ->select()
+        ;
+
+        $this->assertEquals(
+            'SELECT * FROM `test` ORDER BY `id` DESC;',
+            $this->queryContext->getSql()
+        );
+
+        $this->queryContext
+            ->table('test')
+            ->orderBy([
+                'id' => 'DESC',
+                'name desc',
+                'nickname' => 'ASC'
+            ])
+            ->select()
+        ;
+
+        $this->assertEquals(
+            'SELECT * FROM `test` ORDER BY `id` DESC,name desc,`nickname` ASC;',
+            $this->queryContext->getSql()
+        );
+    }
 }

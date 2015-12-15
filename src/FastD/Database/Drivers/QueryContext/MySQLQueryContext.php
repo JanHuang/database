@@ -87,6 +87,11 @@ class MySQLQueryContext implements QueryContextInterface
     protected $sql;
 
     /**
+     * @var array
+     */
+    protected $logs = [];
+
+    /**
      * @const int
      */
     const CONTEXT_INSERT = 1;
@@ -292,7 +297,7 @@ class MySQLQueryContext implements QueryContextInterface
      * @param        $table
      * @param        $on
      * @param string $type
-     * @return QueryContextInterface
+     * @return $this
      */
     public function join($table, $on, $type = 'LEFT')
     {
@@ -303,23 +308,32 @@ class MySQLQueryContext implements QueryContextInterface
 
     /**
      * @param array $groupBy
-     * @return QueryContextInterface
+     * @return $this
      */
     public function groupBy(array $groupBy)
     {
-        $this->group = ' GROUP BY ' . implode(',', $groupBy);
+        $this->group = ' GROUP BY `' . implode('`,`', $groupBy) . '`';
 
         return $this;
     }
 
     /**
      * @param array $orderBy
-     * @return QueryContextInterface
+     * @return $this
      */
     public function orderBy(array $orderBy)
     {
-        $this->order = ' ORDER BY ' . implode(',', $orderBy);
+        $orders = [];
+        foreach ($orderBy as $field => $order) {
+            if (!is_integer($field)) {
+                $orders[] = '`' . $field . '` ' . $order;
+            } else {
+                $orders[] = $order;
+            }
+        }
 
+        $this->order = ' ORDER BY ' . implode(',', $orders);
+        unset($orders);
         return $this;
     }
 
@@ -336,7 +350,7 @@ class MySQLQueryContext implements QueryContextInterface
 
     /**
      * @param array $like
-     * @return QueryContextInterface
+     * @return $this
      */
     public function notLike(array $like)
     {
@@ -347,7 +361,7 @@ class MySQLQueryContext implements QueryContextInterface
 
     /**
      * @param $sql
-     * @return QueryContextInterface
+     * @return $this
      */
     public function custom($sql)
     {
@@ -373,6 +387,13 @@ class MySQLQueryContext implements QueryContextInterface
         $this->value    = null;
         $this->join     = null;
 
+        $this->logs[] = $sql;
+
         return $sql;
+    }
+
+    public function getLogs()
+    {
+        return $this->logs;
     }
 }
