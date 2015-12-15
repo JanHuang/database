@@ -14,7 +14,8 @@
 
 namespace FastD\Database\Drivers;
 
-use FastD\Database\Drivers\QueryContext\QueryContextInterface;
+use FastD\Database\Drivers\Query\MySQLQueryBuilder;
+use FastD\Database\Drivers\Query\QueryBuilderInterface;
 
 /**
  * Class DriverAbstract
@@ -34,9 +35,9 @@ abstract class Driver implements DriverInterface
     protected $pdo;
 
     /**
-     * @var QueryContextInterface
+     * @var MySQLQueryBuilder
      */
-    protected $queryContext;
+    protected $queryBuilder;
 
     /**
      * @return string
@@ -77,20 +78,20 @@ abstract class Driver implements DriverInterface
     }
 
     /**
-     * @return QueryContextInterface
+     * @return QueryBuilderInterface
      */
-    public function getQueryContext()
+    public function getQueryBuilder()
     {
-        return $this->queryContext;
+        return $this->queryBuilder;
     }
 
     /**
-     * @param QueryContextInterface $context
+     * @param QueryBuilderInterface $queryBuilderInterface
      * @return $this
      */
-    public function setQueryContext(QueryContextInterface $context)
+    public function setQueryBuilder(QueryBuilderInterface $queryBuilderInterface)
     {
-        $this->queryContext = $context;
+        $this->queryBuilder = $queryBuilderInterface;
 
         return $this;
     }
@@ -103,7 +104,7 @@ abstract class Driver implements DriverInterface
      */
     public function where(array $where)
     {
-        $this->queryContext->where($where);
+        $this->queryBuilder->where($where);
 
         return $this;
     }
@@ -116,7 +117,7 @@ abstract class Driver implements DriverInterface
      */
     public function field(array $field = ['*'])
     {
-        $this->queryContext->fields($field);
+        $this->queryBuilder->fields($field);
 
         return $this;
     }
@@ -131,7 +132,7 @@ abstract class Driver implements DriverInterface
      */
     public function join($table, $on, $type = 'LEFT')
     {
-        $this->queryContext->join($table, $on, $type);
+        $this->queryBuilder->join($table, $on, $type);
 
         return $this;
     }
@@ -144,7 +145,7 @@ abstract class Driver implements DriverInterface
      */
     public function table($table)
     {
-        $this->queryContext->table($table);
+        $this->queryBuilder->table($table);
 
         return $this;
     }
@@ -156,7 +157,7 @@ abstract class Driver implements DriverInterface
      */
     public function limit($offset, $limit)
     {
-        $this->queryContext->limit($offset, $limit);
+        $this->queryBuilder->limit($offset, $limit);
 
         return $this;
     }
@@ -167,7 +168,7 @@ abstract class Driver implements DriverInterface
      */
     public function groupBy(array $groupBy)
     {
-        $this->queryContext->groupBy($groupBy);
+        $this->queryBuilder->groupBy($groupBy);
 
         return $this;
     }
@@ -178,7 +179,7 @@ abstract class Driver implements DriverInterface
      */
     public function orderBy(array $orderBy)
     {
-        $this->queryContext->orderBy($orderBy);
+        $this->queryBuilder->orderBy($orderBy);
 
         return $this;
     }
@@ -189,7 +190,7 @@ abstract class Driver implements DriverInterface
      */
     public function having(array $having)
     {
-        $this->queryContext->having($having);
+        $this->queryBuilder->having($having);
 
         return $this;
     }
@@ -200,7 +201,7 @@ abstract class Driver implements DriverInterface
      */
     public function like(array $like)
     {
-        $this->queryContext->like($like);
+        $this->queryBuilder->like($like);
 
         return $this;
     }
@@ -211,7 +212,7 @@ abstract class Driver implements DriverInterface
      */
     public function between(array $between)
     {
-        $this->queryContext->between($between);
+        $this->queryBuilder->between($between);
 
         return $this;
     }
@@ -222,7 +223,7 @@ abstract class Driver implements DriverInterface
      */
     public function createQuery($sql)
     {
-        $this->queryContext->custom($sql);
+        $this->queryBuilder->custom($sql);
 
         return $this;
     }

@@ -12,20 +12,20 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Drivers\QueryContext;
+namespace FastD\Database\Drivers\Query;
 
 /**
- * Interface QueryContextInterface
+ * Interface $this
  *
  * @package FastD\Database\Drivers\QueryContext
  */
-interface QueryContextInterface
+interface QueryBuilderInterface
 {
     /**
      * Query select where condition.
      *
      * @param array $where
-     * @return QueryContextInterface
+     * @return $this
      */
     public function where(array $where);
 
@@ -33,7 +33,7 @@ interface QueryContextInterface
      * Query fields.
      *
      * @param array $field
-     * @return QueryContextInterface
+     * @return $this
      */
     public function fields(array $field = ['*']);
 
@@ -43,7 +43,7 @@ interface QueryContextInterface
      * @param        $table
      * @param        $on
      * @param string $type
-     * @return QueryContextInterface
+     * @return $this
      */
     public function join($table, $on, $type = 'LEFT');
 
@@ -51,50 +51,54 @@ interface QueryContextInterface
      * Select to table name.
      *
      * @param $table
-     * @return QueryContextInterface
+     * @return $this
      */
     public function table($table);
 
     /**
      * @param $offset
      * @param $limit
-     * @return QueryContextInterface
+     * @return $this
      */
     public function limit($offset, $limit);
 
     /**
      * @param array $groupBy
-     * @return QueryContextInterface
+     * @return $this
      */
     public function groupBy(array $groupBy);
 
     /**
      * @param array $orderBy
-     * @return QueryContextInterface
+     * @return $this
      */
     public function orderBy(array $orderBy);
 
     /**
      * @param array $having
-     * @return QueryContextInterface
+     * @return $this
      */
     public function having(array $having);
 
     /**
      * @param array $like
-     * @return QueryContextInterface
+     * @return $this
      */
     public function like(array $like);
 
     /**
      * @param array $like
-     * @return QueryContextInterface
+     * @return $this
      */
     public function notLike(array $like);
 
     /**
      * @param $sql
-     * @return QueryContextInterface
+     * @return $this
      */
     public function custom($sql);
+
+//    public function func();
+
+//    public function subQuery();
 }

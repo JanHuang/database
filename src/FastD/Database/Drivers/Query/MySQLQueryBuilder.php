@@ -12,14 +12,14 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Drivers\QueryContext;
+namespace FastD\Database\Drivers\Query;
 
 /**
  * Class MySQLQueryContext
  *
  * @package FastD\Database\Drivers\QueryContext
  */
-class MySQLQueryContext implements QueryContextInterface
+class MySQLQueryBuilder implements QueryBuilderInterface
 {
     /**
      * @var string
@@ -252,46 +252,6 @@ class MySQLQueryContext implements QueryContextInterface
     }
 
     /**
-     * @return $this
-     */
-    public function select()
-    {
-        $this->sql = 'SELECT ' . $this->fields . ' FROM ' . $this->table . $this->where . $this->group . $this->having . $this->order . $this->limit . ';';
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function update()
-    {
-        $this->sql = 'UPDATE ' . $this->table . ' SET ' . $this->value . $this->where . $this->limit . ';';
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function delete()
-    {
-        $this->sql = 'DELETE FROM ' . $this->table . $this->where . $this->limit . ';';
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function insert()
-    {
-        $this->sql = 'INSERT INTO ' . $this->table . $this->keys . ' VALUES ' . $this->value . ';';
-
-        return $this;
-    }
-
-    /**
      * Select join.
      *
      * @param        $table
@@ -339,7 +299,7 @@ class MySQLQueryContext implements QueryContextInterface
 
     /**
      * @param array $like
-     * @return QueryContextInterface
+     * @return $this
      */
     public function like(array $like)
     {
@@ -366,6 +326,46 @@ class MySQLQueryContext implements QueryContextInterface
     public function custom($sql)
     {
         $this->sql = $sql;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function select()
+    {
+        $this->sql = 'SELECT ' . $this->fields . ' FROM ' . $this->table . $this->where . $this->group . $this->having . $this->order . $this->limit . ';';
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function update()
+    {
+        $this->sql = 'UPDATE ' . $this->table . ' SET ' . $this->value . $this->where . $this->limit . ';';
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function delete()
+    {
+        $this->sql = 'DELETE FROM ' . $this->table . $this->where . $this->limit . ';';
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function insert()
+    {
+        $this->sql = 'INSERT INTO ' . $this->table . $this->keys . ' VALUES ' . $this->value . ';';
 
         return $this;
     }

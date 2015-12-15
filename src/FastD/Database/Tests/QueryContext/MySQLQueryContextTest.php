@@ -14,7 +14,7 @@
 
 namespace FastD\Database\Tests\QueryContext;
 
-use FastD\Database\Drivers\QueryContext\MySQLQueryContext;
+use FastD\Database\Drivers\Query\MySQLQueryBuilder;
 
 /**
  * Class MySQLQueryContextTest
@@ -24,13 +24,13 @@ use FastD\Database\Drivers\QueryContext\MySQLQueryContext;
 class MySQLQueryContextTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var MySQLQueryContext
+     * @var MySQLQueryBuilder
      */
     protected $queryContext;
 
     public function setUp()
     {
-        $this->queryContext = new MySQLQueryContext();
+        $this->queryContext = new MySQLQueryBuilder();
     }
 
     public function testTable()
@@ -125,5 +125,15 @@ class MySQLQueryContextTest extends \PHPUnit_Framework_TestCase
             'SELECT * FROM `test` ORDER BY `id` DESC,name desc,`nickname` ASC;',
             $this->queryContext->getSql()
         );
+    }
+
+    public function testHaving()
+    {
+
+    }
+
+    public function testLike()
+    {
+
     }
 }
