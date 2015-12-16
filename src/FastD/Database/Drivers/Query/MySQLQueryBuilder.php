@@ -108,9 +108,10 @@ class MySQLQueryBuilder implements QueryBuilderInterface
 
     /**
      * @param array $where
+     * @param string $assign
      * @return string
      */
-    protected function parseWhere(array $where)
+    protected function parseWhere(array $where, $assign = '=')
     {
         if (empty($where)) {
             return '';
@@ -131,11 +132,11 @@ class MySQLQueryBuilder implements QueryBuilderInterface
         $where = [];
 
         foreach ($conditions as $key => $value) {
-            if (false === strpos($value, ' ')) {
-                $where[] = '`' . $key . '`=\'' . $value . '\'';
-            } else {
-                $where[] = '`' . $key . '`' . $value;
+            if (false !== ($start = strpos($key, '['))) {
+                $assign = substr($key, $start + 1, -1);
+                $key = substr($key, 0, $start);
             }
+            $where[] = '`' . $key . '`' . $assign . '\'' . $value . '\'';
         }
 
         if ('' !== $joint) {
@@ -303,7 +304,7 @@ class MySQLQueryBuilder implements QueryBuilderInterface
      */
     public function like(array $like)
     {
-        $this->like = ' LIKE ' . implode(',', $like);
+        $this->like = ' WHERE ' . $this->parseWhere($like, ' LIKE ');
 
         return $this;
     }
@@ -314,7 +315,7 @@ class MySQLQueryBuilder implements QueryBuilderInterface
      */
     public function notLike(array $like)
     {
-        $this->not_like = ' NOT LIKE ' . implode(',', $like);
+        $this->not_like = ' WHERE ' . $this->parseWhere($like, ' NOT LIKE ');
 
         return $this;
     }
@@ -335,7 +336,7 @@ class MySQLQueryBuilder implements QueryBuilderInterface
      */
     public function select()
     {
-        $this->sql = 'SELECT ' . $this->fields . ' FROM ' . $this->table . $this->where . $this->group . $this->having . $this->order . $this->limit . ';';
+        $this->sql = 'SELECT ' . $this->fields . ' FROM ' . $this->table . $this->where . $this->like . $this->group . $this->having . $this->order . $this->limit . ';';
 
         return $this;
     }

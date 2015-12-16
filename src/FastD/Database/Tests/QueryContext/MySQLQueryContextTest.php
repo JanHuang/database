@@ -129,11 +129,40 @@ class MySQLQueryContextTest extends \PHPUnit_Framework_TestCase
 
     public function testHaving()
     {
+        $this->queryContext
+            ->table('test')
+            ->groupBy(
+                [
+                    'name',
+                ]
+            )
+            ->having([
+                'id[>]' => '20'
+            ])
+            ->select()
+        ;
 
+        $this->assertEquals(
+            'SELECT * FROM `test` GROUP BY `name` HAVING `id`>\'20\';',
+            $this->queryContext->getSql()
+        );
     }
 
     public function testLike()
     {
+        $this->queryContext
+            ->table('test')
+            ->like([
+                'name' => '%name%'
+            ])
+            ->select()
+        ;
 
+//        echo $this->queryContext->getSql();
+
+        $this->assertEquals(
+            'SELECT * FROM `test` WHERE `name` LIKE \'%name%\';',
+            $this->queryContext->getSql()
+        );
     }
 }
