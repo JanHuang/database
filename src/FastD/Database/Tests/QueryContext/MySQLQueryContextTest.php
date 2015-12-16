@@ -158,8 +158,6 @@ class MySQLQueryContextTest extends \PHPUnit_Framework_TestCase
             ->select()
         ;
 
-//        echo $this->queryContext->getSql();
-
         $this->assertEquals(
             'SELECT * FROM `test` WHERE `name` LIKE \'%name%\';',
             $this->queryContext->getSql()

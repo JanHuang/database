@@ -207,17 +207,6 @@ abstract class Driver implements DriverInterface
     }
 
     /**
-     * @param array $between
-     * @return DriverInterface
-     */
-    public function between(array $between)
-    {
-        $this->queryBuilder->between($between);
-
-        return $this;
-    }
-
-    /**
      * @param $sql
      * @return DriverInterface
      */
@@ -238,6 +227,9 @@ abstract class Driver implements DriverInterface
 
     }
 
+    /**
+     * @deprecated
+     */
     public function remove()
     {
 

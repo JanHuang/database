@@ -13,8 +13,7 @@
 
 namespace FastD\Database;
 
-use FastD\Database\Drivers\Driver;
-use FastD\Database\Drivers\DriverBuilder;
+use FastD\Database\Drivers\DriverFactory;
 use FastD\Database\Drivers\DriverInterface;
 
 /**
@@ -87,7 +86,7 @@ class DBPool implements \Iterator
      */
     public function addDriver($name, array $config)
     {
-        $driver = DriverBuilder::createDriver($config);
+        $driver = DriverFactory::createDriver($config);
 
         $driver->setName($name);
 

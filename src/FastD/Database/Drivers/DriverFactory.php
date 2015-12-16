@@ -19,7 +19,7 @@ namespace FastD\Database\Drivers;
  *
  * @package FastD\Database\Drivers
  */
-class DriverBuilder
+class DriverFactory
 {
     /**
      * @param array $config
