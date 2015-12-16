@@ -54,6 +54,16 @@ abstract class Entity implements \ArrayAccess
     protected $repository;
 
     /**
+     * @var int
+     */
+    protected $primary;
+
+    /**
+     * @var int
+     */
+    protected $id;
+
+    /**
      * @return DriverInterface
      */
     public function getDriver()
@@ -128,11 +138,23 @@ abstract class Entity implements \ArrayAccess
     }
 
     /**
-     * @return array|bool
+     * @return $this|bool
      */
     public function find()
     {
+        $row = $this->driver
+            ->table(
+                $this->getTable()
+            )
+            ->field(
+                array_keys($this->fields)
+            )
+            ->find([
+               'id' => $this->id
+            ])
+        ;
 
+        return false === $row ? false : static::init($this, $row, $this->driver);
     }
 
     /**
@@ -151,14 +173,13 @@ abstract class Entity implements \ArrayAccess
     {}
 
     /**
+     * @param Entity          $entity
      * @param array           $data
      * @param DriverInterface $driverInterface
      * @return Entity
      */
-    public static function init(array $data, DriverInterface $driverInterface)
+    public static function init(Entity $entity, array $data, DriverInterface $driverInterface)
     {
-        $entity = new static;
-
         $entity->row = $data;
 
         $entity->setDriver($driverInterface);
@@ -181,7 +202,7 @@ abstract class Entity implements \ArrayAccess
         $entities = [];
 
         foreach ($data as $row) {
-            $entities[] = self::init($row, $driverInterface);
+            $entities[] = self::init(new static, $row, $driverInterface);
         }
 
         return $entities;
