@@ -126,9 +126,16 @@ abstract class Entity implements \ArrayAccess
     public function remove()
     {}
 
-    public function init(array $data, DriverInterface $driverInterface)
+    /**
+     * @param array           $data
+     * @param DriverInterface $driverInterface
+     * @return Entity
+     */
+    public static function init(array $data, DriverInterface $driverInterface)
     {
-        $entity = clone $this;
+        $entity = new static;
+
+        $entity->row = $data;
 
         $entity->setDriver($driverInterface);
 
@@ -138,6 +145,22 @@ abstract class Entity implements \ArrayAccess
         }
 
         return $entity;
+    }
+
+    /**
+     * @param array           $data
+     * @param DriverInterface $driverInterface
+     * @return Entity[]
+     */
+    public static function initArray(array $data, DriverInterface $driverInterface)
+    {
+        $entities = [];
+
+        foreach ($data as $row) {
+            $entities[] = self::init($row, $driverInterface);
+        }
+
+        return $entities;
     }
 
     /**

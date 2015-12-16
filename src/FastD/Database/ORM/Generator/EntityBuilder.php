@@ -114,7 +114,7 @@ E;
      * @param int \$id
      * @param \FastD\Database\Drivers\DriverInterface \$driverInterface
      */
-    public function __construct(\$id = null, \FastD\Database\Drivers\DriverInterface \$driverInterface)
+    public function __construct(\$id = null, \FastD\Database\Drivers\DriverInterface \$driverInterface = null)
     {
         \$this->{$this->struct->getPrimary()->getName()} = \$id;
 
