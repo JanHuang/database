@@ -28,8 +28,17 @@ $driver = new MySQL([
 $test = new Test(1, $driver);
 
 echo '<pre>';
+echo 'find<br />';
 $test->find();
-print_r($test);
 echo $test->getId();
 echo $test->getTrueName();
 echo $test['trueName'];
+
+echo '<hr />update<br />';
+$test->setTrueName('asdad');
+echo $test->save();
+
+echo '<hr>insert<br />';
+$row = new Test(null, $driver);
+$row->setTrueName('test insert');
+echo $row->save();

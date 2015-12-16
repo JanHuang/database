@@ -156,9 +156,17 @@ abstract class Repository
     }
 
     /**
-     * @param array $params
+     * @return array
      */
-    public function bindRequest(array $params)
+    public function bindRequest()
+    {
+
+    }
+
+    /**
+     * @return array
+     */
+    public function bindRequestParams(array $params)
     {
 
     }

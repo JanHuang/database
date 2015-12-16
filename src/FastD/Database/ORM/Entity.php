@@ -83,7 +83,7 @@ abstract class Entity implements \ArrayAccess
      * @param int $id
      * @param \FastD\Database\Drivers\DriverInterface $driverInterface
      */
-    public function __construct($id, \FastD\Database\Drivers\DriverInterface $driverInterface = null)
+    public function __construct($id = null, \FastD\Database\Drivers\DriverInterface $driverInterface = null)
     {
         $this->id = $id;
 
@@ -173,15 +173,18 @@ abstract class Entity implements \ArrayAccess
     }
 
     /**
+     * @param array $fields
      * @return $this|bool
      */
-    public function find()
+    public function find(array $fields = [])
     {
         $row = $this->driver
             ->table(
                 $this->getTable()
             )
-            ->field($this->fields)
+            ->field(
+                array() === $fields ? $this->fields : $fields
+            )
             ->find([
                 $this->primary => $this->id
             ])
@@ -195,15 +198,38 @@ abstract class Entity implements \ArrayAccess
      * @return int|bool
      */
     public function save()
-    {}
+    {
+        $data = [];
+        $values = [];
+        foreach ($this->getFields() as $field => $alias) {
+            $method = 'get' . ucfirst($alias);
+            $value = $this->$method();
+            if (null === $value) {
+                continue;
+            }
+            $data[$field] = ':' . $field;
+            $values[$field] = $value;
+        }
 
-    /**
-     * Remove row in database.
-     *
-     * @return int|bool
-     */
-    public function remove()
-    {}
+        $where = [];
+
+        if (null !== $this->id) {
+            $where[$this->primary] = $this->id;
+        }
+        print_r($where);
+        $id = $this->driver
+            ->table(
+                $this->getTable()
+            )
+            ->save($data, $where, $values)
+        ;
+
+        if (null === $this->id) {
+            $this->id = $id;
+        }
+
+        return $id;
+    }
 
     /**
      * @param Entity          $entity
@@ -217,9 +243,9 @@ abstract class Entity implements \ArrayAccess
 
         $entity->setDriver($driverInterface);
 
-        foreach ($entity->getFields() as $field => $name) {
-            $method = 'set' . ucfirst($name);
-            $entity->$method(isset($data[$name]) ? $data[$name] : null);
+        foreach ($entity->getFields() as $field => $alias) {
+            $method = 'set' . ucfirst($alias);
+            $entity->$method(isset($data[$alias]) ? $data[$alias] : null);
         }
 
         return $entity;

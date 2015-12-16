@@ -53,7 +53,7 @@ class Test extends Entity
      */
     protected $trueName;
 
-    
+
     /**
      * @param int $id
      * @return $this
