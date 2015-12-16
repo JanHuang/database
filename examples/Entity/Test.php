@@ -12,6 +12,9 @@ class Test extends Entity
      */
     protected $table = 'test';
 
+    /**
+     * @var array
+     */
     protected $structure = [
         'id' => [
             'type' => 'int',
@@ -23,6 +26,9 @@ class Test extends Entity
         ],
     ];
 
+    /**
+     * @var array
+     */
     protected $fields = [
         'id' => 'id','name' => 'trueName'
     ];
@@ -31,6 +37,11 @@ class Test extends Entity
      * @var string|null
      */
     protected $repository = 'Examples\Repository\TestRepository';
+
+    /**
+     * @var int
+     */
+    protected $primary = 'id';
     
     /**
      * @var int
@@ -41,6 +52,7 @@ class Test extends Entity
      * @var string
      */
     protected $trueName;
+
     
     /**
      * @param int $id

@@ -56,8 +56,12 @@ class EntityBuilder
 
         $property = '';
         $methods = '';
+        $primary = '';
 
         foreach ($this->struct->getFields() as $field) {
+            if ($field->isPrimary()) {
+                $primary = $this->buildProperty('primary', $field->getType(), $field->getMapName());
+            }
             $property .= PHP_EOL . $this->buildProperty($field->getMapName(), $field->getType()) . PHP_EOL;
             $methods .= PHP_EOL . $this->buildGetSetter($field->getMapName(), $field->getType()) . PHP_EOL;
         }
@@ -92,10 +96,16 @@ class {$name} extends Entity
      */
     protected \$table = '{$table}';
 
+    /**
+     * @var array
+     */
     protected \$structure = [
 {$map['maps']}
     ];
 
+    /**
+     * @var array
+     */
     protected \$fields = [
         {$map['keys']}
     ];
@@ -104,8 +114,9 @@ class {$name} extends Entity
      * @var string|null
      */
     protected \$repository{$repository};
+
+{$primary}
     {$property}
-    {$construct}
     {$methods}
 }
 E;
@@ -138,7 +149,7 @@ E;
 C;
     }
 
-    protected function buildProperty($name, $type = '')
+    protected function buildProperty($name, $type = '', $defaultValue = null)
     {
         if (strpos($name, '_')) {
             $arr = explode('_', $name);
@@ -150,11 +161,17 @@ C;
 
         $type = $this->parseType($type);
 
+        $value = '';
+
+        if (null !== $defaultValue) {
+            $value = ' = \'' . $defaultValue . '\'';
+        }
+
         return  <<<P
     /**
      * @var {$type}
      */
-    protected \${$name};
+    protected \${$name}{$value};
 P;
 
     }
