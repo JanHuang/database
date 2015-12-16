@@ -149,15 +149,12 @@ abstract class Repository
 
     /**
      * @param array $where
+     * @param array $params
      * @return int|bool
      */
-    public function count(array $where = [])
+    public function count(array $where = [], array $params = [])
     {
-        return $this->driver
-            ->createQuery('SELECT count(1) as total FROM ' . $this->getTable() . ' limit 1')
-            ->getQuery()
-            ->getOne()['total']
-            ;
+        return $this->driver->table($this->getTable())->count($where, $params);
     }
 
     /**

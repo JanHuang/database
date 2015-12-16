@@ -263,7 +263,7 @@ R;
      */
     public function remove({$entity} \$entity)
     {
-        return \$this->connection->remove(\$this->getTable(), ['id' => \$entity->getId()]);
+        return \$this->driver->remove(\$this->getTable(), ['id' => \$entity->getId()]);
     }
 
 R;

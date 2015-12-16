@@ -9,7 +9,7 @@ class TestRepository extends Repository
     /**
      * @var string
      */
-    protected $table = 'demo';
+    protected $table = 'test';
 
     /**
      * @var array

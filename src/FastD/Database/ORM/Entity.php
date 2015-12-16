@@ -24,7 +24,12 @@ use FastD\Database\Drivers\DriverInterface;
 class Entity
 {
     /**
-     * @var mixed
+     * @var string
+     */
+    protected $table;
+
+    /**
+     * @var string|int
      */
     protected $primary_key;
 
@@ -46,27 +51,44 @@ class Entity
         $this->setDriver($driverInterface);
     }
 
-    public function getPrimaryKey()
+    /**
+     * @return DriverInterface
+     */
+    public function getDriver()
     {
-
+        return $this->driver;
     }
 
-    public function getId()
-    {}
-
+    /**
+     * @param DriverInterface $driverInterface
+     * @return $this
+     */
     public function setDriver(DriverInterface $driverInterface)
+    {
+        $this->driver = $driverInterface;
+
+        return $this;
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function find()
     {
 
     }
 
     /**
      * Save row in database.
+     * @return int|bool
      */
-    public function flush()
+    public function save()
     {}
 
     /**
      * Remove row in database.
+     *
+     * @return int|bool
      */
     public function remove()
     {}

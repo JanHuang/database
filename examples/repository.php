@@ -29,3 +29,5 @@ $repository = $driver->getRepository('Examples:Repository:Test');
 echo '<pre>';
 print_r($repository);
 
+echo $repository->count();
+
