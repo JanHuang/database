@@ -71,7 +71,9 @@ class EntityBuilder
             $repository = " = '{$namespace}\\Repository\\{$name}Repository'";
         }
 
-        $this->buildRepository($name, $namespace);
+        $map = $this->buildRepository($name, $namespace);
+
+        $table = $this->struct->getPrefix() . $this->struct->getTable() . $this->struct->getSuffix();
 
         if (!empty($namespace)) {
             $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Entity;' . PHP_EOL;
@@ -85,6 +87,19 @@ use FastD\Database\ORM\Entity;
 
 class {$name} extends Entity
 {
+    /**
+     * @var string
+     */
+    protected \$table = '{$table}';
+
+    protected \$fields = [
+{$map['maps']}
+    ];
+
+    protected \$keys = [
+        {$map['keys']}
+    ];
+
     /**
      * @var string|null
      */
@@ -252,6 +267,11 @@ R;
         }
 
         file_put_contents($this->dir . '/Repository/' . $name . 'Repository.php', $repository);
+
+        return [
+            'maps' => $maps,
+            'keys' => $mapKeys
+        ];
     }
 
     protected function buildBaseOperation($entity = '')

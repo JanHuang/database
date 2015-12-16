@@ -8,6 +8,34 @@ use FastD\Database\ORM\Entity;
 class Test extends Entity
 {
     /**
+     * @var string
+     */
+    protected $table = 'test';
+
+    protected $fields = [
+        'id' => [
+            'type' => 'int',
+            'name' => 'id',
+        ],
+        'nickname' => [
+            'type' => 'varchar',
+            'name' => 'nickname',
+        ],
+        'catId' => [
+            'type' => 'int',
+            'name' => 'category_id',
+        ],
+        'trueName' => [
+            'type' => 'varchar',
+            'name' => 'true_name',
+        ],
+    ];
+
+    protected $keys = [
+        'id' => 'id','nickname' => 'nickname','catId' => 'category_id','trueName' => 'true_name'
+    ];
+
+    /**
      * @var string|null
      */
     protected $repository = 'Examples\Repository\TestRepository';
@@ -37,7 +65,7 @@ class Test extends Entity
      * @param int $id
      * @param \FastD\Database\Drivers\DriverInterface $driverInterface
      */
-    public function __construct($id = null, \FastD\Database\Drivers\DriverInterface $driverInterface)
+    public function __construct($id = null, \FastD\Database\Drivers\DriverInterface $driverInterface = null)
     {
         $this->id = $id;
 

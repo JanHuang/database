@@ -34,6 +34,11 @@ abstract class Entity implements \ArrayAccess
     protected $fields;
 
     /**
+     * @var array
+     */
+    protected $keys;
+
+    /**
      * @var DriverInterface
      */
     protected $driver;
@@ -76,6 +81,22 @@ abstract class Entity implements \ArrayAccess
     }
 
     /**
+     * @return array
+     */
+    public function getKeys()
+    {
+        return $this->keys;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    /**
      * @return string
      */
     public function getRepository()
@@ -98,6 +119,9 @@ abstract class Entity implements \ArrayAccess
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getRow()
     {
         return $this->row;
@@ -139,7 +163,7 @@ abstract class Entity implements \ArrayAccess
 
         $entity->setDriver($driverInterface);
 
-        foreach ([] as $name => $field) {
+        foreach ($entity->getKeys() as $name => $field) {
             $method = 'set' . ucfirst($name);
             $entity->$method(isset($data[$field]) ? $data[$field] : null);
         }
