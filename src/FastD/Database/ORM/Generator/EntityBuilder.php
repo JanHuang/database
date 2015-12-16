@@ -92,11 +92,11 @@ class {$name} extends Entity
      */
     protected \$table = '{$table}';
 
-    protected \$fields = [
+    protected \$structure = [
 {$map['maps']}
     ];
 
-    protected \$keys = [
+    protected \$fields = [
         {$map['keys']}
     ];
 
@@ -244,14 +244,14 @@ class {$name}Repository extends Repository
     /**
      * @var array
      */
-    protected \$fields = [
+    protected \$structure = [
 {$maps}
     ];
 
     /**
      * @var array
      */
-    protected \$keys = [{$mapKeys}];
+    protected \$fields = [{$mapKeys}];
 
     /**
      * @var string

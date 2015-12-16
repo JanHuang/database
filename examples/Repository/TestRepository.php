@@ -14,7 +14,7 @@ class TestRepository extends Repository
     /**
      * @var array
      */
-    protected $fields = [
+    protected $structure = [
         'id' => [
             'type' => 'int',
             'name' => 'id',
@@ -28,7 +28,7 @@ class TestRepository extends Repository
     /**
      * @var array
      */
-    protected $keys = ['id' => 'id','name' => 'trueName'];
+    protected $fields = ['id' => 'id','name' => 'trueName'];
 
     /**
      * @var string

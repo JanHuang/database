@@ -156,6 +156,14 @@ abstract class Repository
     }
 
     /**
+     * @param array $params
+     */
+    public function bindRequest(array $params)
+    {
+
+    }
+
+    /**
      * @param array $where
      * @param array $params
      * @return Entity

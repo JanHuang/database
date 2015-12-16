@@ -24,44 +24,71 @@ use FastD\Database\Drivers\DriverInterface;
 abstract class Entity implements \ArrayAccess
 {
     /**
+     * Operation DB table name.
+     *
      * @var string
      */
     protected $table;
 
     /**
+     * The table table structure.
+     *
+     * @var array
+     */
+    protected $structure;
+
+    /**
+     * The table all field as field alias.
+     *
      * @var array
      */
     protected $fields;
 
     /**
-     * @var array
-     */
-    protected $keys;
-
-    /**
+     * Query result row.
+     *
      * @var array
      */
     protected $row = [];
 
     /**
+     * Reflection repository class name.
+     *
      * @var string
      */
     protected $repository;
 
     /**
+     * DB driver.
+     *
      * @var DriverInterface
      */
     protected $driver;
 
     /**
-     * @var int
+     * Table primary name.
+     *
+     * @var string
      */
     protected $primary = 'id';
 
     /**
-     * @var int
+     * Table primary value.
+     *
+     * @var int|string
      */
-    protected $id;
+    protected $id = null;
+
+    /**
+     * @param int $id
+     * @param \FastD\Database\Drivers\DriverInterface $driverInterface
+     */
+    public function __construct($id, \FastD\Database\Drivers\DriverInterface $driverInterface = null)
+    {
+        $this->id = $id;
+
+        $this->setDriver($driverInterface);
+    }
 
     /**
      * @return DriverInterface
@@ -83,6 +110,22 @@ abstract class Entity implements \ArrayAccess
     }
 
     /**
+     * @return string
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStructure()
+    {
+        return $this->structure;
+    }
+
+    /**
      * @return array
      */
     public function getFields()
@@ -91,19 +134,11 @@ abstract class Entity implements \ArrayAccess
     }
 
     /**
-     * @return array
-     */
-    public function getKeys()
-    {
-        return $this->keys;
-    }
-
-    /**
      * @return string
      */
-    public function getTable()
+    public function getPrimary()
     {
-        return $this->table;
+        return $this->primary;
     }
 
     /**
@@ -146,9 +181,9 @@ abstract class Entity implements \ArrayAccess
             ->table(
                 $this->getTable()
             )
-            ->field($this->keys)
+            ->field($this->fields)
             ->find([
-               $this->primary => $this->id
+                $this->primary => $this->id
             ])
         ;
 
@@ -182,7 +217,7 @@ abstract class Entity implements \ArrayAccess
 
         $entity->setDriver($driverInterface);
 
-        foreach ($entity->getKeys() as $field => $name) {
+        foreach ($entity->getFields() as $field => $name) {
             $method = 'set' . ucfirst($name);
             $entity->$method(isset($data[$name]) ? $data[$name] : null);
         }

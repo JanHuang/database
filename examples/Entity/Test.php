@@ -12,7 +12,7 @@ class Test extends Entity
      */
     protected $table = 'test';
 
-    protected $fields = [
+    protected $structure = [
         'id' => [
             'type' => 'int',
             'name' => 'id',
@@ -23,7 +23,7 @@ class Test extends Entity
         ],
     ];
 
-    protected $keys = [
+    protected $fields = [
         'id' => 'id','name' => 'trueName'
     ];
 
@@ -41,18 +41,6 @@ class Test extends Entity
      * @var string
      */
     protected $trueName;
-
-    
-    /**
-     * @param int $id
-     * @param \FastD\Database\Drivers\DriverInterface $driverInterface
-     */
-    public function __construct($id = null, \FastD\Database\Drivers\DriverInterface $driverInterface = null)
-    {
-        $this->id = $id;
-
-        $this->setDriver($driverInterface);
-    }
     
     /**
      * @param int $id
