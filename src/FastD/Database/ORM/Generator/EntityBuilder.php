@@ -80,7 +80,10 @@ class EntityBuilder
         $entity = <<<E
 <?php
 {$namespace}
-class {$name}
+
+use FastD\Database\ORM\Entity;
+
+class {$name} extends Entity
 {
     /**
      * @var string|null
@@ -109,10 +112,13 @@ E;
 
     /**
      * @param int \$id
+     * @param \FastD\Database\Drivers\DriverInterface \$driverInterface
      */
-    public function __construct(\$id = null)
+    public function __construct(\$id = null, \FastD\Database\Drivers\DriverInterface \$driverInterface)
     {
         \$this->{$this->struct->getPrimary()->getName()} = \$id;
+
+        \$this->setDriver(\$driverInterface);
     }
 C;
     }
@@ -351,6 +357,6 @@ F;
     }
 FA;
 
-        return implode(PHP_EOL, [$remove, $save, $find, $findAll]);
+        return implode(PHP_EOL, []);
     }
 }

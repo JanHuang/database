@@ -39,19 +39,6 @@ class Entity
     protected $driver;
 
     /**
-     * Entity constructor.
-     *
-     * @param                 $primaryKey
-     * @param DriverInterface $driverInterface
-     */
-    public function __construct($primaryKey, DriverInterface $driverInterface)
-    {
-        $this->primary_key = $primaryKey;
-
-        $this->setDriver($driverInterface);
-    }
-
-    /**
      * @return DriverInterface
      */
     public function getDriver()
@@ -68,6 +55,11 @@ class Entity
         $this->driver = $driverInterface;
 
         return $this;
+    }
+
+    public function getFields()
+    {
+
     }
 
     /**

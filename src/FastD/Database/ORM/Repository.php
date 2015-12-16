@@ -147,6 +147,17 @@ abstract class Repository
             ->save($data, $params, $where);
     }
 
+    public function findToEntity()
+    {}
+
+    public function findAllToEntity()
+    {}
+
+    public function saveToEntity()
+    {
+
+    }
+
     /**
      * @param array $where
      * @param array $params
