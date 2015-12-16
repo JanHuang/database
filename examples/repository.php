@@ -27,12 +27,11 @@ $driver = new MySQL([
 $repository = $driver->getRepository('Examples:Repository:Test');
 
 echo '<pre>';
-$row = $repository->find(['id' => 1]);
-print_r($row);
-print_r($repository->findToEntity(['id' => 1]));
-print_r($repository);
+print_r($repository->find(['id' => 1]));
+//print_r($repository->findToEntity(['id' => 1]));
+/*print_r($repository);
 print_r($repository->getFields());
 echo $repository->getEntity();
 print_r($repository->getDriver());
-print_r($repository->count());
+print_r($repository->count());*/
 

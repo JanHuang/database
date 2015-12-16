@@ -21,7 +21,7 @@ use FastD\Database\Drivers\DriverInterface;
  *
  * @package FastD\Database\ORM
  */
-abstract class Entity
+abstract class Entity implements \ArrayAccess
 {
     /**
      * @var string
@@ -29,14 +29,24 @@ abstract class Entity
     protected $table;
 
     /**
-     * @var string|int
+     * @var array
      */
-    protected $primary_key;
+    protected $fields;
 
     /**
      * @var DriverInterface
      */
     protected $driver;
+
+    /**
+     * @var array
+     */
+    protected $row = [];
+
+    /**
+     * @var string
+     */
+    protected $repository;
 
     /**
      * @return DriverInterface
@@ -57,9 +67,40 @@ abstract class Entity
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getFields()
     {
+        return $this->fields;
+    }
 
+    /**
+     * @return string
+     */
+    public function getRepository()
+    {
+        if (!($this->repository instanceof Repository)) {
+            $this->repository = new $this->repository($this->getDriver());
+        }
+
+        return $this->repository;
+    }
+
+    /**
+     * @param array $row
+     * @return $this
+     */
+    public function setRow(array $row)
+    {
+        $this->row = $row;
+
+        return $this;
+    }
+
+    public function getRow()
+    {
+        return $this->row;
     }
 
     /**
@@ -84,4 +125,53 @@ abstract class Entity
      */
     public function remove()
     {}
+
+    public function init(array $data, DriverInterface $driverInterface)
+    {
+        $entity = clone $this;
+
+        $entity->setDriver($driverInterface);
+
+        foreach ([] as $name => $field) {
+            $method = 'set' . ucfirst($name);
+            $entity->$method(isset($data[$field]) ? $data[$field] : null);
+        }
+
+        return $entity;
+    }
+
+    /**
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->row[$offset]);
+    }
+
+    /**
+     * @param mixed $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->row[$offset];
+    }
+
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->row[$offset] = $value;
+    }
+
+    /**
+     * @param mixed $offset
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->row[$offset]);
+    }
 }

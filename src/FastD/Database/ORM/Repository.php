@@ -162,21 +162,21 @@ abstract class Repository
      */
     public function findToEntity(array $where = [], array $params = [])
     {
-        $row = $this->find($where, $params);
+        $entity = $this->entity;
 
-        $entity = new $this->entity(null, $this->getDriver());
-
-        foreach ($this->keys as $name => $field) {
-            $method = 'set' . ucfirst($name);
-            $entity->$method(isset($row[$field]) ? $row[$field] : null);
-        }
-
-        return $entity;
+        return $entity::init($this->find($where, $params), $this->getDriver());
     }
 
+    /**
+     * @param array $where
+     * @param array $params
+     * @return Entity[]
+     */
     public function findAllToEntity(array $where = [], array $params = [])
     {
+        $entity = $this->entity;
 
+        return $entity::init($this->find($where, $params), $this->getDriver());
     }
 
     public function saveToEntity(Entity $entity)
