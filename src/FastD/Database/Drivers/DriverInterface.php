@@ -15,6 +15,7 @@
 namespace FastD\Database\Drivers;
 
 use FastD\Database\ORM\Repository;
+use FastD\Database\Drivers\Query\QueryBuilderInterface;
 
 /**
  * Interface DriverInterface
@@ -183,7 +184,15 @@ interface DriverInterface
      * @param array $where
      * @return int|bool
      */
-    public function save(array $data, array $params = [], array $where = []);
+    public function save(array $data, array $where = [], array $params = []);
+
+    /**
+     * @param string $table
+     * @param array $where
+     * @param array $params
+     * @return int
+     */
+    public function count(array $where = [], array $params = []);
 
     /**
      * Get table repository object.
@@ -192,4 +201,14 @@ interface DriverInterface
      * @return Repository
      */
     public function getRepository($repository);
+
+    /**
+     * @return array
+     */
+    public function getErrors();
+
+    /**
+     * @return QueryBuilderInterface
+     */
+    public function getQueryBuilder();
 }

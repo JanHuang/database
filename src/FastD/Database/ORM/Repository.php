@@ -13,7 +13,6 @@
 
 namespace FastD\Database\ORM;
 
-use FastD\Database\Drivers\Driver;
 use FastD\Database\Drivers\DriverInterface;
 
 /**
@@ -132,21 +131,20 @@ abstract class Repository
     }
 
     /**
+     * Save row into table.
+     *
      * @param array $data
-     * @return int|bool
-     */
-    public function insert(array $data = array())
-    {
-        return $this->driver->insert($this->getTable(), $data);
-    }
-    /**
-     * @param array $data
+     * @param array $params
      * @param array $where
-     * @return int|bool
+     * @return bool|int
      */
-    public function update(array $data = [], array $where = [])
+    public function save(array $data = [], array $params = [], array $where = [])
     {
-        return $this->driver->update($this->getTable(), $data, $where);
+        return $this->driver
+            ->table(
+                $this->getTable()
+            )
+            ->save($data, $params, $where);
     }
 
     /**
@@ -155,16 +153,20 @@ abstract class Repository
      */
     public function count(array $where = [])
     {
-        return $this->driver->count($this->getTable(), $where);
+        return $this->driver
+            ->createQuery('SELECT count(1) as total FROM ' . $this->getTable() . ' limit 1')
+            ->getQuery()
+            ->getOne()['total']
+            ;
     }
 
     /**
-     * @param $dql
-     * @return Driver
+     * @param string $sql
+     * @return DriverInterface
      */
-    public function createQuery($dql)
+    public function createQuery($sql)
     {
-        return $this->driver->createQuery($dql);
+        return $this->driver->createQuery($sql);
     }
 
     /**
@@ -190,22 +192,10 @@ abstract class Repository
     }
 
     /**
-     * Return last query log.
-     *
-     * @return string
+     * @return \FastD\Database\Drivers\Query\QueryBuilderInterface
      */
-    public function getLastQuery()
+    public function getQueryBuilder()
     {
-        return $this->driver->getQueryString();
-    }
-
-    /**
-     * Return all query logs.
-     *
-     * @return array
-     */
-    public function getQueryLogs()
-    {
-        return $this->driver->getLogs();
+        return $this->driver->getQueryBuilder();
     }
 }

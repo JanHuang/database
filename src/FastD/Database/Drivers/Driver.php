@@ -326,11 +326,11 @@ abstract class Driver implements DriverInterface
 
     /**
      * @param array $data
-     * @param array $params
      * @param array $where
+     * @param array $params
      * @return int|bool If insert to be return last id. Or affected row.
      */
-    public function save(array $data, array $params = [], array $where = [])
+    public function save(array $data, array $where = [], array $params = [])
     {
         if (array() === $where) {
             $this->createQuery(
@@ -360,6 +360,22 @@ abstract class Driver implements DriverInterface
     }
 
     /**
+     * @param array $where
+     * @param array $params
+     * @return int|bool
+     */
+    public function count(array $where = [], array $params = [])
+    {
+        return $this
+            ->field([
+                'count(1)' => 'total'
+            ])
+            ->where($where)
+            ->find($params)['total']
+        ;
+    }
+
+    /**
      * @param $name
      * @param $value
      * @return $this
@@ -377,7 +393,7 @@ abstract class Driver implements DriverInterface
      */
     public function getRepository($repository)
     {
-        $repository = str_replace(':', '\\', $repository);
+        $repository = str_replace(':', '\\', $repository) . 'Repository';
 
         $repository = new $repository;
 

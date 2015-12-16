@@ -4,7 +4,7 @@ namespace Examples\Repository;
 
 use FastD\Database\ORM\Repository;
 
-class DemoRepository extends Repository
+class TestRepository extends Repository
 {
     /**
      * @var string

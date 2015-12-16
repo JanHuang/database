@@ -227,7 +227,11 @@ class MySQLQueryBuilder implements QueryBuilderInterface
                         $this->fields .= $alias . ',';
                     }
                 } else {
-                    $this->fields .= '`' . $name . '` AS `' . $alias . '`,';
+                    // has custom function
+                    if (false === strpos($name, '(')) {
+                        $name = '`' . $name . '`';
+                    }
+                    $this->fields .= $name . ' AS `' . $alias . '`,';
                 }
             }
             $this->fields = trim($this->fields, ',');

@@ -43,7 +43,7 @@ $driver->getQueryBuilder();
 // General operation.
 //$driver->table('test')->find();
 
-$result = $driver
+/*$result = $driver
     ->createQuery(
         'select * from test where `name`=:name'
     )
@@ -66,13 +66,21 @@ echo '</pre>';
 
 $id = $driver
     ->table('test')
-    ->save([
-        'name' => ':name'
-    ], [
-        'name' => 'bbb'
-    ], [
-        'id[!=]' => 1
-    ]);
+    ->save(
+        [
+            'name' => ':name'
+        ],
+        [
+            'id[!=]' => 1
+        ],
+        [
+            'name' => 'bbb'
+        ]
+    );
 ;
 
-echo $id;
+echo $id;*/
+
+$total = $driver->table('test')->count();
+
+echo $total;
