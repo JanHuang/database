@@ -156,6 +156,16 @@ interface DriverInterface
     public function getAll();
 
     /**
+     * @return int|bool
+     */
+    public function getId();
+
+    /**
+     * @return int|bool
+     */
+    public function getAffected();
+
+    /**
      * @param array $params
      * @return array|bool
      */
@@ -169,10 +179,11 @@ interface DriverInterface
 
     /**
      * @param array $data
-     * @param int|null $id
+     * @param array $params
+     * @param array $where
      * @return int|bool
      */
-    public function save(array $data, $id = null);
+    public function save(array $data, array $params = [], array $where = []);
 
     /**
      * Get table repository object.

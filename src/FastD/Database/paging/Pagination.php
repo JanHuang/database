@@ -14,18 +14,18 @@
 
 namespace FastD\Database\Pagination;
 
-use FastD\Database\Drivers\Driver;
-use FastD\Database\Drivers\QueryContext\QueryContextInterface;
+use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\Drivers\Query\QueryBuilderInterface;
 
 /**
  * Class QueryPagination
  *
  * @package FastD\Database\Pagination
  */
-class QueryPagination
+class Pagination
 {
     /**
-     * @var Driver
+     * @var DriverInterface
      */
     private $driver;
 
@@ -86,7 +86,7 @@ class QueryPagination
     }
 
     /**
-     * @param Driver|int|null   $driverOrTotal
+     * @param DriverInterface|int|null   $driverOrTotal
      * @param int               $currentPage
      * @param int               $showList
      * @param int               $showPage
@@ -94,7 +94,7 @@ class QueryPagination
      */
     public function initialize($driverOrTotal = null, $currentPage = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
-        if ($driverOrTotal instanceof Driver) {
+        if ($driverOrTotal instanceof DriverInterface) {
             $this->driver = $driverOrTotal;
             $this->totalRows = $this->fetchQueryContextTotalRows(clone $driverOrTotal->getQueryContext());
         } else if (is_numeric($driverOrTotal)) {
@@ -234,7 +234,7 @@ class QueryPagination
      * @param QueryContextInterface $context
      * @return array|bool|mixed
      */
-    public function fetchQueryContextTotalRows(QueryContextInterface $context)
+    public function fetchQueryContextTotalRows(QueryBuilderInterface $queryBuilderInterface)
     {
         $sql = $context->limit(1)->fields(['COUNT(1) as total'])->select()->getSql();
         return $this->driver->createQuery($sql)->getQuery()->getOne('total');

@@ -271,6 +271,22 @@ abstract class Driver implements DriverInterface
     }
 
     /**
+     * @return array|bool
+     */
+    public function getId()
+    {
+        return $this->getPDO()->lastInsertId();
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function getAffected()
+    {
+        return $this->getPDOStatement()->rowCount();
+    }
+
+    /**
      * @param array $params
      * @return array|bool
      */
@@ -310,12 +326,37 @@ abstract class Driver implements DriverInterface
 
     /**
      * @param array $data
-     * @param int|null $id
-     * @return int|bool
+     * @param array $params
+     * @param array $where
+     * @return int|bool If insert to be return last id. Or affected row.
      */
-    public function save(array $data, $id = null)
+    public function save(array $data, array $params = [], array $where = [])
     {
-        
+        if (array() === $where) {
+            $this->createQuery(
+                $this->getQueryBuilder()->insert($data)->getSql()
+            );
+
+            foreach ($params as $name => $param) {
+                $this->setParameter($name, $param);
+            }
+
+            $this->getQuery();
+
+            return $this->getId();
+        }
+
+        $this->createQuery(
+            $this->getQueryBuilder()->update($data, $where)->getSql()
+        );
+
+        foreach ($params as $name => $param) {
+            $this->setParameter($name, $param);
+        }
+
+        $this->getQuery();
+
+        return $this->getAffected();
     }
 
     /**
@@ -345,11 +386,17 @@ abstract class Driver implements DriverInterface
         return $repository;
     }
 
+    /**
+     * @return array
+     */
     public function getErrors()
     {
-
+        return null === $this->getPDOStatement() ? $this->getPDO()->errorInfo() : $this->getPDOStatement()->errorInfo();
     }
 
+    /**
+     * Destructor.
+     */
     public function __destruct()
     {
         $this->pdo = null;

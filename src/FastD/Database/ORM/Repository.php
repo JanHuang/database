@@ -14,16 +14,17 @@
 namespace FastD\Database\ORM;
 
 use FastD\Database\Drivers\Driver;
+use FastD\Database\Drivers\DriverInterface;
 
 /**
  * Class Repository
  *
  * @package FastD\Database\Repository
  */
-class Repository
+abstract class Repository
 {
     /**
-     * @var
+     * @var string
      */
     protected $table;
 
@@ -43,16 +44,35 @@ class Repository
     protected $entity;
 
     /**
-     * @var Driver
+     * @var DriverInterface
      */
     protected $driver;
 
     /**
-     * @param Driver $driver
+     * @param DriverInterface $driverInterface
      */
-    public function __construct(Driver $driver = null)
+    public function __construct(DriverInterface $driverInterface = null)
     {
-        $this->driver = $driver;
+        $this->setDriver($driverInterface);
+    }
+
+    /**
+     * @return DriverInterface
+     */
+    public function getDriver()
+    {
+        return $this->driver;
+    }
+
+    /**
+     * @param DriverInterface|null $driverInterface
+     * @return $this
+     */
+    public function setDriver(DriverInterface $driverInterface = null)
+    {
+        $this->driver = $driverInterface;
+
+        return $this;
     }
 
     /**
@@ -82,7 +102,14 @@ class Repository
      */
     public function find(array $where = [], array $field = [])
     {
-        return $this->driver->find($this->getTable(), $where, $field);
+        return $this->driver
+            ->table(
+                $this->getTable()
+            )
+            ->where($where)
+            ->field($field)
+            ->find()
+            ;
     }
 
     /**
@@ -94,7 +121,14 @@ class Repository
      */
     public function findAll(array $where = [],  array $field = [])
     {
-        return $this->driver->findAll($this->getTable(), $where, $field);
+        return $this->driver
+            ->table(
+                $this->getTable()
+            )
+            ->where($where)
+            ->field($field)
+            ->findAll()
+        ;
     }
 
     /**

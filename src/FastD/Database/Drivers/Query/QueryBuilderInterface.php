@@ -104,9 +104,11 @@ interface QueryBuilderInterface
     public function select();
 
     /**
+     * @param array $data
+     * @param array $where
      * @return $this
      */
-    public function update();
+    public function update(array $data, array $where = []);
 
     /**
      * @return $this
@@ -114,9 +116,10 @@ interface QueryBuilderInterface
     public function delete();
 
     /**
+     * @param array $data
      * @return $this
      */
-    public function insert();
+    public function insert(array $data);
 
     /**
      * @return string

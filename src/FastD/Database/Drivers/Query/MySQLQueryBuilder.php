@@ -94,17 +94,17 @@ class MySQLQueryBuilder implements QueryBuilderInterface
     /**
      * @const int
      */
-    const CONTEXT_INSERT = 1;
+    const BUILDER_INSERT = 1;
 
     /**
      * @const int
      */
-    const CONTEXT_UPDATE = 2;
+    const BUILDER_UPDATE = 2;
 
     /**
      * @const int
      */
-    const CONTEXT_DELETE = 3;
+    const BUILDER_DELETE = 3;
 
     /**
      * @param array $where
@@ -155,16 +155,16 @@ class MySQLQueryBuilder implements QueryBuilderInterface
      * @param int   $operation
      * @return $this
      */
-    public function data(array $data, $operation = self::CONTEXT_UPDATE)
+    public function data(array $data, $operation = self::BUILDER_UPDATE)
     {
         switch ($operation) {
-            case self::CONTEXT_INSERT:
+            case self::BUILDER_INSERT:
                 $keys = array_keys($data);
                 $values = array_values($data);
                 $this->keys = '(`' . implode('`,`', $keys) . '`)';
                 $this->value = '(\'' . implode('\',\'', $values) . '\')';
                 break;
-            case self::CONTEXT_UPDATE:
+            case self::BUILDER_UPDATE:
             default:
                 $values = [];
                 foreach ($data as $name => $value) {
@@ -346,10 +346,16 @@ class MySQLQueryBuilder implements QueryBuilderInterface
     }
 
     /**
+     * @param array $data
+     * @param array $where
      * @return $this
      */
-    public function update()
+    public function update(array $data, array $where = [])
     {
+        $this->data($data, self::BUILDER_UPDATE);
+
+        $this->where($where);
+
         $this->sql = 'UPDATE ' . $this->table . ' SET ' . $this->value . $this->where . $this->limit . ';';
 
         return $this;
@@ -366,10 +372,13 @@ class MySQLQueryBuilder implements QueryBuilderInterface
     }
 
     /**
+     * @param array $data
      * @return $this
      */
-    public function insert()
+    public function insert(array $data)
     {
+        $this->data($data, self::BUILDER_INSERT);
+
         $this->sql = 'INSERT INTO ' . $this->table . $this->keys . ' VALUES ' . $this->value . ';';
 
         return $this;

@@ -63,3 +63,14 @@ $result = $driver
 echo '<pre>';
 print_r($result);
 echo '</pre>';
+
+$id = $driver
+    ->table('test')
+    ->save([
+        'name' => ':name'
+    ], [
+        'name' => 'aaa'
+    ]);
+;
+
+echo $id;

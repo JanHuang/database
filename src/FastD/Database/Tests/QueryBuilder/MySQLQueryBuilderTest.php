@@ -21,7 +21,7 @@ use FastD\Database\Drivers\Query\MySQLQueryBuilder;
  *
  * @package FastD\Database\Tests\QueryContext
  */
-class MySQLQueryContextTest extends \PHPUnit_Framework_TestCase
+class MySQLQueryBuilderTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var MySQLQueryBuilder
