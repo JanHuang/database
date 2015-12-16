@@ -98,6 +98,36 @@ interface QueryBuilderInterface
      */
     public function custom($sql);
 
+    /**
+     * @return $this
+     */
+    public function select();
+
+    /**
+     * @return $this
+     */
+    public function update();
+
+    /**
+     * @return $this
+     */
+    public function delete();
+
+    /**
+     * @return $this
+     */
+    public function insert();
+
+    /**
+     * @return string
+     */
+    public function getSql();
+
+    /**
+     * @return array
+     */
+    public function getLogs();
+
 //    public function func();
 
 //    public function subQuery();

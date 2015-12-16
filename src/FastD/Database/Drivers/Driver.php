@@ -16,6 +16,7 @@ namespace FastD\Database\Drivers;
 
 use FastD\Database\Drivers\Query\MySQLQueryBuilder;
 use FastD\Database\Drivers\Query\QueryBuilderInterface;
+use FastD\Database\ORM\Repository;
 
 /**
  * Class DriverAbstract
@@ -33,6 +34,11 @@ abstract class Driver implements DriverInterface
      * @var \PDO
      */
     protected $pdo;
+
+    /**
+     * @var \PDOStatement
+     */
+    protected $pdo_statement;
 
     /**
      * @var MySQLQueryBuilder
@@ -78,6 +84,25 @@ abstract class Driver implements DriverInterface
     }
 
     /**
+     * @return \PDOStatement
+     */
+    public function getPDOStatement()
+    {
+        return $this->pdo_statement;
+    }
+
+    /**
+     * @param \PDOStatement $PDOStatement
+     * @return $this
+     */
+    public function setPDOStatement(\PDOStatement $PDOStatement)
+    {
+        $this->pdo_statement = $PDOStatement;
+
+        return $this;
+    }
+
+    /**
      * @return QueryBuilderInterface
      */
     public function getQueryBuilder()
@@ -104,7 +129,7 @@ abstract class Driver implements DriverInterface
      */
     public function where(array $where)
     {
-        $this->queryBuilder->where($where);
+        $this->getQueryBuilder()->where($where);
 
         return $this;
     }
@@ -117,7 +142,7 @@ abstract class Driver implements DriverInterface
      */
     public function field(array $field = ['*'])
     {
-        $this->queryBuilder->fields($field);
+        $this->getQueryBuilder()->fields($field);
 
         return $this;
     }
@@ -132,7 +157,7 @@ abstract class Driver implements DriverInterface
      */
     public function join($table, $on, $type = 'LEFT')
     {
-        $this->queryBuilder->join($table, $on, $type);
+        $this->getQueryBuilder()->join($table, $on, $type);
 
         return $this;
     }
@@ -145,7 +170,7 @@ abstract class Driver implements DriverInterface
      */
     public function table($table)
     {
-        $this->queryBuilder->table($table);
+        $this->getQueryBuilder()->table($table);
 
         return $this;
     }
@@ -157,7 +182,7 @@ abstract class Driver implements DriverInterface
      */
     public function limit($offset, $limit)
     {
-        $this->queryBuilder->limit($offset, $limit);
+        $this->getQueryBuilder()->limit($offset, $limit);
 
         return $this;
     }
@@ -168,7 +193,7 @@ abstract class Driver implements DriverInterface
      */
     public function groupBy(array $groupBy)
     {
-        $this->queryBuilder->groupBy($groupBy);
+        $this->getQueryBuilder()->groupBy($groupBy);
 
         return $this;
     }
@@ -179,7 +204,7 @@ abstract class Driver implements DriverInterface
      */
     public function orderBy(array $orderBy)
     {
-        $this->queryBuilder->orderBy($orderBy);
+        $this->getQueryBuilder()->orderBy($orderBy);
 
         return $this;
     }
@@ -190,7 +215,7 @@ abstract class Driver implements DriverInterface
      */
     public function having(array $having)
     {
-        $this->queryBuilder->having($having);
+        $this->getQueryBuilder()->having($having);
 
         return $this;
     }
@@ -201,7 +226,7 @@ abstract class Driver implements DriverInterface
      */
     public function like(array $like)
     {
-        $this->queryBuilder->like($like);
+        $this->getQueryBuilder()->like($like);
 
         return $this;
     }
@@ -212,30 +237,85 @@ abstract class Driver implements DriverInterface
      */
     public function createQuery($sql)
     {
-        $this->queryBuilder->custom($sql);
+        $this->getQueryBuilder()->custom($sql);
+
+        $this->setPDOStatement(
+            $this->getPDO()->prepare(
+                $this->getQueryBuilder()->getSql()
+            )
+        );
 
         return $this;
     }
 
-    public function find()
+    /**
+     * @param array $params
+     * @return array|bool
+     */
+    public function find(array $params = [])
     {
+        foreach ($params as $name => $param) {
+            $this->setParameter($name, $param);
+        }
 
+        $this->getPDOStatement()->execute();
+
+        return $this->getPDOStatement()->fetch(\PDO::FETCH_ASSOC);
     }
 
-    public function findAll()
+    /**
+     * @param array $params
+     * @return array|bool
+     */
+    public function findAll(array $params = [])
+    {
+        foreach ($params as $name => $param) {
+            $this->setParameter($name, $param);
+        }
+
+        $this->getPDOStatement()->execute();
+
+        return $this->getPDOStatement()->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * @param array $data
+     * @param int|null $id
+     * @return int|bool
+     */
+    public function save(array $data, $id = null)
     {
 
     }
 
     /**
-     * @deprecated
+     * @param $name
+     * @param $value
+     * @return $this
      */
-    public function remove()
+    public function setParameter($name, $value)
     {
+        $this->getPDOStatement()->bindParam(':' . $name, $value);
 
+        return $this;
     }
 
-    public function save()
+    /**
+     * @param string $repository
+     * @return Repository
+     */
+    public function getRepository($repository)
+    {
+        $repository = str_replace(':', '\\', $repository);
+
+        $repository = new $repository;
+
+        $repository->setDriver($this);
+
+        return $repository;
+    }
+
+    public function getErrors()
     {
 
     }

@@ -41,4 +41,12 @@ $driver->getPDO();
 $driver->getQueryBuilder();
 
 // General operation.
+//$driver->table('test')->find();
+echo '<pre>';
+$result = $driver->createQuery('select * from test where `name`=:name')->find(['name' => 'janhuang']);
+print_r($result);
+
+print_r($driver->getQueryBuilder()->getLogs());
+
+//print_r($driver->getPDOStatement()->errorInfo());
 

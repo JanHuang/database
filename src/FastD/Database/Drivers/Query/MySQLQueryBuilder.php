@@ -136,7 +136,11 @@ class MySQLQueryBuilder implements QueryBuilderInterface
                 $assign = substr($key, $start + 1, -1);
                 $key = substr($key, 0, $start);
             }
-            $where[] = '`' . $key . '`' . $assign . '\'' . $value . '\'';
+
+            if (0 !== strpos($value, ':')) {
+                $value = '\'' . $value . '\'';
+            }
+            $where[] = '`' . $key . '`' . $assign . $value;
         }
 
         if ('' !== $joint) {
@@ -393,6 +397,9 @@ class MySQLQueryBuilder implements QueryBuilderInterface
         return $sql;
     }
 
+    /**
+     * @return array
+     */
     public function getLogs()
     {
         return $this->logs;

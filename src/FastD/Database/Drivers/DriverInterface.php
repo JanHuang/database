@@ -14,6 +14,8 @@
 
 namespace FastD\Database\Drivers;
 
+use FastD\Database\ORM\Repository;
+
 /**
  * Interface DriverInterface
  *
@@ -23,7 +25,7 @@ interface DriverInterface
 {
     /**
      * @param $name
-     * @return $this
+     * @return DriverInterface
      */
     public function setName($name);
 
@@ -33,15 +35,26 @@ interface DriverInterface
     public function getName();
 
     /**
+     * @return \PDO
+     */
+    public function getPDO();
+
+    /**
      * @param \PDO $PDO
-     * @return mixed
+     * @return DriverInterface
      */
     public function setPDO(\PDO $PDO);
 
     /**
-     * @return \PDO
+     * @return \PDOStatement
      */
-    public function getPDO();
+    public function getPDOStatement();
+
+    /**
+     * @param \PDOStatement $PDOStatement
+     * @return $this
+     */
+    public function setPDOStatement(\PDOStatement $PDOStatement);
 
     /**
      * Query select where condition.
@@ -109,14 +122,51 @@ interface DriverInterface
     public function like(array $like);
 
     /**
-     * @param array $between
-     * @return DriverInterface
-     */
-    public function between(array $between);
-
-    /**
      * @param $sql
      * @return DriverInterface
      */
     public function createQuery($sql);
+
+    /**
+     * Bind pdo parameters.
+     *
+     * @param $name
+     * @param $value
+     * @return $this
+     */
+    public function setParameter($name, $value);
+
+    /**
+     * Create PDO
+     *
+     * @return $this
+     */
+//    public function getQuery();
+
+    /**
+     * @param array $params
+     * @return array|bool
+     */
+    public function find(array $params = null);
+
+    /**
+     * @param array $params
+     * @return array|bool
+     */
+    public function findAll(array $params = null);
+
+    /**
+     * @param array $data
+     * @param int|null $id
+     * @return int|bool
+     */
+    public function save(array $data, $id = null);
+
+    /**
+     * Get table repository object.
+     *
+     * @param string $repository
+     * @return Repository
+     */
+    public function getRepository($repository);
 }
