@@ -17,22 +17,14 @@ class Test extends Entity
             'type' => 'int',
             'name' => 'id',
         ],
-        'nickname' => [
+        'name' => [
             'type' => 'varchar',
-            'name' => 'nickname',
-        ],
-        'catId' => [
-            'type' => 'int',
-            'name' => 'category_id',
-        ],
-        'trueName' => [
-            'type' => 'varchar',
-            'name' => 'true_name',
+            'name' => 'name',
         ],
     ];
 
     protected $keys = [
-        'id' => 'id','nickname' => 'nickname','catId' => 'category_id','trueName' => 'true_name'
+        'id' => 'id','name' => 'name'
     ];
 
     /**
@@ -48,17 +40,7 @@ class Test extends Entity
     /**
      * @var string
      */
-    protected $nickname;
-
-    /**
-     * @var int
-     */
-    protected $catId;
-
-    /**
-     * @var string
-     */
-    protected $trueName;
+    protected $name;
 
     
     /**
@@ -92,12 +74,12 @@ class Test extends Entity
     }
 
     /**
-     * @param string $nickname
+     * @param string $name
      * @return $this
      */
-    public function setNickname($nickname)
+    public function setName($name)
     {
-        $this->nickname = $nickname;
+        $this->name = $name;
 
         return $this;
     }
@@ -105,47 +87,9 @@ class Test extends Entity
     /**
      * @return string
      */
-    public function getNickname()
+    public function getName()
     {
-        return $this->nickname;
-    }
-
-    /**
-     * @param int $catId
-     * @return $this
-     */
-    public function setCatId($catId)
-    {
-        $this->catId = $catId;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCatId()
-    {
-        return $this->catId;
-    }
-
-    /**
-     * @param string $trueName
-     * @return $this
-     */
-    public function setTrueName($trueName)
-    {
-        $this->trueName = $trueName;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTrueName()
-    {
-        return $this->trueName;
+        return $this->name;
     }
 
 }

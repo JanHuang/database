@@ -37,24 +37,13 @@ $builder->addStruct(
                 'unsigned' => true, // 默认false
                 'primary' => true,
             ],
-            'nickname' => [
-                'name' => 'nickname',
+            'name' => [
+                'name' => 'name',
                 'type' => 'varchar',
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',
                 'index' => 'unique' // 默认索引名为 name_unique_key
-            ],
-            'catId' => [
-                'name' => 'category_id',
-                'type' => 'int',
-                'default' => 0,
-                'index' => 'index',
-            ],
-            'trueName' => [
-                'name' => 'true_name',
-                'type' => 'varchar',
-                'default' => '',
             ],
         ]
     ]

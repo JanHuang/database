@@ -19,24 +19,16 @@ class TestRepository extends Repository
             'type' => 'int',
             'name' => 'id',
         ],
-        'nickname' => [
+        'name' => [
             'type' => 'varchar',
-            'name' => 'nickname',
-        ],
-        'catId' => [
-            'type' => 'int',
-            'name' => 'category_id',
-        ],
-        'trueName' => [
-            'type' => 'varchar',
-            'name' => 'true_name',
+            'name' => 'name',
         ],
     ];
 
     /**
      * @var array
      */
-    protected $keys = ['id' => 'id','nickname' => 'nickname','catId' => 'category_id','trueName' => 'true_name'];
+    protected $keys = ['id' => 'id','name' => 'name'];
 
     /**
      * @var string

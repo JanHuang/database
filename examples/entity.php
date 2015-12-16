@@ -24,9 +24,9 @@ $test = new Test(1, new MySQL([
     'database_port' => 3306,
     'database_name' => 'test',
 ]));
+
 echo '<pre>';
-print_r($test);
-
 $test->find();
-
-print_r($test);
+echo $test->getId();
+echo $test->getName();
+echo $test['name'];
