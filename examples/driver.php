@@ -42,11 +42,24 @@ $driver->getQueryBuilder();
 
 // General operation.
 //$driver->table('test')->find();
+
+$result = $driver
+    ->createQuery(
+        'select * from test where `name`=:name'
+    )
+    ->setParameter('name', 'janhuang')
+    ->getQuery()
+    ->getOne()
+;
 echo '<pre>';
-$result = $driver->createQuery('select * from test where `name`=:name')->find(['name' => 'janhuang']);
 print_r($result);
+echo '</pre>';
 
-print_r($driver->getQueryBuilder()->getLogs());
-
-//print_r($driver->getPDOStatement()->errorInfo());
-
+$result = $driver
+    ->table('test')
+    ->where(['id' => ':id'])
+    ->find(['id' => 1])
+;
+echo '<pre>';
+print_r($result);
+echo '</pre>';

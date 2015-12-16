@@ -43,9 +43,81 @@ echo $mysqlQueryBuilder->getSql();
 
 ###Driver & DriverFactory
 
+####Custom Query
+
 ```php
+<?php
 
+include __DIR__ . '/../vendor/autoload.php';
 
+use FastD\Database\Drivers\DriverFactory;
+use FastD\Database\Drivers\MySQL;
+
+$driver = DriverFactory::createDriver([
+    'database_type' => 'mysql',
+    'database_user' => 'root',
+    'database_pwd'  => '123456',
+    'database_host' => '127.0.0.1',
+    'database_port' => 3306,
+    'database_name' => 'test',
+]);
+// OR
+/*
+$driver = new MySQL([
+    'database_user' => 'root',
+    'database_pwd'  => '123456',
+    'database_host' => '127.0.0.1',
+    'database_port' => 3306,
+    'database_name' => 'test',
+]);
+*/
+
+$driver
+    ->createQuery(
+        'select * from test where `name`=:name'
+    )
+    ->setParameter('name', 'janhuang')
+    ->getQuery()
+    ->getOne()
+    // ->getAll
+;
+
+$result = $driver
+    ->table('test')
+    ->where(['id' => ':id'])
+    ->find(['id' => 1])
+    // ->findAll
+;
 ```
+
+如果使用 `createQuery` 创建查询,需要使用 `getOne` 或者 `getAll` 进行数据获取.
+
+如果使用一般的链式操作,需要使用 `find` 或者 `findAll` 进行数据获取
+
+####Get PDO & Get PDOStatement
+
+```php
+<?php
+
+include __DIR__ . '/../vendor/autoload.php';
+
+use FastD\Database\Drivers\DriverFactory;
+use FastD\Database\Drivers\MySQL;
+
+$driver = DriverFactory::createDriver([
+    'database_type' => 'mysql',
+    'database_user' => 'root',
+    'database_pwd'  => '123456',
+    'database_host' => '127.0.0.1',
+    'database_port' => 3306,
+    'database_name' => 'test',
+]);
+
+$driver->getPDO();
+
+$driver->getPDOStatement();
+```
+
+如果SQL没有进行绑定, `getPDOStatement` 会返回 `NULL`
 
 ## License MIT

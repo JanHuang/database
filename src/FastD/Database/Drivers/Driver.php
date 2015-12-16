@@ -237,15 +237,37 @@ abstract class Driver implements DriverInterface
      */
     public function createQuery($sql)
     {
-        $this->getQueryBuilder()->custom($sql);
-
         $this->setPDOStatement(
-            $this->getPDO()->prepare(
-                $this->getQueryBuilder()->getSql()
-            )
+            $this->getPDO()->prepare($sql)
         );
 
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function getQuery()
+    {
+        $this->getPDOStatement()->execute();
+
+        return $this;
+    }
+
+    /**
+     * Get one row to PDOStatement.
+     */
+    public function getOne()
+    {
+        return $this->getPDOStatement()->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get all row to PDOStatement.
+     */
+    public function getAll()
+    {
+        return $this->getPDOStatement()->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -254,13 +276,17 @@ abstract class Driver implements DriverInterface
      */
     public function find(array $params = [])
     {
+        $this->createQuery(
+            $this->getQueryBuilder()->select()->getSql()
+        );
+
         foreach ($params as $name => $param) {
             $this->setParameter($name, $param);
         }
 
-        $this->getPDOStatement()->execute();
+        $this->getQuery();
 
-        return $this->getPDOStatement()->fetch(\PDO::FETCH_ASSOC);
+        return $this->getOne();
     }
 
     /**
@@ -269,13 +295,17 @@ abstract class Driver implements DriverInterface
      */
     public function findAll(array $params = [])
     {
+        $this->createQuery(
+            $this->getQueryBuilder()->select()->getSql()
+        );
+
         foreach ($params as $name => $param) {
             $this->setParameter($name, $param);
         }
 
-        $this->getPDOStatement()->execute();
+        $this->getQuery();
 
-        return $this->getPDOStatement()->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->getAll();
     }
 
     /**
@@ -285,7 +315,7 @@ abstract class Driver implements DriverInterface
      */
     public function save(array $data, $id = null)
     {
-
+        
     }
 
     /**
@@ -318,5 +348,11 @@ abstract class Driver implements DriverInterface
     public function getErrors()
     {
 
+    }
+
+    public function __destruct()
+    {
+        $this->pdo = null;
+        $this->pdo_statement = null;
     }
 }

@@ -122,10 +122,19 @@ interface DriverInterface
     public function like(array $like);
 
     /**
+     * Create SQL query statement.
+     *
      * @param $sql
      * @return DriverInterface
      */
     public function createQuery($sql);
+
+    /**
+     * Execute create PDO query statement.
+     *
+     * @return $this
+     */
+    public function getQuery();
 
     /**
      * Bind pdo parameters.
@@ -137,23 +146,26 @@ interface DriverInterface
     public function setParameter($name, $value);
 
     /**
-     * Create PDO
-     *
-     * @return $this
+     * @return array|bool
      */
-//    public function getQuery();
+    public function getOne();
+
+    /**
+     * @return array|bool
+     */
+    public function getAll();
 
     /**
      * @param array $params
      * @return array|bool
      */
-    public function find(array $params = null);
+    public function find(array $params = []);
 
     /**
      * @param array $params
      * @return array|bool
      */
-    public function findAll(array $params = null);
+    public function findAll(array $params = []);
 
     /**
      * @param array $data
