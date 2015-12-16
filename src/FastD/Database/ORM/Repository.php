@@ -14,6 +14,7 @@
 namespace FastD\Database\ORM;
 
 use FastD\Database\Drivers\DriverInterface;
+use FastD\Http\Request;
 
 /**
  * Class Repository
@@ -109,14 +110,16 @@ abstract class Repository
      */
     public function find(array $where = [], array $field = [])
     {
-        return $this->driver
+        $row = $this->driver
             ->table(
                 $this->getTable()
             )
             ->where($where)
-            ->field($field)
+            ->field(array () === $field ? $this->getFields() : $field)
             ->find()
             ;
+
+        return Entity::init(new $this->entity, $row, $this->getDriver());
     }
 
     /**
@@ -128,7 +131,7 @@ abstract class Repository
      */
     public function findAll(array $where = [],  array $field = [])
     {
-        return $this->driver
+        $list = $this->driver
             ->table(
                 $this->getTable()
             )
@@ -136,6 +139,8 @@ abstract class Repository
             ->field($field)
             ->findAll()
         ;
+
+        return Entity::initArray(new $this->entity, $list, $this->getDriver());
     }
 
     /**
@@ -156,50 +161,29 @@ abstract class Repository
     }
 
     /**
+     * @param Request $request
      * @return array
      */
-    public function bindRequest()
+    public function bindRequest(Request $request)
     {
+        if ($request->isMethod('post')) {
+            $params = $request->request->all();
+        } else {
+            $params = $request->query->all();
+        }
 
+        return $this->bindRequestParams($params);
     }
 
     /**
+     * @param array $params
      * @return array
      */
     public function bindRequestParams(array $params)
     {
 
     }
-
-    /**
-     * @param array $where
-     * @param array $params
-     * @return Entity
-     */
-    public function findToEntity(array $where = [], array $params = [])
-    {
-        $entity = $this->entity;
-
-        return $entity::init(new $entity, $this->find($where, $params), $this->getDriver());
-    }
-
-    /**
-     * @param array $where
-     * @param array $params
-     * @return Entity[]
-     */
-    public function findAllToEntity(array $where = [], array $params = [])
-    {
-        $entity = $this->entity;
-
-        return $entity::initArray($this->find($where, $params), $this->getDriver());
-    }
-
-    public function saveToEntity(Entity $entity)
-    {
-
-    }
-
+    
     /**
      * @param array $where
      * @param array $params

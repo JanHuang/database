@@ -14,6 +14,7 @@
 
 namespace FastD\Database\ORM;
 
+use FastD\Database\Drivers\Driver;
 use FastD\Database\Drivers\DriverInterface;
 
 /**
@@ -102,7 +103,7 @@ abstract class Entity implements \ArrayAccess
      * @param DriverInterface $driverInterface
      * @return $this
      */
-    public function setDriver(DriverInterface $driverInterface)
+    public function setDriver(DriverInterface $driverInterface = null)
     {
         $this->driver = $driverInterface;
 
@@ -216,13 +217,15 @@ abstract class Entity implements \ArrayAccess
         if (null !== $this->id) {
             $where[$this->primary] = $this->id;
         }
-        print_r($where);
+
         $id = $this->driver
             ->table(
                 $this->getTable()
             )
             ->save($data, $where, $values)
         ;
+
+        unset($data, $where, $value);
 
         if (null === $this->id) {
             $this->id = $id;
@@ -252,15 +255,14 @@ abstract class Entity implements \ArrayAccess
     }
 
     /**
+     * @param Entity          $entity
      * @param array           $data
      * @param DriverInterface $driverInterface
      * @return Entity[]
      */
-    public static function initArray(array $data, DriverInterface $driverInterface)
+    public static function initArray(Entity $entity, array $data, DriverInterface $driverInterface)
     {
         $entities = [];
-
-        $entity = new static;
 
         foreach ($data as $row) {
             $entities[] = self::init(clone $entity, $row, $driverInterface);
