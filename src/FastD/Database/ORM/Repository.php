@@ -93,6 +93,14 @@ abstract class Repository
     }
 
     /**
+     * @return string
+     */
+    public function getEntity()
+    {
+        return $this->entity;
+    }
+
+    /**
      * Fetch one row.
      *
      * @param array $where
@@ -147,13 +155,31 @@ abstract class Repository
             ->save($data, $params, $where);
     }
 
-    public function findToEntity()
-    {}
+    /**
+     * @param array $where
+     * @param array $params
+     * @return Entity
+     */
+    public function findToEntity(array $where = [], array $params = [])
+    {
+        $row = $this->find($where, $params);
 
-    public function findAllToEntity()
-    {}
+        $entity = new $this->entity(null, $this->getDriver());
 
-    public function saveToEntity()
+        foreach ($this->keys as $name => $field) {
+            $method = 'set' . ucfirst($name);
+            $entity->$method(isset($row[$field]) ? $row[$field] : null);
+        }
+
+        return $entity;
+    }
+
+    public function findAllToEntity(array $where = [], array $params = [])
+    {
+
+    }
+
+    public function saveToEntity(Entity $entity)
     {
 
     }

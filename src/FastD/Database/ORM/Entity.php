@@ -21,7 +21,7 @@ use FastD\Database\Drivers\DriverInterface;
  *
  * @package FastD\Database\ORM
  */
-class Entity
+abstract class Entity
 {
     /**
      * @var string
