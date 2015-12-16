@@ -371,10 +371,13 @@ class MySQLQueryBuilder implements QueryBuilderInterface
     }
 
     /**
+     * @param array $where
      * @return $this
      */
-    public function delete()
+    public function delete(array $where)
     {
+        $this->where($where);
+
         $this->sql = 'DELETE FROM ' . $this->table . $this->where . $this->limit . ';';
 
         return $this;

@@ -111,9 +111,10 @@ interface QueryBuilderInterface
     public function update(array $data, array $where = []);
 
     /**
+     * @param array $where
      * @return $this
      */
-    public function delete();
+    public function delete(array $where);
 
     /**
      * @param array $data
