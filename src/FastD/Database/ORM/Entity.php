@@ -39,11 +39,6 @@ abstract class Entity implements \ArrayAccess
     protected $keys;
 
     /**
-     * @var DriverInterface
-     */
-    protected $driver;
-
-    /**
      * @var array
      */
     protected $row = [];
@@ -54,9 +49,14 @@ abstract class Entity implements \ArrayAccess
     protected $repository;
 
     /**
+     * @var DriverInterface
+     */
+    protected $driver;
+
+    /**
      * @var int
      */
-    protected $primary;
+    protected $primary = 'id';
 
     /**
      * @var int
@@ -146,11 +146,9 @@ abstract class Entity implements \ArrayAccess
             ->table(
                 $this->getTable()
             )
-            ->field(
-                array_keys($this->fields)
-            )
+            ->field($this->keys)
             ->find([
-               'id' => $this->id
+               $this->primary => $this->id
             ])
         ;
 
@@ -184,9 +182,9 @@ abstract class Entity implements \ArrayAccess
 
         $entity->setDriver($driverInterface);
 
-        foreach ($entity->getKeys() as $name => $field) {
+        foreach ($entity->getKeys() as $field => $name) {
             $method = 'set' . ucfirst($name);
-            $entity->$method(isset($data[$field]) ? $data[$field] : null);
+            $entity->$method(isset($data[$name]) ? $data[$name] : null);
         }
 
         return $entity;
@@ -201,8 +199,10 @@ abstract class Entity implements \ArrayAccess
     {
         $entities = [];
 
+        $entity = new static;
+
         foreach ($data as $row) {
-            $entities[] = self::init(new static, $row, $driverInterface);
+            $entities[] = self::init(clone $entity, $row, $driverInterface);
         }
 
         return $entities;

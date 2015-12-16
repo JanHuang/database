@@ -17,14 +17,14 @@ class Test extends Entity
             'type' => 'int',
             'name' => 'id',
         ],
-        'name' => [
+        'trueName' => [
             'type' => 'varchar',
             'name' => 'name',
         ],
     ];
 
     protected $keys = [
-        'id' => 'id','name' => 'name'
+        'id' => 'id','name' => 'trueName'
     ];
 
     /**
@@ -40,7 +40,7 @@ class Test extends Entity
     /**
      * @var string
      */
-    protected $name;
+    protected $trueName;
 
     
     /**
@@ -74,12 +74,12 @@ class Test extends Entity
     }
 
     /**
-     * @param string $name
+     * @param string $trueName
      * @return $this
      */
-    public function setName($name)
+    public function setTrueName($trueName)
     {
-        $this->name = $name;
+        $this->trueName = $trueName;
 
         return $this;
     }
@@ -87,9 +87,9 @@ class Test extends Entity
     /**
      * @return string
      */
-    public function getName()
+    public function getTrueName()
     {
-        return $this->name;
+        return $this->trueName;
     }
 
 }

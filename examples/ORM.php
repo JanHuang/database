@@ -37,7 +37,7 @@ $builder->addStruct(
                 'unsigned' => true, // 默认false
                 'primary' => true,
             ],
-            'name' => [
+            'trueName' => [
                 'name' => 'name',
                 'type' => 'varchar',
                 'length' => 20,

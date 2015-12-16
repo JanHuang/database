@@ -17,16 +17,19 @@ include __DIR__ . '/../vendor/autoload.php';
 use Examples\Entity\Test;
 use FastD\Database\Drivers\MySQL;
 
-$test = new Test(1, new MySQL([
+$driver = new MySQL([
     'database_user' => 'root',
     'database_pwd'  => '123456',
     'database_host' => '127.0.0.1',
     'database_port' => 3306,
     'database_name' => 'test',
-]));
+]);
+
+$test = new Test(1, $driver);
 
 echo '<pre>';
 $test->find();
+print_r($test);
 echo $test->getId();
-echo $test->getName();
-echo $test['name'];
+echo $test->getTrueName();
+echo $test['trueName'];

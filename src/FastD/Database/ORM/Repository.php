@@ -176,7 +176,7 @@ abstract class Repository
     {
         $entity = $this->entity;
 
-        return $entity::init(new $entity, $this->find($where, $params), $this->getDriver());
+        return $entity::initArray($this->find($where, $params), $this->getDriver());
     }
 
     public function saveToEntity(Entity $entity)

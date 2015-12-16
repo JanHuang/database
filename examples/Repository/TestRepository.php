@@ -19,7 +19,7 @@ class TestRepository extends Repository
             'type' => 'int',
             'name' => 'id',
         ],
-        'name' => [
+        'trueName' => [
             'type' => 'varchar',
             'name' => 'name',
         ],
@@ -28,7 +28,7 @@ class TestRepository extends Repository
     /**
      * @var array
      */
-    protected $keys = ['id' => 'id','name' => 'name'];
+    protected $keys = ['id' => 'id','name' => 'trueName'];
 
     /**
      * @var string

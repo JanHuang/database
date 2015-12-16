@@ -212,7 +212,7 @@ GS;
             if (empty($mapName)) {
                 $mapName = $field->getName();
             }
-            $mapKeys[] = "'" . $mapName . '\' => ' . "'" . $field->getName() . "'";
+            $mapKeys[] = "'" . $field->getName() . '\' => ' . "'" . $mapName . "'";
             $maps[] = <<<M
         '{$mapName}' => [
             'type' => '{$field->getType()}',
