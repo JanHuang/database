@@ -162,13 +162,22 @@ class MySQLQueryBuilder implements QueryBuilderInterface
                 $keys = array_keys($data);
                 $values = array_values($data);
                 $this->keys = '(`' . implode('`,`', $keys) . '`)';
-                $this->value = '(\'' . implode('\',\'', $values) . '\')';
+                foreach ($values as $name => $value) {
+                    if (false === strpos($value, ':')) {
+                        $values[$name] = '\'' . $value . '\'';
+                    }
+                }
+                $this->value = '(' . implode(',', $values) . ')';
                 break;
             case self::BUILDER_UPDATE:
             default:
                 $values = [];
                 foreach ($data as $name => $value) {
-                    $values[] = '`' . $name . '`=\'' . $value . '\'';
+                    if (false === strpos($value, ':')) {
+                        $value = '\'' . $value . '\'';
+                    }
+
+                    $values[] = '`' . $name . '`=' . $value;
                 }
                 $this->value = implode(',', $values);
         }

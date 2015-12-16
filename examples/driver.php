@@ -67,7 +67,7 @@ echo '</pre>';
 $id = $driver
     ->table('test')
     ->save([
-        'name' => ':name'
+        'name' => 'janhuang'
     ], [
         'name' => 'aaa'
     ]);

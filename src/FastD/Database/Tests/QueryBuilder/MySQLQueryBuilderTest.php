@@ -163,4 +163,49 @@ class MySQLQueryBuilderTest extends \PHPUnit_Framework_TestCase
             $this->queryContext->getSql()
         );
     }
+
+    public function testUpdate()
+    {
+        $this->queryContext
+            ->table('test')
+            ->update([
+                'name' => ':janhuang'
+            ])
+        ;
+
+        echo $this->queryContext->getSql();
+    }
+
+    public function testInsert()
+    {
+        $this->queryContext
+            ->table('test')
+            ->insert([
+                'name' => ':janhuang'
+            ])
+        ;
+
+        echo $this->queryContext->getSql() . PHP_EOL;
+
+
+        $this->queryContext
+            ->table('test')
+            ->insert([
+                'name' => 'janhuang'
+            ])
+        ;
+
+        echo $this->queryContext->getSql() . PHP_EOL;
+
+        $this->queryContext
+            ->table('test')
+            ->insert([
+                'name' => 'janhuang',
+                'age' => ':age',
+                'gender' => 1
+            ])
+        ;
+
+        echo $this->queryContext->getSql() . PHP_EOL;
+    }
 }
