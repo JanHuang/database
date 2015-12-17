@@ -59,7 +59,9 @@ class Builder
     }
 
     public function checkTableStatus()
-    {}
+    {
+
+    }
 
     /**
      * @return array
