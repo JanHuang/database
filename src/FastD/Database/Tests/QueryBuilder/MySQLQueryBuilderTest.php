@@ -173,7 +173,7 @@ class MySQLQueryBuilderTest extends \PHPUnit_Framework_TestCase
             ])
         ;
 
-        echo $this->queryContext->getSql();
+//        echo $this->queryContext->getSql();
     }
 
     public function testInsert()
@@ -185,7 +185,7 @@ class MySQLQueryBuilderTest extends \PHPUnit_Framework_TestCase
             ])
         ;
 
-        echo $this->queryContext->getSql() . PHP_EOL;
+//        echo $this->queryContext->getSql() . PHP_EOL;
 
 
         $this->queryContext
@@ -195,7 +195,7 @@ class MySQLQueryBuilderTest extends \PHPUnit_Framework_TestCase
             ])
         ;
 
-        echo $this->queryContext->getSql() . PHP_EOL;
+//        echo $this->queryContext->getSql() . PHP_EOL;
 
         $this->queryContext
             ->table('test')
@@ -206,6 +206,6 @@ class MySQLQueryBuilderTest extends \PHPUnit_Framework_TestCase
             ])
         ;
 
-        echo $this->queryContext->getSql() . PHP_EOL;
+//        echo $this->queryContext->getSql() . PHP_EOL;
     }
 }
