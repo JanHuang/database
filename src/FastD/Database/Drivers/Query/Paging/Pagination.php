@@ -12,7 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Pagination;
+namespace FastD\Database\Drivers\Query\Paging;
 
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\Drivers\Query\QueryBuilderInterface;
