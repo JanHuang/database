@@ -15,8 +15,20 @@
 include __DIR__ . '/../vendor/autoload.php';
 
 use FastD\Database\ORM\Generator\Builder;
+use FastD\Database\Drivers\MySQL;
 
-$builder = new Builder();
+
+$mysql = new MySQL([
+    'database_type' => 'mysql',
+    'database_user' => 'root',
+    'database_pwd'  => '123456',
+    'database_host' => '127.0.0.1',
+    'database_port' => 3306,
+    'database_name' => 'test',
+]);
+
+$builder = new Builder($mysql);
+
 
 $builder->addStruct(
     [
@@ -39,7 +51,7 @@ $builder->addStruct(
             ],
             'trueName' => [
                 'name' => 'name',
-                'type' => 'varchar',
+                'type' => 'char',
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',
@@ -49,8 +61,10 @@ $builder->addStruct(
     ]
 );
 
-$createTableSql = $builder->buildSql();
+//$result = $builder->buildTableIfTableNotExists();
 
-$namespace = 'Examples\\';
+echo '<pre>';
+$result = $builder->updateTableIfTableExists();
+print_r($result);
 
-$builder->buildEntity(__DIR__, $namespace);
+//$builder->buildEntity(__DIR__, 'Examples\\');

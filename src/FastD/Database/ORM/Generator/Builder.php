@@ -14,6 +14,8 @@
 
 namespace FastD\Database\ORM\Generator;
 
+use FastD\Database\Drivers\DriverInterface;
+
 /**
  * Class Builder
  *
@@ -25,6 +27,13 @@ class Builder
      * @var array
      */
     protected $structs = [];
+
+    protected $driver;
+
+    public function __construct(DriverInterface $driverInterface = null)
+    {
+        $this->driver = $driverInterface;
+    }
 
     /**
      * @return StructBuilder[]
@@ -58,23 +67,71 @@ class Builder
         return $this;
     }
 
-    public function checkTableStatus()
+    public function getExistsTable()
     {
+        $tables = $this->driver
+            ->createQuery('SHOW TABLES;')
+            ->getQuery()
+            ->getAll()
+        ;
 
-    }
-
-    /**
-     * @return array
-     */
-    public function buildSql()
-    {
-        $sql = [];
-
-        foreach ($this->getSturct() as $struct) {
-            $sql[$struct->getTable()] = $struct->makestructsQL();
+        $list = [];
+        foreach ($tables as $table) {
+            $list[] = array_pop($table);
         }
 
-        return $sql;
+        return $list;
+    }
+
+    public function buildTableIfTableNotExists()
+    {
+        $tables = $this->getExistsTable();
+
+        $sqls = [];
+        foreach ($this->getSturct() as $struct) {
+            $sqls[$struct->getTable()] = $struct->makeCreateTableSQL();
+        }
+
+        $result = [];
+        foreach ($sqls as $name => $sql) {
+            if (in_array($name, $tables)) {
+                continue;
+            }
+
+            $result[] = $this->driver
+                ->createQuery($sql)
+                ->getQuery()
+                ->getAll()
+            ;
+        }
+
+        return $result;
+    }
+
+    public function updateTableIfTableExists()
+    {
+        $tables = $this->getExistsTable();
+
+        $sqls = [];
+        foreach ($this->getSturct() as $struct) {
+            $sqls[$struct->getTable()] = $struct->makeUpdateTableSQL();
+        }
+        print_r($sqls);
+
+        $result = [];
+        foreach ($sqls as $name => $sql) {
+            if (!in_array($name, $tables)) {
+                continue;
+            }
+
+            $result[] = $this->driver
+                ->createQuery($sql)
+                ->getQuery()
+                ->getOne()
+            ;
+        }
+
+        return $result;
     }
 
     /**

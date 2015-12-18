@@ -64,7 +64,7 @@ class StructBuilder
     /**
      * @var FieldBuilder[]|array
      */
-    protected $fileds = [];
+    protected $fields = [];
 
     /**
      * @param $struct
@@ -128,7 +128,7 @@ class StructBuilder
      */
     public function getFileds()
     {
-        return $this->fileds;
+        return $this->fields;
     }
 
     /**
@@ -182,7 +182,41 @@ class StructBuilder
     /**
      * @return string
      */
-    public function makeStructSQL()
+    public function makeUpdateTableSQL()
+    {
+        $sql = <<<U
+ALTER TABLE `%s`
+%s
+;
+U;
+        $indexKey = [];
+        $fields = [];
+
+        foreach ($this->getFields() as $field) {
+            if ($field->isPrimary()) {
+                $indexKey[] = "PRIMARY KEY (`{$this->primary->getName()}`)";
+            } else if ('' != ($key = $field->getKey())) {
+                $indexKey[] = $field->getKey();
+            }
+
+            $fields[] = 'CHANGE `' . $field->getName() . '` ' . $field->__toString();
+        }
+
+        $sql = sprintf(
+            $sql,
+            $this->getTable(),
+            implode(',' . PHP_EOL, $fields) . ',' . PHP_EOL . implode(',' . PHP_EOL, $indexKey),
+            $this->getCharset(),
+            $this->getEngine()
+        );
+
+        return $sql;
+    }
+
+    /**
+     * @return string
+     */
+    public function makeCreateTableSQL()
     {
         $sql = <<<T
 CREATE TABLE `%s` (
