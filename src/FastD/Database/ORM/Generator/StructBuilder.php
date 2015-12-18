@@ -247,4 +247,9 @@ T;
 
         return $sql;
     }
+
+    public function compareStructure()
+    {
+
+    }
 }
