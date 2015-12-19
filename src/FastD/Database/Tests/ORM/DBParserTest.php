@@ -14,10 +14,34 @@
 
 namespace FastD\Database\Tests\ORM;
 
+use FastD\Database\Drivers\MySQL;
+use FastD\Database\ORM\Parser\DBParser;
+
 class DBParserTest extends \PHPUnit_Framework_TestCase
 {
+    protected function getDB()
+    {
+        return new MySQL([
+            'database_type' => 'mysql',
+            'database_user' => 'root',
+            'database_pwd'  => '123456',
+            'database_host' => '127.0.0.1',
+            'database_port' => 3306,
+            'database_name' => 'test',
+        ]);
+    }
+
+    protected function getDBParser()
+    {
+        return new DBParser($this->getDB());
+    }
+
     public function testDBParser()
     {
-//        echo 1;
+        $DBParser = $this->getDBParser();
+
+        $table = $DBParser->getTable('test');
+
+        print_r($table);
     }
 }

@@ -25,28 +25,75 @@ use FastD\Database\Drivers\DriverInterface;
  */
 class DBParser
 {
+    /**
+     * @var DriverInterface
+     */
     protected $driver;
 
+    /**
+     * DBParser constructor.
+     *
+     * @param DriverInterface $driverInterface
+     */
     public function __construct(DriverInterface $driverInterface)
     {
         $this->driver = $driverInterface;
     }
 
+    /**
+     * @return TableParser[]
+     */
     public function getTables()
-    {}
+    {
+        $tables = $this->driver
+            ->createQuery('SHOW TABLES;')
+            ->getQuery()
+            ->getAll()
+        ;
 
-    public function getTableStructure($name)
+        $list = [];
+        foreach ($tables as $table) {
+            $name = array_pop($table);
+            $list[] = new TableParser($this->driver, $name);
+        }
+
+        return $list;
+    }
+
+    /**
+     * @param $name
+     * @return TableParser
+     */
+    public function getTable($name)
+    {
+        return new TableParser($this->driver, $name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getCharset()
+    {
+        return $this->driver
+            ->createQuery('SELECT @@character_set_database')
+            ->getQuery()
+            ->getOne()['@@character_set_database']
+        ;
+    }
+
+    public function getInformation()
     {
 
     }
 
-    public function compareTableStructure($name, array $fields)
+    public function getCurrentDBName()
     {
+        $db = $this->driver
+            ->createQuery('SELECT DATABASE() as name;')
+            ->getQuery()
+            ->getOne()
+        ;
 
-    }
-
-    public function getCurrentDB()
-    {
-
+        return $db['name'];
     }
 }
