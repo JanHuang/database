@@ -42,6 +42,6 @@ class DBParserTest extends \PHPUnit_Framework_TestCase
 
         $table = $DBParser->getTable('test');
 
-        print_r($table);
+        print_r($table->getFields());
     }
 }

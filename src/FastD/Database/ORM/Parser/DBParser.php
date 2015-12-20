@@ -81,11 +81,9 @@ class DBParser
         ;
     }
 
-    public function getInformation()
-    {
-
-    }
-
+    /**
+     * @return string
+     */
     public function getCurrentDBName()
     {
         $db = $this->driver

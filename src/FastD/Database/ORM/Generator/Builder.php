@@ -15,6 +15,7 @@
 namespace FastD\Database\ORM\Generator;
 
 use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\ORM\Parser\DBParser;
 
 /**
  * Class Builder
@@ -30,9 +31,13 @@ class Builder
 
     protected $driver;
 
+    protected $parser;
+
     public function __construct(DriverInterface $driverInterface = null)
     {
         $this->driver = $driverInterface;
+
+        $this->parser = new DBParser($driverInterface);
     }
 
     /**
@@ -83,7 +88,7 @@ class Builder
         return $list;
     }
 
-    public function buildTableIfTableNotExists()
+    public function createTableIfTableNotExists()
     {
         $tables = $this->getExistsTable();
 

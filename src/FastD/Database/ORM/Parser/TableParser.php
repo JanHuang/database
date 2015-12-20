@@ -16,18 +16,44 @@ namespace FastD\Database\ORM\Parser;
 
 use FastD\Database\Drivers\DriverInterface;
 
+/**
+ * Class TableParser
+ *
+ * @package FastD\Database\ORM\Parser
+ */
 class TableParser
 {
+    /**
+     * @var array|bool
+     */
     protected $info;
 
+    /**
+     * @var array|bool
+     */
     protected $fields;
 
+    /**
+     * @var array|bool
+     */
     protected $create_sql;
 
+    /**
+     * @var array|bool
+     */
     protected $index;
 
+    /**
+     * @var string
+     */
     protected $name;
 
+    /**
+     * TableParser constructor.
+     *
+     * @param DriverInterface $driverInterface
+     * @param                 $name
+     */
     public function __construct(DriverInterface $driverInterface, $name)
     {
         $this->name = $name;
@@ -57,44 +83,74 @@ class TableParser
         ;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @return array|bool
+     */
     public function getFields()
     {
         return $this->fields;
     }
 
+    /**
+     * @return string
+     */
     public function getEngine()
     {
         return $this->index['Engine'];
     }
 
+    /**
+     * @return string
+     */
     public function getCharset()
     {
         return $this->info['Collation'];
     }
 
+    /**
+     * @return string|int
+     */
+    public function getAutoIncrement()
+    {
+        return $this->info['Auto_increment'];
+    }
+
+    /**
+     * @return string|int
+     */
     public function getSize()
     {
         return $this->info['Rows'];
     }
 
+
+    /**
+     * @return string
+     */
     public function getStructure()
     {
         return $this->create_sql;
     }
 
+    /**
+     * @return array
+     */
     public function getIndex()
     {
         return $this->index;
     }
 
-    public function makeAlter()
+    public function makeAlter(array $fields)
     {
-
+        
     }
 
     public function makeCreate()
@@ -107,8 +163,6 @@ class TableParser
 
     public function makeDump()
     {}
-
-
 
     public function compareTableStructure($name, array $fields)
     {
