@@ -92,11 +92,32 @@ class TableParser
     }
 
     /**
-     * @return array|bool
+     * @return FieldParser[]
      */
     public function getFields()
     {
-        return $this->fields;
+        $fields = [];
+
+        foreach ($this->fields as $field) {
+            $fields[] = $this->getField($field['Field']);
+        }
+
+        return $fields;
+    }
+
+    /**
+     * @param $name
+     * @return FieldParser|null
+     */
+    public function getField($name)
+    {
+        foreach ($this->fields as $field) {
+            if ($name == $field['Field']) {
+                return new FieldParser($field);
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -150,7 +171,7 @@ class TableParser
 
     public function makeAlter(array $fields)
     {
-        
+
     }
 
     public function makeCreate()
