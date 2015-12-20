@@ -84,6 +84,9 @@ class FieldParser
     public function __construct(array $field)
     {
         print_r($field);
+        preg_match_all('/([a-zA-Z+])\(?(\w+)\)?\s?([a-zA-Z+])/', $field['Type'], $match);
+        print_r($match);
+        $this->name = $field['Field'];
     }
 
     /**
