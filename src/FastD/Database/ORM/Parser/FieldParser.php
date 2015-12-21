@@ -62,6 +62,11 @@ class FieldParser
     protected $extra = [];
 
     /**
+     * @var string
+     */
+    protected $comment = null;
+
+    /**
      * @var bool
      */
     protected $primary = false;
@@ -83,10 +88,46 @@ class FieldParser
      */
     public function __construct(array $field)
     {
-        print_r($field);
-        preg_match_all('/([a-zA-Z+])\(?(\w+)\)?\s?([a-zA-Z+])/', $field['Type'], $match);
-        print_r($match);
+        if (isset($field['Type'])) {
+            $this->parseExistsField($field);
+        } else {
+            $this->parseCreateField($field);
+        }
+    }
+
+    protected function parseExistsField(array $field)
+    {
+        preg_match('/^(\w+)+\(?(\d+)\)\s?(.*)/', $field['Type'], $match);
+        $this->type = $match[1];
+        $this->length = $match[2];
+        $this->unsigned = 'unsigned' === $match[3] ? true : false;
+        unset($match);
+
+        $this->key = $field['Key'];
+        $this->default = $field['Default'];
+        $this->extra = $field['Extra'];
+        $this->notNull = 'NO' === $field['Null'] ? true : false;
+        $this->primary = 'PRI' === $field['Key'] ? true : false;
+        $this->unique = 'UNI' === $field['Key'] ? true : false;
+        $this->index = 'MUL' === $field['Key'] ? true : false;
+
         $this->name = $field['Field'];
+    }
+
+    protected function parseCreateField(array $field)
+    {
+        $this->name = $field['name'];
+        $this->type = $field['type'];
+        $this->length = isset($field['length']) ? $field['length'] : null;
+        $this->default = isset($field['default']) ? $field['default'] : null;
+        $this->comment = isset($field['comment']) ? $field['comment'] : null;
+        $this->notNull = isset($field['notnull']) ? $field['notnull'] : false;
+        $this->key = isset($field['key']) ? $field['key'] : null;
+        $this->unsigned = isset($field['unsigned']) ? $field['unsigned'] : false;
+        $this->extra = isset($field['auto_increment']) ? $field['auto_increment'] : null;
+        $this->primary = 'PRI' === $this->key ? true : false;
+        $this->unique = 'UNI' === $this->key ? true : false;
+        $this->index = 'MUL' === $this->key ? true : false;
     }
 
     /**
@@ -127,6 +168,14 @@ class FieldParser
     public function isUnsigned()
     {
         return $this->unsigned;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
     }
 
     /**
@@ -175,5 +224,34 @@ class FieldParser
     public function isIndex()
     {
         return $this->index;
+    }
+
+    public function makeAlterSQL(TableParser $tableParser, $isChange = false)
+    {
+        return !$isChange ?
+            "ALTER TABLE `{$tableParser->getName()}` ADD `{$this->getName()}` {$this->getType()}" .
+            ($this->getLength() > 0 ? "({$this->getLength()})" : '') .
+            ($this->isUnsigned() ? " UNSIGNED" : '') .
+            ($this->isNotNull() ? " NOT NULL" : '') .
+            (null !== $this->getDefault() ? " DEFAULT '{$this->getDefault()}'" : '') .
+            (null !== $this->getComment() ? " COMMENT '{$this->getComment()}'" : '') . ';'
+            :
+            "ALTER TABLE `{$tableParser->getName()}` CHANGE `{$this->getName()}` `{$this->getName()}` {$this->getType()}" .
+            ($this->getLength() > 0 ? "({$this->getLength()})" : '') .
+            ($this->isUnsigned() ? " UNSIGNED" : '') .
+            ($this->isNotNull() ? " NOT NULL" : '') .
+            (null !== $this->getDefault() ? " DEFAULT '{$this->getDefault()}'" : '') .
+            (null !== $this->getComment() ? " COMMENT '{$this->getComment()}'" : '') . ';'
+            ;
+    }
+
+    public function makeCreateSQL(TableParser $tableParser)
+    {
+
+    }
+
+    public function makeIndexSQL(TableParser $tableParser)
+    {
+
     }
 }

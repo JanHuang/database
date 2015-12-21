@@ -16,6 +16,7 @@ namespace FastD\Database\Tests\ORM;
 
 use FastD\Database\Drivers\MySQL;
 use FastD\Database\ORM\Parser\DBParser;
+use FastD\Database\ORM\Parser\FieldParser;
 
 class DBParserTest extends \PHPUnit_Framework_TestCase
 {
@@ -42,6 +43,25 @@ class DBParserTest extends \PHPUnit_Framework_TestCase
 
         $table = $DBParser->getTable('test');
 
-        print_r($table->getFields());
+        $table->makeAlter([new FieldParser([
+            'name' => 'nick_name',
+            'type' => 'varchar',
+            'length' => 20,
+            'notnull' => true, // 默认true
+            'default' => '',
+            'index' => 'unique', // 默认索引名为 name_unique_key
+            'comment' => '昵称',
+        ])]);
+
+        $table->makeAlter([new FieldParser([
+            'name' => 'name',
+            'type' => 'char',
+            'length' => 30,
+            'notnull' => true, // 默认true
+            'default' => 'abc',
+            'key' => 'unique' // 默认索引名为 name_unique_key
+        ])]);
+
+
     }
 }

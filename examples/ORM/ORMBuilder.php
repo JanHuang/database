@@ -45,13 +45,20 @@ $builder->addStruct(
                 'length' => 10,
                 'default' => 0,
                 'comment' => '',
-                'increment' => 10, // 起始值
                 'unsigned' => true, // 默认false
                 'primary' => true,
             ],
             'trueName' => [
                 'name' => 'name',
                 'type' => 'char',
+                'length' => 20,
+                'notnull' => true, // 默认true
+                'default' => '',
+                'index' => 'unique' // 默认索引名为 name_unique_key
+            ],
+            'nickName' => [
+                'name' => 'nick_name',
+                'type' => 'varchar',
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',

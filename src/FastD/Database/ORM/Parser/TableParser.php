@@ -99,7 +99,8 @@ class TableParser
         $fields = [];
 
         foreach ($this->fields as $field) {
-            $fields[] = $this->getField($field['Field']);
+            $field = $this->getField($field['Field']);
+            $fields[$field->getName()] = $field;
         }
 
         return $fields;
@@ -169,21 +170,35 @@ class TableParser
         return $this->index;
     }
 
+    /**
+     * @param FieldParser[] $fields
+     */
     public function makeAlter(array $fields)
     {
-
+        $existsFields = $this->getFields();
+        foreach ($fields as $alias => $field) {
+            $isChange = false;
+            if (array_key_exists($field->getName(), $existsFields)) {
+                $isChange = true;
+            }
+            echo $field->makeAlterSQL($this, $isChange) . PHP_EOL;
+        }
     }
 
-    public function makeCreate()
+    public function makeCreate(array $fields)
     {
 
     }
 
     public function makeDrop()
-    {}
+    {
+
+    }
 
     public function makeDump()
-    {}
+    {
+
+    }
 
     public function compareTableStructure($name, array $fields)
     {
