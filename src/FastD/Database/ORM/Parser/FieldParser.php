@@ -245,13 +245,24 @@ class FieldParser
             ;
     }
 
-    public function makeCreateSQL(TableParser $tableParser)
+    public function makeCreateSQL()
     {
-
+        return
+            "`{$this->getName()}` {$this->getType()}" .
+            ($this->getLength() > 0 ? "({$this->getLength()})" : '') .
+            ($this->isUnsigned() ? " UNSIGNED" : '') .
+            ($this->isNotNull() ? " NOT NULL" : '') .
+            (null !== $this->getDefault() ? " DEFAULT '{$this->getDefault()}'" : '') .
+            (null !== $this->getComment() ? " COMMENT '{$this->getComment()}'" : '') . ';'
+            ;
     }
 
-    public function makeIndexSQL(TableParser $tableParser)
+    public function makeIndexSQL($isAlter = true)
     {
-
+        return $isAlter ?
+            ""
+            :
+            ""
+            ;
     }
 }

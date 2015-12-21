@@ -59,28 +59,24 @@ class TableParser
         $this->name = $name;
 
         $this->create_sql = $driverInterface
-            ->createQuery('SHOW CREATE TABLE `' . $name . '`')
+            ->createQuery('SHOW CREATE TABLE `'.$name.'`')
             ->getQuery()
-            ->getOne()
-        ;
+            ->getOne();
 
         $this->fields = $driverInterface
-            ->createQuery('DESCRIBE `' . $name . '`')
+            ->createQuery('DESCRIBE `'.$name.'`')
             ->getQuery()
-            ->getAll()
-        ;
+            ->getAll();
 
         $this->index = $driverInterface
-            ->createQuery('SHOW INDEX FROM `' . $name . '`')
+            ->createQuery('SHOW INDEX FROM `'.$name.'`')
             ->getQuery()
-            ->getAll()
-        ;
+            ->getAll();
 
         $this->info = $driverInterface
-            ->createQuery('SHOW TABLE STATUS WHERE Name = \'' . $name . '\'')
+            ->createQuery('SHOW TABLE STATUS WHERE Name = \''.$name.'\'')
             ->getQuery()
-            ->getOne()
-        ;
+            ->getOne();
     }
 
     /**
@@ -172,30 +168,49 @@ class TableParser
 
     /**
      * @param FieldParser[] $fields
+     * @return string
      */
     public function makeAlter(array $fields)
     {
         $existsFields = $this->getFields();
+        $alters = [];
+        $index = [];
         foreach ($fields as $alias => $field) {
             $isChange = false;
             if (array_key_exists($field->getName(), $existsFields)) {
                 $isChange = true;
             }
-            echo $field->makeAlterSQL($this, $isChange) . PHP_EOL;
+            $alters[] = $field->makeAlterSQL($this, $isChange);
+//            $index[] = $field->makeIndexSQL($this);
         }
+
+        return implode(',', $alters);
     }
 
+    /**
+     * @param FieldParser[] $fields
+     * @return string
+     */
     public function makeCreate(array $fields)
     {
+        $create = [];
+        foreach ($fields as $alias => $field) {
+            $create[] = $field->makeCreateSQL();
+        }
+        $create = implode(PHP_EOL, $create);
 
+        return
+            "CREATE TABLE `{$this->getName()}` (" .
+            $create .
+            ") ENGINE {$this->getEngine()} CHARSET {$this->getCharset()}";
     }
 
     public function makeDrop()
     {
-
+        return "DROP TABLE `{$this->getName()}`";
     }
 
-    public function makeDump()
+    public function makeDump($user, $pwd, $dir)
     {
 
     }
