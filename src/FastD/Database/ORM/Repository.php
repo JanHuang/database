@@ -166,13 +166,9 @@ abstract class Repository
      */
     public function bindRequest(Request $request)
     {
-        if ($request->isMethod('post')) {
-            $params = $request->request->all();
-        } else {
-            $params = $request->query->all();
-        }
-
-        return $this->bindRequestParams($params);
+        return $this->bindRequestParams(
+            $request->isMethod('get') ? $request->query->all() : $request->request->all()
+        );
     }
 
     /**
@@ -208,12 +204,12 @@ abstract class Repository
      * @param int  $showList
      * @param int  $showPage
      * @param null $lastId
-     * @return \FastD\Database\Pagination\QueryPagination
+     * @return
      */
-    public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
+    /*public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
         return $this->driver->pagination($this->getTable(), $page, $showList, $showPage, $lastId);
-    }
+    }*/
 
     /**
      * Return query errors.

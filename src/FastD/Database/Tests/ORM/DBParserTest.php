@@ -43,7 +43,7 @@ class DBParserTest extends \PHPUnit_Framework_TestCase
 
         $table = $DBParser->getTable('test');
 
-        $table->makeAlter([new FieldParser([
+        /*$table->makeAlter([new FieldParser([
             'name' => 'nick_name',
             'type' => 'varchar',
             'length' => 20,
@@ -60,8 +60,6 @@ class DBParserTest extends \PHPUnit_Framework_TestCase
             'notnull' => true, // 默认true
             'default' => 'abc',
             'key' => 'unique' // 默认索引名为 name_unique_key
-        ])]);
-
-
+        ])]);*/
     }
 }

@@ -12,7 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-include __DIR__.'/../vendor/autoload.php';
+include __DIR__.'/../../vendor/autoload.php';
 
 use FastD\Database\ORM\Generator\Builder;
 use FastD\Database\Drivers\MySQL;
@@ -71,7 +71,9 @@ $builder->addStruct(
 //$result = $builder->buildTableIfTableNotExists();
 
 echo '<pre>';
-$result = $builder->updateTableIfTableExists();
-print_r($result);
+$create = $builder->createTableIfTableNotExists();
+$update = $builder->updateTableIfTableExists();
+print_r($create);
+print_r($update);
 
 //$builder->buildEntity(__DIR__, 'Examples\\');

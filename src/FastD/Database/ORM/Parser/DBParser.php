@@ -30,6 +30,8 @@ class DBParser
      */
     protected $driver;
 
+    protected $tables = [];
+
     /**
      * DBParser constructor.
      *
@@ -38,6 +40,26 @@ class DBParser
     public function __construct(DriverInterface $driverInterface)
     {
         $this->driver = $driverInterface;
+
+        $tables = $driverInterface
+            ->createQuery('SHOW TABLES;')
+            ->getQuery()
+            ->getAll()
+        ;
+
+        foreach ($tables as $table) {
+            $name = array_pop($table);
+            $this->tables[$name] = new TableParser($this->driver, $name);
+        }
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function hasTable($name)
+    {
+        return array_key_exists($name, $this->tables);
     }
 
     /**
@@ -45,19 +67,7 @@ class DBParser
      */
     public function getTables()
     {
-        $tables = $this->driver
-            ->createQuery('SHOW TABLES;')
-            ->getQuery()
-            ->getAll()
-        ;
-
-        $list = [];
-        foreach ($tables as $table) {
-            $name = array_pop($table);
-            $list[] = new TableParser($this->driver, $name);
-        }
-
-        return $list;
+        return $this->tables;
     }
 
     /**
@@ -66,7 +76,7 @@ class DBParser
      */
     public function getTable($name)
     {
-        return new TableParser($this->driver, $name);
+        return $this->hasTable($name) ? $this->tables[$name] : null;
     }
 
     /**

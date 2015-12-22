@@ -14,6 +14,8 @@
 
 namespace FastD\Database\ORM\Generator;
 
+use FastD\Database\ORM\Parser\FieldParser;
+
 /**
  * Class Struct
  *
@@ -86,15 +88,8 @@ class StructBuilder
         $this->charset  = isset($struct['charset']) ? $struct['charset'] : null;
 
         if (isset($struct['fields']) && is_array($struct['fields'])) {
-            foreach ($struct['fields'] as $key => $value) {
-                if (!is_array($value)) {
-                    break;
-                }
-                if (isset($value['primary']) && true === $value['primary']) {
-                    $this->primary = new FieldBuilder($value, $key);
-                }
-
-                $this->fields[] = new FieldBuilder($value, $key);
+            foreach ($struct['fields'] as $field) {
+                $this->fields[] = new FieldParser($field);
             }
         }
     }
@@ -184,6 +179,7 @@ class StructBuilder
      */
     public function makeUpdateTableSQL()
     {
+        return 'ok';
         $sql = <<<U
 ALTER TABLE `%s`
 %s
@@ -218,6 +214,7 @@ U;
      */
     public function makeCreateTableSQL()
     {
+        return 'ok';
         $sql = <<<T
 CREATE TABLE `%s` (
 %s

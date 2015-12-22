@@ -16,6 +16,7 @@ namespace FastD\Database\ORM\Generator;
 
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\ORM\Parser\DBParser;
+use FastD\Database\ORM\Parser\TableParser;
 
 /**
  * Class Builder
@@ -54,7 +55,7 @@ class Builder
      */
     public function addStruct(array $structs)
     {
-        $this->structs[] = new StructBuilder($structs);
+        $this->structs[] = new TableParser($this->driver, $structs);
 
         return $this;
     }

@@ -49,6 +49,11 @@ class TableParser
     protected $name;
 
     /**
+     * @var bool
+     */
+    protected $exists = false;
+
+    /**
      * TableParser constructor.
      *
      * @param DriverInterface $driverInterface
@@ -58,6 +63,11 @@ class TableParser
     {
         $this->name = $name;
 
+
+    }
+
+    protected function parseExistsTable(DriverInterface $driverInterface, $name)
+    {
         $this->create_sql = $driverInterface
             ->createQuery('SHOW CREATE TABLE `'.$name.'`')
             ->getQuery()
@@ -77,6 +87,19 @@ class TableParser
             ->createQuery('SHOW TABLE STATUS WHERE Name = \''.$name.'\'')
             ->getQuery()
             ->getOne();
+    }
+
+    protected function parseNotExistsTable()
+    {
+
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isExists()
+    {
+        return $this->exists;
     }
 
     /**
