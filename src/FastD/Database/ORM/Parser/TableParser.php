@@ -247,7 +247,7 @@ class TableParser
         $alters = [];
         $index = [];
         foreach ($this->getNewFields() as $alias => $field) {
-            if ($field->equals($this->getField($alias))) {
+            if ($field->equals($this->getField($field->getName()))) {
                 continue;
             }
             $alters[] = $field->makeAlterSQL($this);

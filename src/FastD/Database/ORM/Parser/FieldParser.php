@@ -101,6 +101,20 @@ class FieldParser
         }
     }
 
+    protected function getKeyIndexName($name)
+    {
+        switch ($name) {
+            case 'UNI':
+                return 'unique';
+            case 'PRI':
+                return 'primary';
+            case 'MUL':
+                return 'index';
+            default:
+                return $name;
+        }
+    }
+
     /**
      * @param array $field
      */
@@ -117,13 +131,13 @@ class FieldParser
             $this->length = null;
         }
 
-        $this->key = $field['Key'];
+        $this->key = $this->getKeyIndexName($field['Key']);
         $this->default = $field['Default'];
         $this->extra = $field['Extra'];
         $this->notNull = 'NO' === $field['Null'] ? true : false;
-        $this->primary = 'PRI' === $field['Key'] ? true : false;
-        $this->unique = 'UNI' === $field['Key'] ? true : false;
-        $this->index = 'MUL' === $field['Key'] ? true : false;
+        $this->primary = 'primary' === $this->key ? true : false;
+        $this->unique = 'unique' === $this->key ? true : false;
+        $this->index = 'index' === $this->key ? true : false;
 
         $this->name = $field['Field'];
         $this->exists = true;
@@ -148,12 +162,12 @@ class FieldParser
         $this->default = isset($field['default']) ? $field['default'] : null;
         $this->comment = isset($field['comment']) ? $field['comment'] : null;
         $this->notNull = isset($field['notnull']) ? $field['notnull'] : false;
-        $this->key = isset($field['key']) ? $field['key'] : null;
+        $this->key = isset($field['key']) ? $this->getKeyIndexName($field['key']) : null;
         $this->unsigned = isset($field['unsigned']) ? $field['unsigned'] : false;
         $this->extra = isset($field['auto_increment']) ? $field['auto_increment'] : null;
-        $this->primary = 'PRI' === $this->key ? true : false;
-        $this->unique = 'UNI' === $this->key ? true : false;
-        $this->index = 'MUL' === $this->key ? true : false;
+        $this->primary = 'primary' === $this->key ? true : false;
+        $this->unique = 'unique' === $this->key ? true : false;
+        $this->index = 'index' === $this->key ? true : false;
         $this->exists = false;
     }
 

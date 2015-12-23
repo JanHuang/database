@@ -46,7 +46,7 @@ $builder->addTable(
                 'default' => 0,
                 'comment' => '',
                 'unsigned' => true, // 默认false
-                'key' => 'PRI',
+                'key' => 'primary',
             ],
             'trueName' => [
                 'name' => 'name',
@@ -54,6 +54,7 @@ $builder->addTable(
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',
+                'key' => 'index'
             ],
             'nickName' => [
                 'name' => 'nick_name',
@@ -61,7 +62,7 @@ $builder->addTable(
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',
-                'key' => 'MUL' // 默认索引名为 name_unique_key
+                'key' => 'index' // 默认索引名为 name_unique_key
             ],
             'age' => [
                 'name' => 'age',
@@ -69,7 +70,7 @@ $builder->addTable(
                 'length' => 2,
                 'notnull' => true, // 默认true
                 'default' => 1,
-                'key' => 'UNI' // 默认索引名为 name_unique_key
+                'key' => 'unique' // 默认索引名为 name_unique_key
             ],
         ]
     ]
