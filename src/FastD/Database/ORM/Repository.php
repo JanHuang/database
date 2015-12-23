@@ -164,9 +164,9 @@ abstract class Repository
      * @param Request $request
      * @return array
      */
-    public function bindRequest(Request $request)
+    public function handleRequest(Request $request)
     {
-        return $this->bindRequestParams(
+        return $this->handleRequestParams(
             $request->isMethod('get') ? $request->query->all() : $request->request->all()
         );
     }
@@ -175,7 +175,7 @@ abstract class Repository
      * @param array $params
      * @return array
      */
-    public function bindRequestParams(array $params)
+    public function handleRequestParams(array $params)
     {
         foreach ($params as $name => $value) {
 

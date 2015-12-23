@@ -311,6 +311,15 @@ class FieldParser
     }
 
     /**
+     * @param FieldParser|null $parser
+     * @return bool
+     */
+    public function equals(FieldParser $parser = null)
+    {
+        return (string)$this === (string)$parser;
+    }
+
+    /**
      * @return string
      */
     public function __toString()
@@ -324,14 +333,5 @@ class FieldParser
             $this->getExtra() .
             $this->getLength()
             ;
-    }
-
-    /**
-     * @param FieldParser|null $parser
-     * @return bool
-     */
-    public function equals(FieldParser $parser = null)
-    {
-        return (string)$this === (string)$parser;
     }
 }
