@@ -170,7 +170,7 @@ class TableParser
      */
     public function getEngine()
     {
-        return $this->index['Engine'];
+        return isset($this->index['Engine']) ? $this->index['Engine'] : 'INNODB';
     }
 
     /**
@@ -178,7 +178,7 @@ class TableParser
      */
     public function getCharset()
     {
-        return $this->info['Collation'];
+        return isset($this->info['Collation']) ? $this->info['Collation'] : 'utf8';
     }
 
     /**
@@ -186,7 +186,7 @@ class TableParser
      */
     public function getAutoIncrement()
     {
-        return $this->info['Auto_increment'];
+        return isset($this->info['Auto_increment']) ? $this->info['Auto_increment'] : 0;
     }
 
     /**
@@ -194,7 +194,7 @@ class TableParser
      */
     public function getSize()
     {
-        return $this->info['Rows'];
+        return isset($this->info['Rows']) ? $this->info['Rows'] : 0;
     }
 
 
@@ -235,7 +235,7 @@ class TableParser
 //            $index[] = $field->makeIndexSQL($this);
         }
 
-        return implode(',', $alters);
+        return $alters;
     }
 
     /**

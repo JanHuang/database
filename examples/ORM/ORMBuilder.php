@@ -30,9 +30,54 @@ $mysql = new MySQL([
 $builder = new Builder($mysql);
 
 
-$builder->addStructure(
+$builder->addTable(
     [
         'table' => 'test',
+        'suffix' => '',
+        'prefix' => '',
+        'cache' => '', // 默认值 Entity/cache/md5.php
+        'engine' => 'innodb', // 默认innodb
+        'charset' => 'utf8', // 默认utf8
+        'fields' => [
+            'id' => [
+                'name' => 'id', // 默认值 name 拆分
+                'type' => 'int',
+                'length' => 10,
+                'default' => 0,
+                'comment' => '',
+                'unsigned' => true, // 默认false
+                'primary' => true,
+            ],
+            'trueName' => [
+                'name' => 'name',
+                'type' => 'char',
+                'length' => 20,
+                'notnull' => true, // 默认true
+                'default' => '',
+                'index' => 'unique' // 默认索引名为 name_unique_key
+            ],
+            'nickName' => [
+                'name' => 'nick_name',
+                'type' => 'varchar',
+                'length' => 20,
+                'notnull' => true, // 默认true
+                'default' => '',
+                'index' => 'unique' // 默认索引名为 name_unique_key
+            ],
+            'age' => [
+                'name' => 'age',
+                'type' => 'tinyint',
+                'length' => 1,
+                'notnull' => true, // 默认true
+                'default' => 1,
+                'index' => 'unique' // 默认索引名为 name_unique_key
+            ],
+        ]
+    ]
+);
+$builder->addTable(
+    [
+        'table' => 'test2',
         'suffix' => '',
         'prefix' => '',
         'cache' => '', // 默认值 Entity/cache/md5.php
@@ -71,7 +116,6 @@ $builder->addStructure(
 //$result = $builder->buildTableIfTableNotExists();
 
 echo '<pre>';
-print_r($builder);
 $tables = $builder->updateTables();
 print_r($tables);
 

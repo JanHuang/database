@@ -47,50 +47,9 @@ class Builder
         $this->parser = new DBParser($driverInterface);
     }
 
-    /**
-     * @return StructBuilder[]
-     */
-    public function getStructure()
+    public function getParser()
     {
-        return $this->parser->getTables();
-    }
-
-    /**
-     * @param array $structs
-     * @return $this
-     */
-    public function addStructure(array $structs)
-    {
-        if (!isset($structs['table'])) {
-            throw new \RuntimeException('Table name is undefined.');
-        }
-
-        if ($this->parser->hasTable($structs['table'])) {
-            $this->parser->getTable($structs['table'])->setNewFields($structs);
-        } else {
-            $table = new TableParser(
-                $this->driver,
-                $structs['table'],
-                $structs,
-                $this->parser->hasTable($structs['table'])
-            );
-            $this->parser->addTable($table);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param array $strusts
-     * @return $this
-     */
-    public function setStructure(array $strusts)
-    {
-        foreach ($strusts as $strust) {
-            $this->addStructure($strust);
-        }
-
-        return $this;
+        return $this->parser;
     }
 
     /**
@@ -101,11 +60,56 @@ class Builder
         return $this->parser->getTables();
     }
 
+    /**
+     * @param array $table
+     * @return $this
+     */
+    public function addTable(array $table)
+    {
+        if (!isset($table['table'])) {
+            throw new \RuntimeException('Table name is undefined.');
+        }
+
+        if ($this->parser->hasTable($table['table'])) {
+            $this->parser->getTable($table['table'])->setNewFields($table);
+        } else {
+            $table = new TableParser(
+                $this->driver,
+                $table['table'],
+                $table,
+                $this->parser->hasTable($table['table'])
+            );
+            $this->parser->addTable($table);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array $tables
+     * @return $this
+     */
+    public function setTables(array $tables)
+    {
+        foreach ($tables as $table) {
+            $this->addTable($table);
+        }
+
+        return $this;
+    }
+
     public function updateTables()
     {
-        foreach ($this->structs as $struct) {
-            $struct->makeSQL();
+        $sqlArray = [];
+        foreach ($this->getTables() as $table) {
+            $sql = $table->makeSQL();
+            if (!empty($sql)) {
+                $sqlArray[] = $sql;
+            }
         }
+        echo '<pre>';
+        print_r($sqlArray);
+        return true;
     }
 
     /**
@@ -114,9 +118,9 @@ class Builder
      */
     public function buildEntity($dir, $namespace = '')
     {
-        foreach ($this->getSturct() as $struct) {
-            $entity = new EntityBuilder($struct, $dir);
-            $entity->buildEntity($namespace.$struct->getTable());
+        foreach ($this->getTables() as $table) {
+//            $entity = new EntityBuilder($struct, $dir);
+//            $entity->buildEntity($namespace.$struct->getTable());
         }
     }
 }

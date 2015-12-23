@@ -53,7 +53,7 @@ class DBParser
         foreach ($tables as $table) {
             $name = array_pop($table);
             $table = new TableParser($this->driver, $name, [], true);
-            $this->tables[$table->getName()] = $tables;
+            $this->tables[$table->getName()] = $table;
         }
     }
 
