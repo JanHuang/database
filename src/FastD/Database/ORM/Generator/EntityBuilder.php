@@ -91,7 +91,6 @@ class EntityBuilder
         $entity = <<<E
 <?php
 {$namespace}
-
 use FastD\Database\ORM\Entity;
 
 class {$name} extends Entity

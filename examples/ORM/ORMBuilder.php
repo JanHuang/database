@@ -117,7 +117,7 @@ $builder->addTable(
 
 echo '<pre>';
 $tables = $builder->updateTables();
-$builder->buildEntity(__DIR__);
+$builder->buildEntity(__DIR__, 'Examples\\ORM\\');
 print_r($tables);
 
 //$builder->buildEntity(__DIR__, 'Examples\\');

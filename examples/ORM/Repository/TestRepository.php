@@ -1,5 +1,7 @@
 <?php
 
+namespace Examples\ORM\Repository;
+
 use FastD\Database\ORM\Repository;
 
 class TestRepository extends Repository
@@ -43,7 +45,7 @@ class TestRepository extends Repository
     /**
      * @var string
      */
-    protected $entity = 'Test';
+    protected $entity = 'Examples\ORM\Entity\Test';
 
 
 }
