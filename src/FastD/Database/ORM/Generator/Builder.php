@@ -26,14 +26,20 @@ use FastD\Database\ORM\Parser\TableParser;
 class Builder
 {
     /**
-     * @var array
+     * @var DriverInterface
      */
-    protected $structs = [];
-
     protected $driver;
 
+    /**
+     * @var DBParser
+     */
     protected $parser;
 
+    /**
+     * Builder constructor.
+     *
+     * @param DriverInterface|null $driverInterface
+     */
     public function __construct(DriverInterface $driverInterface = null)
     {
         $this->driver = $driverInterface;
@@ -44,18 +50,32 @@ class Builder
     /**
      * @return StructBuilder[]
      */
-    public function getSturct()
+    public function getStructure()
     {
-        return $this->structs;
+        return $this->parser->getTables();
     }
 
     /**
      * @param array $structs
      * @return $this
      */
-    public function addStruct(array $structs)
+    public function addStructure(array $structs)
     {
-        $this->structs[] = new TableParser($this->driver, $structs);
+        if (!isset($structs['table'])) {
+            throw new \RuntimeException('Table name is undefined.');
+        }
+
+        if ($this->parser->hasTable($structs['table'])) {
+            $this->parser->getTable($structs['table'])->setNewFields($structs);
+        } else {
+            $table = new TableParser(
+                $this->driver,
+                $structs['table'],
+                $structs,
+                $this->parser->hasTable($structs['table'])
+            );
+            $this->parser->addTable($table);
+        }
 
         return $this;
     }
@@ -64,80 +84,28 @@ class Builder
      * @param array $strusts
      * @return $this
      */
-    public function setStruct(array $strusts)
+    public function setStructure(array $strusts)
     {
         foreach ($strusts as $strust) {
-            $this->addStruct($strust);
+            $this->addStructure($strust);
         }
 
         return $this;
     }
 
-    public function getExistsTable()
+    /**
+     * @return \FastD\Database\ORM\Parser\TableParser[]
+     */
+    public function getTables()
     {
-        $tables = $this->driver
-            ->createQuery('SHOW TABLES;')
-            ->getQuery()
-            ->getAll()
-        ;
-
-        $list = [];
-        foreach ($tables as $table) {
-            $list[] = array_pop($table);
-        }
-
-        return $list;
+        return $this->parser->getTables();
     }
 
-    public function createTableIfTableNotExists()
+    public function updateTables()
     {
-        $tables = $this->getExistsTable();
-
-        $sqls = [];
-        foreach ($this->getSturct() as $struct) {
-            $sqls[$struct->getTable()] = $struct->makeCreateTableSQL();
+        foreach ($this->structs as $struct) {
+            $struct->makeSQL();
         }
-
-        $result = [];
-        foreach ($sqls as $name => $sql) {
-            if (in_array($name, $tables)) {
-                continue;
-            }
-
-            $result[] = $this->driver
-                ->createQuery($sql)
-                ->getQuery()
-                ->getAll()
-            ;
-        }
-
-        return $result;
-    }
-
-    public function updateTableIfTableExists()
-    {
-        $tables = $this->getExistsTable();
-
-        $sqls = [];
-        foreach ($this->getSturct() as $struct) {
-            $sqls[$struct->getTable()] = $struct->makeUpdateTableSQL();
-        }
-        print_r($sqls);
-
-        $result = [];
-        foreach ($sqls as $name => $sql) {
-            if (!in_array($name, $tables)) {
-                continue;
-            }
-
-            $result[] = $this->driver
-                ->createQuery($sql)
-                ->getQuery()
-                ->getOne()
-            ;
-        }
-
-        return $result;
     }
 
     /**
@@ -148,7 +116,7 @@ class Builder
     {
         foreach ($this->getSturct() as $struct) {
             $entity = new EntityBuilder($struct, $dir);
-            $entity->buildEntity($namespace . $struct->getTable());
+            $entity->buildEntity($namespace.$struct->getTable());
         }
     }
 }

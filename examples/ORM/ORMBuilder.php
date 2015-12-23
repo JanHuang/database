@@ -30,7 +30,7 @@ $mysql = new MySQL([
 $builder = new Builder($mysql);
 
 
-$builder->addStruct(
+$builder->addStructure(
     [
         'table' => 'test',
         'suffix' => '',
@@ -71,9 +71,8 @@ $builder->addStruct(
 //$result = $builder->buildTableIfTableNotExists();
 
 echo '<pre>';
-$create = $builder->createTableIfTableNotExists();
-$update = $builder->updateTableIfTableExists();
-print_r($create);
-print_r($update);
+print_r($builder);
+$tables = $builder->updateTables();
+print_r($tables);
 
 //$builder->buildEntity(__DIR__, 'Examples\\');

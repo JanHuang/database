@@ -29,6 +29,11 @@ class TableParser
     protected $info;
 
     /**
+     * @var array
+     */
+    protected $new_fields;
+
+    /**
      * @var array|bool
      */
     protected $fields;
@@ -58,12 +63,20 @@ class TableParser
      *
      * @param DriverInterface $driverInterface
      * @param                 $name
+     * @param array           $fields
+     * @param bool            $isExists
      */
-    public function __construct(DriverInterface $driverInterface, $name)
+    public function __construct(DriverInterface $driverInterface, $name, array $fields = [], $isExists = false)
     {
         $this->name = $name;
 
+        $this->exists = $isExists;
 
+        if ($isExists) {
+            $this->parseExistsTable($driverInterface, $name);
+        } else {
+            $this->parseNotExistsTable($fields);
+        }
     }
 
     protected function parseExistsTable(DriverInterface $driverInterface, $name)
@@ -72,11 +85,6 @@ class TableParser
             ->createQuery('SHOW CREATE TABLE `'.$name.'`')
             ->getQuery()
             ->getOne();
-
-        $this->fields = $driverInterface
-            ->createQuery('DESCRIBE `'.$name.'`')
-            ->getQuery()
-            ->getAll();
 
         $this->index = $driverInterface
             ->createQuery('SHOW INDEX FROM `'.$name.'`')
@@ -87,11 +95,26 @@ class TableParser
             ->createQuery('SHOW TABLE STATUS WHERE Name = \''.$name.'\'')
             ->getQuery()
             ->getOne();
+
+        $fields = $driverInterface
+            ->createQuery('DESCRIBE `'.$name.'`')
+            ->getQuery()
+            ->getAll();
+
+        $this->new_fields = [];
+
+        foreach ($fields as $field) {
+            $field = new FieldParser($field);
+            $this->fields[$field->getName()] = $field;
+        }
     }
 
-    protected function parseNotExistsTable()
+    protected function parseNotExistsTable(array $fields)
     {
-
+        foreach ($fields['fields'] as $field) {
+            $field = new FieldParser($field);
+            $this->new_fields[$field->getName()] = $field;
+        }
     }
 
     /**
@@ -110,19 +133,27 @@ class TableParser
         return $this->name;
     }
 
+    public function setNewFields(array $fields)
+    {
+        $this->parseNotExistsTable($fields);
+
+        return $this;
+    }
+
+    /**
+     * @return FieldParser[]
+     */
+    public function getNewFields()
+    {
+        return $this->new_fields;
+    }
+
     /**
      * @return FieldParser[]
      */
     public function getFields()
     {
-        $fields = [];
-
-        foreach ($this->fields as $field) {
-            $field = $this->getField($field['Field']);
-            $fields[$field->getName()] = $field;
-        }
-
-        return $fields;
+        return $this->fields;
     }
 
     /**
@@ -131,13 +162,7 @@ class TableParser
      */
     public function getField($name)
     {
-        foreach ($this->fields as $field) {
-            if ($name == $field['Field']) {
-                return new FieldParser($field);
-            }
-        }
-
-        return null;
+        return array_key_exists($name, $this->fields) ? $this->fields[$name] : null;
     }
 
     /**
@@ -189,18 +214,21 @@ class TableParser
         return $this->index;
     }
 
+    public function makeSQL()
+    {
+        return $this->isExists() ? $this->makeAlter() : $this->makeCreate();
+    }
+
     /**
-     * @param FieldParser[] $fields
      * @return string
      */
-    public function makeAlter(array $fields)
+    public function makeAlter()
     {
-        $existsFields = $this->getFields();
         $alters = [];
         $index = [];
-        foreach ($fields as $alias => $field) {
+        foreach ($this->getNewFields() as $alias => $field) {
             $isChange = false;
-            if (array_key_exists($field->getName(), $existsFields)) {
+            if (array_key_exists($field->getName(), $this->getFields())) {
                 $isChange = true;
             }
             $alters[] = $field->makeAlterSQL($this, $isChange);
@@ -211,13 +239,12 @@ class TableParser
     }
 
     /**
-     * @param FieldParser[] $fields
      * @return string
      */
-    public function makeCreate(array $fields)
+    public function makeCreate()
     {
         $create = [];
-        foreach ($fields as $alias => $field) {
+        foreach ($this->getNewFields() as $alias => $field) {
             $create[] = $field->makeCreateSQL();
         }
         $create = implode(PHP_EOL, $create);

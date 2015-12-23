@@ -98,10 +98,15 @@ class FieldParser
     protected function parseExistsField(array $field)
     {
         preg_match('/^(\w+)+\(?(\d+)\)\s?(.*)/', $field['Type'], $match);
-        $this->type = $match[1];
-        $this->length = $match[2];
-        $this->unsigned = 'unsigned' === $match[3] ? true : false;
-        unset($match);
+        if (!empty($match)) {
+            $this->type = $match[1];
+            $this->length = $match[2];
+            $this->unsigned = 'unsigned' === $match[3] ? true : false;
+            unset($match);
+        } else {
+            $this->type = $field['Type'];
+            $this->length = null;
+        }
 
         $this->key = $field['Key'];
         $this->default = $field['Default'];

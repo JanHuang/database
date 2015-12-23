@@ -30,6 +30,9 @@ class DBParser
      */
     protected $driver;
 
+    /**
+     * @var TableParser[]
+     */
     protected $tables = [];
 
     /**
@@ -49,7 +52,8 @@ class DBParser
 
         foreach ($tables as $table) {
             $name = array_pop($table);
-            $this->tables[$name] = new TableParser($this->driver, $name);
+            $table = new TableParser($this->driver, $name, [], true);
+            $this->tables[$table->getName()] = $tables;
         }
     }
 
@@ -77,6 +81,17 @@ class DBParser
     public function getTable($name)
     {
         return $this->hasTable($name) ? $this->tables[$name] : null;
+    }
+
+    /**
+     * @param TableParser $tableParser
+     * @return $this
+     */
+    public function addTable(TableParser $tableParser)
+    {
+        $this->tables[$tableParser->getName()] = $tableParser;
+
+        return $this;
     }
 
     /**
