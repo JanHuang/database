@@ -108,7 +108,6 @@ class Builder
     {
         foreach ($this->getTables() as $table) {
             $sql = $table->makeSQL();
-            echo $sql . PHP_EOL;
             if (!empty($sql)) {
                 $this->driver->createQuery($sql)->getQuery()->getAll();
             }
