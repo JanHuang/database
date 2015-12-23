@@ -177,7 +177,9 @@ abstract class Repository
      */
     public function bindRequestParams(array $params)
     {
-
+        foreach ($params as $name => $value) {
+            
+        }
     }
 
     /**

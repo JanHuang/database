@@ -100,15 +100,14 @@ class Builder
 
     public function updateTables()
     {
-        $sqlArray = [];
         foreach ($this->getTables() as $table) {
             $sql = $table->makeSQL();
             if (!empty($sql)) {
-                $sqlArray[] = $sql;
+                echo $sql . PHP_EOL;
+                $this->driver->createQuery($sql)->getQuery()->getAll();
             }
         }
-        echo '<pre>';
-        print_r($sqlArray);
+
         return true;
     }
 

@@ -66,8 +66,8 @@ $builder->addTable(
             ],
             'age' => [
                 'name' => 'age',
-                'type' => 'tinyint',
-                'length' => 1,
+                'type' => 'smallint',
+                'length' => 2,
                 'notnull' => true, // 默认true
                 'default' => 1,
                 'index' => 'unique' // 默认索引名为 name_unique_key
@@ -103,7 +103,7 @@ $builder->addTable(
             ],
             'nickName' => [
                 'name' => 'nick_name',
-                'type' => 'varchar',
+                'type' => 'char',
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',

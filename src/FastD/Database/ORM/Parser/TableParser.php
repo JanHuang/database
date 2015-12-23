@@ -104,7 +104,7 @@ class TableParser
         $this->new_fields = [];
 
         foreach ($fields as $field) {
-            $field = new FieldParser($field);
+            $field = new FieldParser($field, true);
             $this->fields[$field->getName()] = $field;
         }
     }
@@ -112,7 +112,7 @@ class TableParser
     protected function parseNotExistsTable(array $fields)
     {
         foreach ($fields['fields'] as $field) {
-            $field = new FieldParser($field);
+            $field = new FieldParser($field, false);
             $this->new_fields[$field->getName()] = $field;
         }
     }
@@ -133,6 +133,10 @@ class TableParser
         return $this->name;
     }
 
+    /**
+     * @param array $fields
+     * @return $this
+     */
     public function setNewFields(array $fields)
     {
         $this->parseNotExistsTable($fields);
@@ -146,6 +150,15 @@ class TableParser
     public function getNewFields()
     {
         return $this->new_fields;
+    }
+
+    /**
+     * @param $name
+     * @return FieldParser|null
+     */
+    public function getNewField($name)
+    {
+        return array_key_exists($name, $this->new_fields) ? $this->new_fields[$name] : null;
     }
 
     /**
@@ -214,12 +227,19 @@ class TableParser
         return $this->index;
     }
 
+    /**
+     * Make create table or alter table sql string.
+     *
+     * @return string
+     */
     public function makeSQL()
     {
         return $this->isExists() ? $this->makeAlter() : $this->makeCreate();
     }
 
     /**
+     * Make alter table sql.
+     *
      * @return string
      */
     public function makeAlter()
@@ -227,18 +247,20 @@ class TableParser
         $alters = [];
         $index = [];
         foreach ($this->getNewFields() as $alias => $field) {
-            $isChange = false;
-            if (array_key_exists($field->getName(), $this->getFields())) {
-                $isChange = true;
+            if ($field->equals($this->getField($alias))) {
+                continue;
             }
-            $alters[] = $field->makeAlterSQL($this, $isChange);
-//            $index[] = $field->makeIndexSQL($this);
+            $alters[] = $field->makeAlterSQL($this);
+            $index[] = $field->makeIndexSQL($this);
         }
 
-        return implode(PHP_EOL, $alters);
+
+        return implode(PHP_EOL, array_merge($alters, $index));
     }
 
     /**
+     * Make create table sql.
+     *
      * @return string
      */
     public function makeCreate()
@@ -247,20 +269,28 @@ class TableParser
         foreach ($this->getNewFields() as $alias => $field) {
             $create[] = $field->makeCreateSQL();
         }
-        $create = implode(PHP_EOL, $create);
+        $create = implode(',' . PHP_EOL, $create);
 
         return
-            "CREATE TABLE `{$this->getName()}` (" .
+            "CREATE TABLE `{$this->getName()}` (" . PHP_EOL .
             $create .
-            ") ENGINE {$this->getEngine()} CHARSET {$this->getCharset()}";
+            PHP_EOL . ") ENGINE {$this->getEngine()} CHARSET {$this->getCharset()}";
     }
 
-    public function makeDump($user, $pwd, $dir)
+    /**
+     * @param      $dir
+     * @param bool $content
+     * @return string|boolean
+     */
+    public function makeDump($dir, $content = true)
     {
 
     }
 
-    public function compareTableStructure($name, array $fields)
+    /**
+     * Revert db table structure to php file.
+     */
+    public function map()
     {
 
     }

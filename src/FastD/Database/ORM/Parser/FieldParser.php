@@ -82,19 +82,28 @@ class FieldParser
     protected $index = false;
 
     /**
+     * @var bool
+     */
+    protected $exists = false;
+
+    /**
      * FieldParser constructor.
      *
+     * @param bool $isExists
      * @param array $field
      */
-    public function __construct(array $field)
+    public function __construct(array $field, $isExists = false)
     {
-        if (isset($field['Type'])) {
+        if ($isExists) {
             $this->parseExistsField($field);
         } else {
-            $this->parseCreateField($field);
+            $this->parseNotExistsField($field);
         }
     }
 
+    /**
+     * @param array $field
+     */
     protected function parseExistsField(array $field)
     {
         preg_match('/^(\w+)+\(?(\d+)\)\s?(.*)/', $field['Type'], $match);
@@ -117,9 +126,13 @@ class FieldParser
         $this->index = 'MUL' === $field['Key'] ? true : false;
 
         $this->name = $field['Field'];
+        $this->exists = true;
     }
 
-    protected function parseCreateField(array $field)
+    /**
+     * @param array $field
+     */
+    protected function parseNotExistsField(array $field)
     {
         $this->name = $field['name'];
         $this->type = $field['type'];
@@ -133,6 +146,15 @@ class FieldParser
         $this->primary = 'PRI' === $this->key ? true : false;
         $this->unique = 'UNI' === $this->key ? true : false;
         $this->index = 'MUL' === $this->key ? true : false;
+        $this->exists = false;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isExists()
+    {
+        return $this->exists;
     }
 
     /**
@@ -231,9 +253,13 @@ class FieldParser
         return $this->index;
     }
 
-    public function makeAlterSQL(TableParser $tableParser, $isChange = false)
+    /**
+     * @param TableParser $tableParser
+     * @return string
+     */
+    public function makeAlterSQL(TableParser $tableParser)
     {
-        return !$isChange ?
+        return $this->exists ?
             "ALTER TABLE `{$tableParser->getName()}` ADD `{$this->getName()}` {$this->getType()}" .
             ($this->getLength() > 0 ? "({$this->getLength()})" : '') .
             ($this->isUnsigned() ? " UNSIGNED" : '') .
@@ -250,6 +276,9 @@ class FieldParser
             ;
     }
 
+    /**
+     * @return string
+     */
     public function makeCreateSQL()
     {
         return
@@ -258,16 +287,51 @@ class FieldParser
             ($this->isUnsigned() ? " UNSIGNED" : '') .
             ($this->isNotNull() ? " NOT NULL" : '') .
             (null !== $this->getDefault() ? " DEFAULT '{$this->getDefault()}'" : '') .
-            (null !== $this->getComment() ? " COMMENT '{$this->getComment()}'" : '') . ';'
+            (null !== $this->getComment() ? " COMMENT '{$this->getComment()}'" : '') . ''
             ;
     }
 
-    public function makeIndexSQL($isAlter = true)
+    /**
+     * @param TableParser $tableParser
+     * @return string
+     */
+    public function makeIndexSQL(TableParser $tableParser)
     {
-        return $isAlter ?
-            ""
-            :
-            ""
+        if ($this->isPrimary()) {
+            $name = 'PRIMARY KEY';
+        } else if ($this->isUnique()) {
+            $name = 'UNIQUE';
+        } else {
+            $name = 'INDEX';
+        }
+
+        $indexName = strtolower($name);
+
+        return "ALTER TABLE `{$tableParser->getName()}` ADD {$name} {$indexName}_{$this->getName()}(`{$this->getName()}`);";
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return
+            $this->getName() .
+            $this->getType() .
+            $this->getKey() .
+            $this->getComment() .
+            $this->getDefault() .
+            $this->getExtra() .
+            $this->getLength()
             ;
+    }
+
+    /**
+     * @param FieldParser|null $parser
+     * @return bool
+     */
+    public function equals(FieldParser $parser = null)
+    {
+        return (string)$this === (string)$parser;
     }
 }
