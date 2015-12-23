@@ -235,7 +235,7 @@ class TableParser
 //            $index[] = $field->makeIndexSQL($this);
         }
 
-        return $alters;
+        return implode(PHP_EOL, $alters);
     }
 
     /**
@@ -253,11 +253,6 @@ class TableParser
             "CREATE TABLE `{$this->getName()}` (" .
             $create .
             ") ENGINE {$this->getEngine()} CHARSET {$this->getCharset()}";
-    }
-
-    public function makeDrop()
-    {
-        return "DROP TABLE `{$this->getName()}`";
     }
 
     public function makeDump($user, $pwd, $dir)
