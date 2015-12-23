@@ -111,9 +111,9 @@ class TableParser
 
     protected function parseNotExistsTable(array $fields)
     {
-        foreach ($fields['fields'] as $field) {
+        foreach ($fields['fields'] as $alias => $field) {
             $field = new FieldParser($field, false);
-            $this->new_fields[$field->getName()] = $field;
+            $this->new_fields[$alias] = $field;
         }
     }
 

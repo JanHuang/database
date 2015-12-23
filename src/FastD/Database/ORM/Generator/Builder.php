@@ -47,6 +47,9 @@ class Builder
         $this->parser = new DBParser($driverInterface);
     }
 
+    /**
+     * @return DBParser
+     */
     public function getParser()
     {
         return $this->parser;
@@ -98,6 +101,9 @@ class Builder
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function updateTables()
     {
         foreach ($this->getTables() as $table) {
@@ -114,12 +120,18 @@ class Builder
     /**
      * @param        $dir
      * @param string $namespace
+     * @return bool
      */
     public function buildEntity($dir, $namespace = '')
     {
         foreach ($this->getTables() as $table) {
-//            $entity = new EntityBuilder($struct, $dir);
-//            $entity->buildEntity($namespace.$struct->getTable());
+            if (empty($table->getNewFields())) {
+                continue;
+            }
+            $entity = new EntityBuilder($table, $dir);
+            $entity->buildEntity($namespace . $table->getName());
         }
+
+        return true;
     }
 }

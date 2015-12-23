@@ -134,8 +134,16 @@ class FieldParser
      */
     protected function parseNotExistsField(array $field)
     {
+        switch ($field['type']) {
+            case 'array':
+            case 'json':
+                $type = 'varchar';
+                break;
+            default:
+                $type = $field['type'];
+        }
         $this->name = $field['name'];
-        $this->type = $field['type'];
+        $this->type = $type;
         $this->length = isset($field['length']) ? $field['length'] : null;
         $this->default = isset($field['default']) ? $field['default'] : null;
         $this->comment = isset($field['comment']) ? $field['comment'] : null;

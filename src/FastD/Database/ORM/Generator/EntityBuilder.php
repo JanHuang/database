@@ -14,15 +14,17 @@
 
 namespace FastD\Database\ORM\Generator;
 
+use FastD\Database\ORM\Parser\TableParser;
+
 class EntityBuilder
 {
     protected $dir;
 
-    protected $struct;
+    protected $table;
 
-    public function __construct(StructBuilder $struct, $dir = '')
+    public function __construct(TableParser $tableParser, $dir = '')
     {
-        $this->struct = $struct;
+        $this->table = $tableParser;
 
         $this->dir = $dir;
     }
@@ -58,15 +60,15 @@ class EntityBuilder
         $methods = '';
         $primary = '';
 
-        foreach ($this->struct->getFields() as $field) {
+        foreach ($this->table->getFields() as $alias => $field) {
             if ($field->isPrimary()) {
-                $primary = $this->buildProperty('primary', $field->getType(), $field->getMapName());
+                $primary = $this->buildProperty('primary', $field->getType(), $name);
             }
-            $property .= PHP_EOL . $this->buildProperty($field->getMapName(), $field->getType()) . PHP_EOL;
-            $methods .= PHP_EOL . $this->buildGetSetter($field->getMapName(), $field->getType()) . PHP_EOL;
+            $property .= PHP_EOL . $this->buildProperty($alias, $field->getType()) . PHP_EOL;
+            $methods .= PHP_EOL . $this->buildGetSetter($alias, $field->getType()) . PHP_EOL;
         }
 
-        $construct = $this->buildConstruct();
+//        $construct = $this->buildConstruct();
 
         $name = ucfirst($name);
 
@@ -77,11 +79,14 @@ class EntityBuilder
 
         $map = $this->buildRepository($name, $namespace);
 
-        $table = $this->struct->getPrefix() . $this->struct->getTable() . $this->struct->getSuffix();
+        $table = $this->table->getName();
 
         if (!empty($namespace)) {
             $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Entity;' . PHP_EOL;
         }
+
+        $property = ltrim($property, PHP_EOL);
+        $methods = rtrim($methods, PHP_EOL);
 
         $entity = <<<E
 <?php
@@ -114,9 +119,8 @@ class {$name} extends Entity
      * @var string|null
      */
     protected \$repository{$repository};
-
-{$primary}
-    {$property}
+    {$primary}
+{$property}
     {$methods}
 }
 E;
@@ -130,7 +134,7 @@ E;
 
     protected function buildConstruct()
     {
-        if (null === $this->struct->getPrimary()) {
+        if (null === $this->table->getPrimary()) {
             return '';
         }
 
@@ -224,8 +228,8 @@ GS;
 
         $maps = [];
         $mapKeys = [];
-        foreach ($this->struct->getFields() as $field) {
-            $mapName = $field->getMapName();
+        foreach ($this->table->getNewFields() as $alias => $field) {
+            $mapName = $alias;
             if (empty($mapName)) {
                 $mapName = $field->getName();
             }
@@ -234,6 +238,7 @@ GS;
         '{$mapName}' => [
             'type' => '{$field->getType()}',
             'name' => '{$field->getName()}',
+            'length'=> {$field->getLength()},
         ],
 M;
         }
@@ -242,7 +247,7 @@ M;
 
         $maps = implode(PHP_EOL, $maps);
 
-        $table = $this->struct->getPrefix() . $this->struct->getTable() . $this->struct->getSuffix();
+        $table = $this->table->getName();
 
         $base = $this->buildBaseOperation($entity);
 

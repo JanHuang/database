@@ -28,8 +28,7 @@ $repository = $driver->getRepository('Examples:Repository:Test');
 
 echo '<pre>';
 $row = $repository->find(['id' => 1]);
-echo $row->getId();
-echo $row->getTrueName();
+print_r($row);
 //print_r($repository->findToEntity(['id' => 1]));
 /*print_r($repository);
 print_r($repository->getFields());
