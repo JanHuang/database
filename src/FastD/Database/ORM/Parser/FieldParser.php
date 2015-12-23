@@ -303,6 +303,15 @@ class FieldParser
     }
 
     /**
+     * @param TableParser $tableParser
+     * @return string
+     */
+    public function makeDropFieldSQL(TableParser $tableParser)
+    {
+        return "ALTER TABLE `{$tableParser->getName()}` DROP COLUMN `{$this->getName()}`;";
+    }
+
+    /**
      * @return string
      */
     public function makeCreateSQL()
