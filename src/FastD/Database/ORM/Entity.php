@@ -14,7 +14,6 @@
 
 namespace FastD\Database\ORM;
 
-use FastD\Database\Drivers\Driver;
 use FastD\Database\Drivers\DriverInterface;
 
 /**
@@ -89,6 +88,10 @@ abstract class Entity implements \ArrayAccess
         $this->id = $id;
 
         $this->setDriver($driverInterface);
+
+        if (null === $id) {
+            $this->find();
+        }
     }
 
     /**
@@ -160,7 +163,7 @@ abstract class Entity implements \ArrayAccess
      */
     public function setRow(array $row)
     {
-        $this->row = $row;
+        $this->init($row);
 
         return $this;
     }
@@ -179,19 +182,23 @@ abstract class Entity implements \ArrayAccess
      */
     public function find(array $fields = [])
     {
-        $row = $this->driver
-            ->table(
-                $this->getTable()
-            )
-            ->field(
-                array() === $fields ? $this->fields : $fields
-            )
-            ->find([
-                $this->primary => $this->id
-            ])
-        ;
+        if (null === $this->getRow()) {
+            $row = $this->driver
+                ->table(
+                    $this->getTable()
+                )
+                ->field(
+                    array() === $fields ? $this->fields : $fields
+                )
+                ->find([
+                    $this->primary => $this->id
+                ])
+            ;
 
-        return false === $row ? false : static::init($this, $row, $this->driver);
+            $this->init($row);
+        }
+
+        return $this->row;
     }
 
     /**

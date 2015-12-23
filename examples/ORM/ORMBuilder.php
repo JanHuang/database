@@ -46,7 +46,7 @@ $builder->addTable(
                 'default' => 0,
                 'comment' => '',
                 'unsigned' => true, // 默认false
-                'primary' => true,
+                'key' => 'PRI',
             ],
             'trueName' => [
                 'name' => 'name',
@@ -54,7 +54,6 @@ $builder->addTable(
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',
-                'index' => 'unique' // 默认索引名为 name_unique_key
             ],
             'nickName' => [
                 'name' => 'nick_name',
@@ -62,7 +61,7 @@ $builder->addTable(
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',
-                'index' => 'unique' // 默认索引名为 name_unique_key
+                'key' => 'MUL' // 默认索引名为 name_unique_key
             ],
             'age' => [
                 'name' => 'age',
@@ -70,12 +69,12 @@ $builder->addTable(
                 'length' => 2,
                 'notnull' => true, // 默认true
                 'default' => 1,
-                'index' => 'unique' // 默认索引名为 name_unique_key
+                'key' => 'UNI' // 默认索引名为 name_unique_key
             ],
         ]
     ]
 );
-$builder->addTable(
+/*$builder->addTable(
     [
         'table' => 'test2',
         'suffix' => '',
@@ -91,7 +90,7 @@ $builder->addTable(
                 'default' => 0,
                 'comment' => '',
                 'unsigned' => true, // 默认false
-                'primary' => true,
+                'key' => 'PRI',
             ],
             'trueName' => [
                 'name' => 'name',
@@ -99,7 +98,7 @@ $builder->addTable(
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',
-                'index' => 'unique' // 默认索引名为 name_unique_key
+                'key' => 'MUL' // 默认索引名为 name_unique_key
             ],
             'nickName' => [
                 'name' => 'nick_name',
@@ -107,11 +106,11 @@ $builder->addTable(
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',
-                'index' => 'unique' // 默认索引名为 name_unique_key
+                'key' => 'UNI' // 默认索引名为 name_unique_key
             ],
         ]
     ]
-);
+);*/
 
 //$result = $builder->buildTableIfTableNotExists();
 

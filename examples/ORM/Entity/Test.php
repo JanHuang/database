@@ -48,7 +48,10 @@ class Test extends Entity
      * @var string|null
      */
     protected $repository = 'Examples\ORM\Repository\TestRepository';
-    
+        /**
+     * @var int
+     */
+    protected $primary = 'test';
     /**
      * @var int
      */

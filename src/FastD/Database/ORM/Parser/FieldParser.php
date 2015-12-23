@@ -313,7 +313,7 @@ class FieldParser
             $name = 'INDEX';
         }
 
-        $indexName = strtolower($name);
+        $indexName = str_replace(' ', '_', strtolower($name));
 
         return "ALTER TABLE `{$tableParser->getName()}` ADD {$name} {$indexName}_{$this->getName()}(`{$this->getName()}`);";
     }
