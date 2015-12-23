@@ -235,40 +235,19 @@ abstract class Entity implements \ArrayAccess
     }
 
     /**
-     * @param Entity          $entity
-     * @param array           $data
-     * @param DriverInterface $driverInterface
-     * @return Entity
+     * @param array $data
+     * @return $this
      */
-    public static function init(Entity $entity, array $data, DriverInterface $driverInterface)
+    public function init(array $data)
     {
-        $entity->row = $data;
+        $this->row = $data;
 
-        $entity->setDriver($driverInterface);
-
-        foreach ($entity->getFields() as $field => $alias) {
+        foreach ($this->getFields() as $field => $alias) {
             $method = 'set' . ucfirst($alias);
-            $entity->$method(isset($data[$alias]) ? $data[$alias] : null);
+            $this->$method(isset($data[$alias]) ? $data[$alias] : null);
         }
 
-        return $entity;
-    }
-
-    /**
-     * @param Entity          $entity
-     * @param array           $data
-     * @param DriverInterface $driverInterface
-     * @return Entity[]
-     */
-    public static function initArray(Entity $entity, array $data, DriverInterface $driverInterface)
-    {
-        $entities = [];
-
-        foreach ($data as $row) {
-            $entities[] = self::init(clone $entity, $row, $driverInterface);
-        }
-
-        return $entities;
+        return $this;
     }
 
     /**

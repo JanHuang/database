@@ -94,11 +94,15 @@ abstract class Repository
     }
 
     /**
-     * @return string
+     * @return Entity
      */
     public function getEntity()
     {
-        return $this->entity;
+        if (!($this->entity instanceof Entity)) {
+            $this->entity = new $this->entity($this->getDriver());
+        }
+
+        return clone $this->entity;
     }
 
     /**
@@ -110,7 +114,7 @@ abstract class Repository
      */
     public function find(array $where = [], array $field = [])
     {
-        $row = $this->driver
+        return $this->driver
             ->table(
                 $this->getTable()
             )
@@ -118,8 +122,6 @@ abstract class Repository
             ->field(array () === $field ? $this->getFields() : $field)
             ->find()
             ;
-
-        return Entity::init(new $this->entity, $row, $this->getDriver());
     }
 
     /**
@@ -131,7 +133,7 @@ abstract class Repository
      */
     public function findAll(array $where = [],  array $field = [])
     {
-        $list = $this->driver
+        return $this->driver
             ->table(
                 $this->getTable()
             )
@@ -139,8 +141,6 @@ abstract class Repository
             ->field($field)
             ->findAll()
         ;
-
-        return Entity::initArray(new $this->entity, $list, $this->getDriver());
     }
 
     /**
@@ -178,7 +178,7 @@ abstract class Repository
     public function bindRequestParams(array $params)
     {
         foreach ($params as $name => $value) {
-            
+
         }
     }
 
