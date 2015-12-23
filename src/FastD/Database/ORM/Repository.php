@@ -14,14 +14,13 @@
 namespace FastD\Database\ORM;
 
 use FastD\Database\Drivers\DriverInterface;
-use FastD\Http\Request;
 
 /**
  * Class Repository
  *
  * @package FastD\Database\Repository
  */
-abstract class Repository
+abstract class Repository extends RequestHandle
 {
     /**
      * @var string
@@ -47,21 +46,6 @@ abstract class Repository
      * @var DriverInterface
      */
     protected $driver;
-
-    /**
-     * @var array
-     */
-    protected $structure = [];
-
-    /**
-     * @var array
-     */
-    protected $data;
-
-    /**
-     * @var array
-     */
-    protected $params;
 
     /**
      * @param DriverInterface $driverInterface
@@ -173,39 +157,6 @@ abstract class Repository
                 $this->getTable()
             )
             ->save(empty($data) ? $this->data : $data, $where, empty($params) ? $this->params : $params);
-    }
-
-    /**
-     * @param Request $request
-     * @return array
-     */
-    public function handleRequest(Request $request)
-    {
-        return $this->handleRequestParams(
-            $request->isMethod('get') ? $request->query->all() : $request->request->all()
-        );
-    }
-
-    /**
-     * @param array $params
-     * @return array Return request handle parameters.
-     * @throws \Exception
-     */
-    public function handleRequestParams(array $params)
-    {
-        if (array() === $params) {
-            throw new \Exception("Request params error.");
-        }
-        foreach ($params as $name => $value) {
-            if (array_key_exists($name, $this->structure)) {
-                if (strlen($value) > $this->structure[$name]['length']) {
-                    throw new \Exception("Params length invalid.");
-                }
-                $name = $this->structure[$name]['name'];
-                $this->data[$name] = ':' . $name;
-                $this->params[$name] = $value;
-            }
-        }
     }
 
     /**
