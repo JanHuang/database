@@ -187,7 +187,6 @@ interface DriverInterface
     public function save(array $data, array $where = [], array $params = []);
 
     /**
-     * @param string $table
      * @param array $where
      * @param array $params
      * @return int

@@ -49,6 +49,21 @@ abstract class Repository
     protected $driver;
 
     /**
+     * @var array
+     */
+    protected $structure = [];
+
+    /**
+     * @var array
+     */
+    protected $data;
+
+    /**
+     * @var array
+     */
+    protected $params;
+
+    /**
      * @param DriverInterface $driverInterface
      */
     public function __construct(DriverInterface $driverInterface = null)
@@ -147,17 +162,17 @@ abstract class Repository
      * Save row into table.
      *
      * @param array $data
-     * @param array $params
      * @param array $where
+     * @param array $params
      * @return bool|int
      */
-    public function save(array $data = [], array $params = [], array $where = [])
+    public function save(array $data = [], array $where = [], array $params = [])
     {
         return $this->driver
             ->table(
                 $this->getTable()
             )
-            ->save($data, $params, $where);
+            ->save(empty($data) ? $this->data : $data, $where, empty($params) ? $this->params : $params);
     }
 
     /**
@@ -173,12 +188,23 @@ abstract class Repository
 
     /**
      * @param array $params
-     * @return array
+     * @return array Return request handle parameters.
+     * @throws \Exception
      */
     public function handleRequestParams(array $params)
     {
+        if (array() === $params) {
+            throw new \Exception("Request params error.");
+        }
         foreach ($params as $name => $value) {
-
+            if (array_key_exists($name, $this->structure)) {
+                if (strlen($value) > $this->structure[$name]['length']) {
+                    throw new \Exception("Params length invalid.");
+                }
+                $name = $this->structure[$name]['name'];
+                $this->data[$name] = ':' . $name;
+                $this->params[$name] = $value;
+            }
         }
     }
 

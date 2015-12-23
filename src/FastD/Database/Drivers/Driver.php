@@ -332,7 +332,7 @@ abstract class Driver implements DriverInterface
      */
     public function save(array $data, array $where = [], array $params = [])
     {
-        if (array() === $where) {
+        if (empty($where)) {
             $this->createQuery(
                 $this->getQueryBuilder()->insert($data)->getSql()
             );
@@ -341,9 +341,7 @@ abstract class Driver implements DriverInterface
                 $this->setParameter($name, $param);
             }
 
-            $this->getQuery();
-
-            return $this->getId();
+            return $this->getQuery()->getId();
         }
 
         $this->createQuery(
@@ -354,9 +352,7 @@ abstract class Driver implements DriverInterface
             $this->setParameter($name, $param);
         }
 
-        $this->getQuery();
-
-        return $this->getAffected();
+        return $this->getQuery()->getAffected();
     }
 
     /**

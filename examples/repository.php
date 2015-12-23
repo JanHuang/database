@@ -24,8 +24,15 @@ $driver = new MySQL([
     'database_name' => 'test',
 ]);
 
-$repository = $driver->getRepository('Examples:Repository:Test');
+$repository = $driver->getRepository('Examples:ORM:Repository:Test');
 
+$request = \FastD\Http\Request::createRequestHandle();
+$request->query->set('trueName', 'janhuang');
+$repository->handleRequest($request);
+
+echo '<pre>';
+var_dump($repository->save([], ['id' => 1]));
+print_r($repository->getQueryBuilder());
 echo '<pre>';
 $row = $repository->find(['id' => 1]);
 print_r($row);
