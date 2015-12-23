@@ -246,16 +246,26 @@ class TableParser
     {
         $alters = [];
         $index = [];
+        $drop = [];
         foreach ($this->getNewFields() as $alias => $field) {
-            if ($field->equals($this->getField($field->getName()))) {
-                continue;
+            $oldField = $this->getField($field->getName());
+            if (!$field->equals($oldField)) {
+                $alters[] = $field->makeAlterSQL($this);
             }
-            $alters[] = $field->makeAlterSQL($this);
-            $index[] = $field->makeIndexSQL($this);
+
+            if (!$field->isPrimary() && null == $field->getKey() && null != $oldField->getKey()) {
+                $drop[] = $oldField->makeDropIndexSQL($this);
+            }
+
+            if (!$oldField->isPrimary() && null != $field->getKey() && $field->getKey() != $oldField->getKey()) {
+                $index[] = $field->makeAddIndexSQL($this);
+            }
         }
 
+        $sql = array_merge($alters, $drop);
+        $sql = array_merge($sql, $index);
 
-        return implode(PHP_EOL, array_merge($alters, $index));
+        return implode(PHP_EOL, $sql);
     }
 
     /**
@@ -269,12 +279,12 @@ class TableParser
         foreach ($this->getNewFields() as $alias => $field) {
             $create[] = $field->makeCreateSQL();
         }
-        $create = implode(',' . PHP_EOL, $create);
+        $create = implode(','.PHP_EOL, $create);
 
         return
-            "CREATE TABLE `{$this->getName()}` (" . PHP_EOL .
-            $create .
-            PHP_EOL . ") ENGINE {$this->getEngine()} CHARSET {$this->getCharset()}";
+            "CREATE TABLE `{$this->getName()}` (".PHP_EOL.
+            $create.
+            PHP_EOL.") ENGINE {$this->getEngine()} CHARSET {$this->getCharset()}";
     }
 
     /**

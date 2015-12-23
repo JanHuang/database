@@ -62,7 +62,7 @@ $builder->addTable(
                 'length' => 20,
                 'notnull' => true, // 默认true
                 'default' => '',
-                'key' => 'index' // 默认索引名为 name_unique_key
+//                'key' => 'index' // 默认索引名为 name_unique_key
             ],
             'age' => [
                 'name' => 'age',

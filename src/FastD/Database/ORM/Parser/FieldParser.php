@@ -101,6 +101,10 @@ class FieldParser
         }
     }
 
+    /**
+     * @param $name
+     * @return string
+     */
     protected function getKeyIndexName($name)
     {
         switch ($name) {
@@ -317,7 +321,7 @@ class FieldParser
      * @param TableParser $tableParser
      * @return string
      */
-    public function makeIndexSQL(TableParser $tableParser)
+    public function makeAddIndexSQL(TableParser $tableParser)
     {
         if ($this->isPrimary()) {
             $name = 'PRIMARY KEY';
@@ -330,6 +334,25 @@ class FieldParser
         $indexName = str_replace(' ', '_', strtolower($name));
 
         return "ALTER TABLE `{$tableParser->getName()}` ADD {$name} {$indexName}_{$this->getName()}(`{$this->getName()}`);";
+    }
+
+    /**
+     * @param TableParser $tableParser
+     * @return string
+     */
+    public function makeDropIndexSQL(TableParser $tableParser)
+    {
+        if ($this->isPrimary()) {
+            $name = 'PRIMARY KEY';
+        } else if ($this->isUnique()) {
+            $name = 'UNIQUE';
+        } else {
+            $name = 'INDEX';
+        }
+
+        $indexName = str_replace(' ', '_', strtolower($name));
+
+        return "ALTER TABLE `{$tableParser->getName()}` DROP index {$indexName}_{$this->getName()};";
     }
 
     /**
@@ -349,7 +372,6 @@ class FieldParser
         return
             $this->getName() .
             $this->getType() .
-            $this->getKey() .
             $this->getComment() .
             $this->getDefault() .
             $this->getExtra() .
