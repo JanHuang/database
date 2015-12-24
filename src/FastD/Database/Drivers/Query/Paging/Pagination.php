@@ -236,7 +236,7 @@ class Pagination
      */
     public function fetchQueryContextTotalRows(QueryBuilderInterface $queryBuilderInterface)
     {
-        $sql = $context->limit(1)->fields(['COUNT(1) as total'])->select()->getSql();
+        $sql = $queryBuilderInterface->limit(0,1)->fields(['COUNT(1) as total'])->select()->getSql();
         return $this->driver->createQuery($sql)->getQuery()->getOne('total');
     }
 

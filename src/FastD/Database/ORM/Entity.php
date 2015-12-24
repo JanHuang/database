@@ -21,7 +21,7 @@ use FastD\Database\Drivers\DriverInterface;
  *
  * @package FastD\Database\ORM
  */
-abstract class Entity extends RequestHandle implements \ArrayAccess
+abstract class Entity extends HttpRequestHandle implements \ArrayAccess
 {
     /**
      * Operation DB table name.

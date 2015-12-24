@@ -21,7 +21,7 @@ use FastD\Http\Request;
  *
  * @package FastD\Database\ORM
  */
-class RequestHandle
+class HttpRequestHandle
 {
     /**
      * @var array

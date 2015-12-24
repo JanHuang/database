@@ -20,7 +20,7 @@ use FastD\Database\Drivers\DriverInterface;
  *
  * @package FastD\Database\Repository
  */
-abstract class Repository extends RequestHandle
+abstract class Repository extends HttpRequestHandle
 {
     /**
      * @var string
