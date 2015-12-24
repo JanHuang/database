@@ -42,9 +42,9 @@ class HttpRequestHandle
      * @param Request $request
      * @return array
      */
-    public function handleRequest(Request $request)
+    public function bindRequest(Request $request)
     {
-        return $this->handleRequestParams(
+        return $this->bindRequestParams(
             $request->isMethod('get') ? $request->query->all() : $request->request->all()
         );
     }
@@ -54,7 +54,7 @@ class HttpRequestHandle
      * @return array Return request handle parameters.
      * @throws \Exception
      */
-    public function handleRequestParams(array $params)
+    public function bindRequestParams(array $params)
     {
         if (array() === $params) {
             throw new \Exception("Request params error.");
