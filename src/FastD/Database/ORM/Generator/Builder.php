@@ -123,6 +123,7 @@ class Builder
      */
     public function buildEntity($dir, $namespace = '')
     {
+        $namespace = empty($namespace) ? '' : $namespace . '\\';
         foreach ($this->getTables() as $table) {
             if (empty($table->getNewFields())) {
                 continue;
