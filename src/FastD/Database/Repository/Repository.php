@@ -84,6 +84,10 @@ class Repository implements RepositoryInterface
 
         $row = $this->connection->find($this->getTable(), $where, $field);
 
+        if (false === $row) {
+            return false;
+        }
+
         return null === $this->getFields() ? $row : $this->parseTableFieldsData($row, $this->getFields());
     }
 
@@ -100,7 +104,7 @@ class Repository implements RepositoryInterface
 
         $list = $this->connection->findAll($this->getTable(), $where, $field);
 
-        if (null === $this->getFields()) {
+        if (null === $this->getFields() || false === $list) {
             return $list;
         }
 
