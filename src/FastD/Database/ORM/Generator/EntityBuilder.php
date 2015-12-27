@@ -16,12 +16,29 @@ namespace FastD\Database\ORM\Generator;
 
 use FastD\Database\ORM\Parser\TableParser;
 
+/**
+ * Class EntityBuilder
+ *
+ * @package FastD\Database\ORM\Generator
+ */
 class EntityBuilder
 {
+    /**
+     * @var string
+     */
     protected $dir;
 
+    /**
+     * @var TableParser
+     */
     protected $table;
 
+    /**
+     * EntityBuilder constructor.
+     *
+     * @param TableParser $tableParser
+     * @param string      $dir
+     */
     public function __construct(TableParser $tableParser, $dir = '')
     {
         $this->table = $tableParser;
@@ -29,6 +46,10 @@ class EntityBuilder
         $this->dir = $dir;
     }
 
+    /**
+     * @param $type
+     * @return string
+     */
     protected function parseType($type)
     {
         switch (strtolower($type)) {
@@ -48,6 +69,9 @@ class EntityBuilder
         return 'mixed';
     }
 
+    /**
+     * @param $name
+     */
     public function buildEntity($name)
     {
         $namespace = '';
@@ -67,8 +91,6 @@ class EntityBuilder
             $property .= PHP_EOL . $this->buildProperty($alias, $field->getType()) . PHP_EOL;
             $methods .= PHP_EOL . $this->buildGetSetter($alias, $field->getType()) . PHP_EOL;
         }
-
-//        $construct = $this->buildConstruct();
 
         $name = ucfirst($name);
 
@@ -131,27 +153,12 @@ E;
         file_put_contents($this->dir . '/Entity/' . $name . '.php', $entity);
     }
 
-    protected function buildConstruct()
-    {
-        if (null === $this->table->getPrimary()) {
-            return '';
-        }
-
-        return <<<C
-
     /**
-     * @param int \$id
-     * @param \FastD\Database\Drivers\DriverInterface \$driverInterface
+     * @param        $name
+     * @param string $type
+     * @param null   $defaultValue
+     * @return string
      */
-    public function __construct(\$id = null, \FastD\Database\Drivers\DriverInterface \$driverInterface = null)
-    {
-        \$this->{$this->struct->getPrimary()->getName()} = \$id;
-
-        \$this->setDriver(\$driverInterface);
-    }
-C;
-    }
-
     protected function buildProperty($name, $type = '', $defaultValue = null)
     {
         if (strpos($name, '_')) {
@@ -179,6 +186,11 @@ P;
 
     }
 
+    /**
+     * @param        $name
+     * @param string $type
+     * @return string
+     */
     protected function buildGetSetter($name, $type = '')
     {
         if (strpos($name, '_')) {
@@ -217,6 +229,11 @@ GS;
         return $getSetter;
     }
 
+    /**
+     * @param        $name
+     * @param string $namespace
+     * @return array
+     */
     protected function buildRepository($name, $namespace = '')
     {
         $entity = $name;
@@ -248,8 +265,6 @@ M;
 
         $table = $this->table->getName();
 
-        $base = $this->buildBaseOperation($entity);
-
         $repository = <<<R
 <?php
 {$namespace}
@@ -278,8 +293,6 @@ class {$name}Repository extends Repository
      * @var string
      */
     protected \$entity = '{$entity}';
-
-{$base}
 }
 R;
 
@@ -295,109 +308,14 @@ R;
         ];
     }
 
-    protected function buildBaseOperation($entity = '')
+    public function fetchContent($name)
     {
-        if (!empty($entity)) {
-            $entity = '\\' . $entity;
+        if (!class_exists($name)) {
+            return '';
         }
 
-        $remove = <<<R
-    /**
-     * ORM auto create "remove" method.
-     *
-     * @param {$entity} \$entity
-     * @return int
-     */
-    public function remove({$entity} \$entity)
-    {
-        return \$this->driver->remove(\$this->getTable(), ['id' => \$entity->getId()]);
-    }
+        $name = new \ReflectionClass($name);
 
-R;
-        $save = <<<S
-    /**
-     * ORM auto create "save" method.
-     * Encapsulates a simple layer of ORM.
-     *
-     * Insert、Update、Delete or IMPORTQ operation.
-     * It's return entity.
-     * Get information from this param entity.
-     *
-     * @param {$entity} \$entity The found object
-     * @return \$this
-     */
-    public function save($entity \$entity)
-    {
-        \$data = [];
-
-        foreach (\$this->keys as \$name => \$filed) {
-            \$method = 'get' . ucfirst(\$name);
-            if (null === (\$value = \$entity->\$method())) {
-                continue;
-            }
-
-            \$data[\$filed] = \$entity->\$method();
-        }
-
-        if (null === \$entity->getId()) {
-            \$entity->setId(\$this->insert(\$data));
-        } else {
-            \$this->update(\$data, ['id' => \$entity->getId()]);
-        }
-    }
-
-S;
-        $find = <<<F
-    /**
-     * ORM auto create "find" method.
-     * Fetch one row.
-     *
-     * @param array \$where
-     * @param array \$fields
-     * @return {$entity}
-     */
-    public function find(array \$where = [], array \$fields = [])
-    {
-        \$row = parent::find(\$where, \$fields);
-
-        \$entity = new \$this->entity();
-        foreach (\$this->keys as \$name => \$field) {
-            \$method = 'set' . ucfirst(\$name);
-            \$entity->\$method(isset(\$row[\$field]) ? \$row[\$field] : null);
-        }
-
-        return \$entity;
-    }
-
-F;
-        $findAll = <<<FA
-    /**
-     * ORM auto create "findAll" method.
-     *
-     * Fetch all rows.
-     *
-     * @param array \$where
-     * @param array|string \$field
-     * @return {$entity}[]
-     */
-    public function findAll(array \$where = [],  array \$field = [])
-    {
-        \$list = parent::findAll(\$where, \$field);
-
-        \$entities = [];
-        foreach (\$list as \$row) {
-            \$entity = new \$this->entity();
-            foreach (\$this->keys as \$name => \$field) {
-                \$method = 'set' . ucfirst(\$name);
-                \$entity->\$method(isset(\$row[\$field]) ? \$row[\$field] : null);
-            }
-            \$entities[] = \$entity;
-        }
-
-        return \$entities;
-    }
-FA;
-
-        return implode(PHP_EOL, []);
+        return '';
     }
 }

@@ -137,7 +137,7 @@ abstract class Repository extends HttpRequestHandle
                 $this->getTable()
             )
             ->where($where)
-            ->field($field)
+            ->field(array () === $field ? $this->getFields() : $field)
             ->findAll()
         ;
     }
