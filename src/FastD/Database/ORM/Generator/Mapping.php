@@ -56,7 +56,7 @@ class Mapping
     }
 
     /**
-     * @return \FastD\Database\ORM\Parser\TableParser[]
+     * @return TableParser[]
      */
     public function getTables()
     {
@@ -102,9 +102,12 @@ class Mapping
     }
 
     /**
+     * Update table if table is exists.
+     * Create table if table is not exists.
+     *
      * @return bool
      */
-    public function updateTables()
+    public function updateTablesFromEntity()
     {
         foreach ($this->getTables() as $table) {
             $sql = $table->makeSQL();
@@ -117,19 +120,25 @@ class Mapping
     }
 
     /**
-     * @param        $dir
-     * @param string $namespace
+     * Generate entity and repository into exists tables.
+     *
+     * @param string $table
      * @return bool
      */
-    public function buildEntity($dir, $namespace = '')
+    public function updateEntityFromTable($table = null)
+    {
+        return true;
+    }
+
+    public function buildEntity($namespace, $dir)
     {
         $namespace = empty($namespace) ? '' : $namespace . '\\';
         foreach ($this->getTables() as $table) {
             if (empty($table->getNewFields())) {
                 continue;
             }
-            $entity = new EntityBuilder($table, $dir);
-            $entity->buildEntity($namespace . $table->getName());
+            $entity = new EntityBuilder($table);
+            $entity->build($namespace . $table->getName(), $dir);
         }
 
         return true;
@@ -140,6 +149,7 @@ class Mapping
      *
      * @param        $dir
      * @param string $namespace
+     * @return true
      */
     public function buildRepository($dir, $namespace = '')
     {

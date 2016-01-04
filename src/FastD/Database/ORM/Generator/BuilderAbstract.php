@@ -26,6 +26,11 @@ use FastD\Database\ORM\Parser\TableParser;
 abstract class BuilderAbstract
 {
     /**
+     * @const int generate autoload.
+     */
+    const BUILD_PSR4 = 1;
+
+    /**
      * @var TableParser
      */
     protected $table;
@@ -65,6 +70,19 @@ abstract class BuilderAbstract
         return 'mixed';
     }
 
+    public function parseName($name)
+    {
+
+    }
+
+    protected function generateFields()
+    {
+        foreach ($this->table->getFields() as $alias => $field) {
+            print_r($field);
+        }
+        print_r($this->table);die;
+    }
+
     /**
      * Generate entity or repository property.
      *
@@ -92,6 +110,7 @@ abstract class BuilderAbstract
         }
 
         return  <<<P
+
     /**
      * @var {$type}
      */
@@ -121,7 +140,10 @@ P;
         $type = $this->parseType($type);
 
         return <<<GS
+
     /**
+     * set{$method}
+     *
      * @param {$type} \${$name}
      * @return \$this
      */
@@ -133,6 +155,8 @@ P;
     }
 
     /**
+     * get{$method}
+     *
      * @return {$type}
      */
     public function get{$method}()
@@ -142,5 +166,35 @@ P;
 GS;
     }
 
-    abstract public function build();
+    /**
+     * @param $file
+     * @return bool
+     */
+    public function isExists($file)
+    {
+        return file_exists($file);
+    }
+
+    /**
+     * @param $name
+     * @return string
+     */
+    public function fetchContent($name)
+    {
+        if (!class_exists($name)) {
+            return '';
+        }
+
+        $name = new \ReflectionClass($name);
+
+        return '';
+    }
+
+    /**
+     * @param     $namespace
+     * @param     $dir
+     * @param int $flag
+     * @return mixed
+     */
+    abstract public function build($namespace, $dir, $flag = BuilderAbstract::BUILD_PSR4);
 }

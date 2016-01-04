@@ -59,6 +59,11 @@ class TableParser
     protected $exists = false;
 
     /**
+     * @var string
+     */
+    protected $primary;
+
+    /**
      * TableParser constructor.
      *
      * @param DriverInterface $driverInterface
@@ -79,6 +84,10 @@ class TableParser
         }
     }
 
+    /**
+     * @param DriverInterface $driverInterface
+     * @param                 $name
+     */
     protected function parseExistsTable(DriverInterface $driverInterface, $name)
     {
         $this->create_sql = $driverInterface
@@ -106,14 +115,23 @@ class TableParser
         foreach ($fields as $field) {
             $field = new FieldParser($field, true);
             $this->fields[$field->getName()] = $field;
+            if ('primary' == $field->getKey()) {
+                $this->primary = $field->getName();
+            }
         }
     }
 
+    /**
+     * @param array $fields
+     */
     protected function parseNotExistsTable(array $fields)
     {
         foreach ($fields['fields'] as $alias => $field) {
             $field = new FieldParser($field, false);
             $this->new_fields[$alias] = $field;
+            if ('primary' == $field->getKey()) {
+                $this->primary = $field->getName();
+            }
         }
     }
 
@@ -217,6 +235,16 @@ class TableParser
     public function getStructure()
     {
         return $this->create_sql;
+    }
+
+    /**
+     * Get table primary key name.
+     *
+     * @return string
+     */
+    public function getPrimary()
+    {
+        return $this->primary;
     }
 
     /**

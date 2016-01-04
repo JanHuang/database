@@ -21,50 +21,42 @@ namespace FastD\Database\ORM\Generator;
  */
 class EntityBuilder extends BuilderAbstract
 {
-    /**
-     * @param $name
-     */
-    public function buildEntity($name)
+    public function build($namespace, $dir, $flag = BuilderAbstract::BUILD_PSR4)
     {
-        $namespace = '';
-        if (false !== ($index = strrpos($name, '\\'))) {
-            $namespace = ucfirst(substr($name, 0, $index));
-            $name = substr($name, $index + 1);
+        $name = $namespace;
+        if (false !== ($index = strrpos($namespace, '\\'))) {
+            $name = ucfirst(substr($namespace, $index + 1));
+            $namespace = ucfirst(substr($namespace, 0, $index));
         }
 
-        $property = '';
-        $methods = '';
+        $properties= [];
+        $methods = [];
         $primary = '';
 
         foreach ($this->table->getFields() as $alias => $field) {
-            if ($field->isPrimary()) {
-                $primary = $this->buildProperty('primary', $field->getType(), $name);
-            }
-            $property .= PHP_EOL . $this->buildProperty($alias, $field->getType()) . PHP_EOL;
-            $methods .= PHP_EOL . $this->buildGetSetter($alias, $field->getType()) . PHP_EOL;
+            $properties[] = $this->generateProperty($alias, $field->getType());
+            $methods[] = $this->generateGetSetter($alias, $field->getType());
         }
-
-        $name = ucfirst($name);
 
         $repository = " = '{$name}Repository'";
         if (!empty($namespace)) {
             $repository = " = '{$namespace}\\Repository\\{$name}Repository'";
         }
 
-        $map = $this->buildRepository($name, $namespace);
-
         $table = $this->table->getName();
 
-        if (!empty($namespace)) {
-            $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Entity;' . PHP_EOL;
-        }
+        $namespace = ltrim($namespace . '\\Entity;', '\\');
+        $namespace = 'namespace ' . $namespace;
 
-        $property = ltrim($property, PHP_EOL);
-        $methods = rtrim($methods, PHP_EOL);
+        $fields = $this->generateFields();
+        $properties = implode(PHP_EOL, $properties);
+        $methods = implode(PHP_EOL, $methods);
 
         $entity = <<<E
 <?php
+
 {$namespace}
+
 use FastD\Database\ORM\Entity;
 
 class {$name} extends Entity
@@ -75,49 +67,19 @@ class {$name} extends Entity
     protected \$table = '{$table}';
 
     /**
-     * @var array
-     */
-    protected \$structure = [
-{$map['maps']}
-    ];
-
-    /**
-     * @var array
-     */
-    protected \$fields = [
-        {$map['keys']}
-    ];
-
-    /**
      * @var string|null
      */
     protected \$repository{$repository};
     {$primary}
-{$property}
+    {$properties}
     {$methods}
 }
 E;
 
-        if (!is_dir($entityDir = $this->dir . '/Entity')) {
+        if (!is_dir($entityDir = $dir . '/Entity')) {
             mkdir($entityDir, 0755, true);
         }
 
-        file_put_contents($this->dir . '/Entity/' . $name . '.php', $entity);
-    }
-
-    public function fetchContent($name)
-    {
-        if (!class_exists($name)) {
-            return '';
-        }
-
-        $name = new \ReflectionClass($name);
-
-        return '';
-    }
-
-    public function build()
-    {
-        // TODO: Implement build() method.
+        file_put_contents($dir . '/Entity/' . $name . '.php', $entity);
     }
 }

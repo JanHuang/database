@@ -1,6 +1,6 @@
 <?php
 
-namespace Examples\ORM\Entity;
+namespace Entity;
 
 use FastD\Database\ORM\Entity;
 
@@ -12,46 +12,11 @@ class Test extends Entity
     protected $table = 'test';
 
     /**
-     * @var array
-     */
-    protected $structure = [
-        'id' => [
-            'type' => 'int',
-            'name' => 'id',
-            'length'=> 10,
-        ],
-        'trueName' => [
-            'type' => 'char',
-            'name' => 'name',
-            'length'=> 20,
-        ],
-        'nickName' => [
-            'type' => 'varchar',
-            'name' => 'nick_name',
-            'length'=> 20,
-        ],
-        'age' => [
-            'type' => 'smallint',
-            'name' => 'age',
-            'length'=> 2,
-        ],
-    ];
-
-    /**
-     * @var array
-     */
-    protected $fields = [
-        'id' => 'id','name' => 'trueName','nick_name' => 'nickName','age' => 'age'
-    ];
-
-    /**
      * @var string|null
      */
-    protected $repository = 'Examples\ORM\Repository\TestRepository';
-        /**
-     * @var int
-     */
-    protected $primary = 'test';
+    protected $repository = '\\Repository\TestRepository';
+    
+    
     /**
      * @var int
      */
@@ -71,9 +36,10 @@ class Test extends Entity
      * @var int
      */
     protected $age;
-
     
     /**
+     * setId
+     *
      * @param int $id
      * @return $this
      */
@@ -85,6 +51,8 @@ class Test extends Entity
     }
 
     /**
+     * getId
+     *
      * @return int
      */
     public function getId()
@@ -93,6 +61,8 @@ class Test extends Entity
     }
 
     /**
+     * setName
+     *
      * @param string $name
      * @return $this
      */
@@ -104,6 +74,8 @@ class Test extends Entity
     }
 
     /**
+     * getName
+     *
      * @return string
      */
     public function getName()
@@ -112,6 +84,8 @@ class Test extends Entity
     }
 
     /**
+     * setNickName
+     *
      * @param string $nickName
      * @return $this
      */
@@ -123,6 +97,8 @@ class Test extends Entity
     }
 
     /**
+     * getNickName
+     *
      * @return string
      */
     public function getNickName()
@@ -131,6 +107,8 @@ class Test extends Entity
     }
 
     /**
+     * setAge
+     *
      * @param int $age
      * @return $this
      */
@@ -142,6 +120,8 @@ class Test extends Entity
     }
 
     /**
+     * getAge
+     *
      * @return int
      */
     public function getAge()
