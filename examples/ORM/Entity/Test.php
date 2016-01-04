@@ -6,6 +6,19 @@ use FastD\Database\ORM\Entity;
 
 class Test extends Entity
 {
+            
+    /**
+     * Fields const
+     * @const array
+     */
+    const FIELDS = \Fields\TestFields::FIELDS;
+
+    /**
+     * Fields alias
+     * @const array
+     */
+    const ALIAS = \Fields\TestFields::ALIAS;
+
     /**
      * @var string
      */
@@ -14,7 +27,8 @@ class Test extends Entity
     /**
      * @var string|null
      */
-    protected $repository = '\\Repository\TestRepository';
+    protected $repository = 'Repository\TestRepository';
+
     
     
     /**

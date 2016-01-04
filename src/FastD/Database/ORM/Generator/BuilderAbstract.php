@@ -75,12 +75,79 @@ abstract class BuilderAbstract
 
     }
 
-    protected function generateFields()
+    protected function generateFields($name, $namespace, $dir)
     {
-        foreach ($this->table->getFields() as $alias => $field) {
-            print_r($field);
+        $class = ucfirst($name) . 'Fields';
+        $fields = null !== $this->table->getNewFields() ? $this->table->getNewFields() : $this->table->getFields();
+        $list = [];
+        $alias = [];
+        foreach ($fields as $name => $field) {
+            $list[] = [
+                'alias'     => $name,
+                'name'      => $field->getName(),
+                'length'    => $field->getLength(),
+                'notnull'   => $field->isNotNull(),
+                'unsigned'  => $field->isUnsigned(),
+                'default'   => $field->getDefault(),
+            ];
+            $alias[$field->getName()] = $name;
         }
-        print_r($this->table);die;
+
+        $fields = var_export($list, true);
+        $alias = var_export($alias, true);
+
+        $namespace = ltrim($namespace . '\\Fields', '\\');
+
+        $f = <<<F
+<?php
+
+namespace {$namespace};
+
+class {$class}
+{
+        /**
+         * Const array
+         * @const array
+         */
+         const FIELDS =
+{$fields};
+
+         /**
+          * Const fields alias.
+          * @const array
+          */
+         const ALIAS =
+{$alias};
+
+}
+F;
+
+        if (!is_dir($entityDir = $dir . '/Fields')) {
+            mkdir($entityDir, 0755, true);
+        }
+
+        file_put_contents($dir . '/Fields/' . $class . '.php', $f);
+
+        return <<<CON
+
+    /**
+     * Fields const
+     * @const array
+     */
+    const FIELDS = \\{$namespace}\\{$class}::FIELDS;
+
+    /**
+     * Fields alias
+     * @const array
+     */
+    const ALIAS = \\{$namespace}\\{$class}::ALIAS;
+CON
+;
+    }
+
+    protected function generatePrimaryKey()
+    {
+
     }
 
     /**
@@ -109,7 +176,7 @@ abstract class BuilderAbstract
             $value = ' = \'' . $defaultValue . '\'';
         }
 
-        return  <<<P
+        return <<<P
 
     /**
      * @var {$type}
@@ -191,10 +258,11 @@ GS;
     }
 
     /**
-     * @param     $namespace
+     * @param     $name
      * @param     $dir
+     * @param     $namespace
      * @param int $flag
      * @return mixed
      */
-    abstract public function build($namespace, $dir, $flag = BuilderAbstract::BUILD_PSR4);
+    abstract public function build($name, $dir, $namespace, $flag = BuilderAbstract::BUILD_PSR4);
 }

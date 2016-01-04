@@ -138,7 +138,7 @@ class Mapping
                 continue;
             }
             $entity = new EntityBuilder($table);
-            $entity->build($namespace . $table->getName(), $dir);
+            $entity->build($table->getName(), $dir, $namespace);
         }
 
         return true;

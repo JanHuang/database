@@ -21,14 +21,9 @@ namespace FastD\Database\ORM\Generator;
  */
 class EntityBuilder extends BuilderAbstract
 {
-    public function build($namespace, $dir, $flag = BuilderAbstract::BUILD_PSR4)
+    public function build($name, $dir, $namespace, $flag = BuilderAbstract::BUILD_PSR4)
     {
-        $name = $namespace;
-        if (false !== ($index = strrpos($namespace, '\\'))) {
-            $name = ucfirst(substr($namespace, $index + 1));
-            $namespace = ucfirst(substr($namespace, 0, $index));
-        }
-
+        $name = ucfirst($name);
         $properties= [];
         $methods = [];
         $primary = '';
@@ -38,17 +33,13 @@ class EntityBuilder extends BuilderAbstract
             $methods[] = $this->generateGetSetter($alias, $field->getType());
         }
 
-        $repository = " = '{$name}Repository'";
-        if (!empty($namespace)) {
-            $repository = " = '{$namespace}\\Repository\\{$name}Repository'";
-        }
+        $repository = ltrim("{$namespace}\\Repository\\{$name}Repository", '\\');
 
         $table = $this->table->getName();
+        $fields = $this->generateFields($name, $namespace, $dir);
 
-        $namespace = ltrim($namespace . '\\Entity;', '\\');
-        $namespace = 'namespace ' . $namespace;
+        $namespace = 'namespace ' . ltrim($namespace . '\\Entity;', '\\');
 
-        $fields = $this->generateFields();
         $properties = implode(PHP_EOL, $properties);
         $methods = implode(PHP_EOL, $methods);
 
@@ -61,6 +52,8 @@ use FastD\Database\ORM\Entity;
 
 class {$name} extends Entity
 {
+    {$fields}
+
     /**
      * @var string
      */
@@ -69,7 +62,8 @@ class {$name} extends Entity
     /**
      * @var string|null
      */
-    protected \$repository{$repository};
+    protected \$repository = '{$repository}';
+
     {$primary}
     {$properties}
     {$methods}
