@@ -139,27 +139,8 @@ class Mapping
             }
             $entity = new EntityBuilder($table);
             $entity->build($table->getName(), $dir, $namespace);
-        }
-
-        return true;
-    }
-
-    /**
-     * Auto mapping entity repository.
-     *
-     * @param        $dir
-     * @param string $namespace
-     * @return true
-     */
-    public function buildRepository($dir, $namespace = '')
-    {
-        $namespace = empty($namespace) ? '' : $namespace . '\\';
-        foreach ($this->getTables() as $table) {
-            if (empty($table->getNewFields())) {
-                continue;
-            }
             $entity = new RepositoryBuilder($table, $dir);
-            $entity->buildEntity($namespace . $table->getName());
+            $entity->build($table->getName(), $dir, $namespace);
         }
 
         return true;

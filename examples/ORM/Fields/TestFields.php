@@ -4,11 +4,16 @@ namespace Fields;
 
 class TestFields
 {
-        /**
-         * Const array
-         * @const array
-         */
-         const FIELDS =
+    /**
+     * @const string
+     */
+    const PRIMARY = 'id';
+
+    /**
+     * Const array
+     * @const array
+     */
+     const FIELDS =
 array (
   0 => 
   array (
@@ -48,11 +53,11 @@ array (
   ),
 );
 
-         /**
-          * Const fields alias.
-          * @const array
-          */
-         const ALIAS =
+     /**
+      * Const fields alias.
+      * @const array
+      */
+     const ALIAS =
 array (
   'id' => 'id',
   'name' => 'trueName',

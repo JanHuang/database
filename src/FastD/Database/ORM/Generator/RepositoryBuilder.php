@@ -14,56 +14,34 @@
 
 namespace FastD\Database\ORM\Generator;
 
-use FastD\Database\ORM\Parser\TableParser;
-
+/**
+ * Class RepositoryBuilder
+ *
+ * @package FastD\Database\ORM\Generator
+ */
 class RepositoryBuilder extends BuilderAbstract
 {
-    protected $parse;
-
-    public function __construct(TableParser $parser)
-    {
-        $this->parse = $parser;
-    }
-
     /**
-     * @param        $name
-     * @param string $namespace
-     * @return array
+     * @param     $name
+     * @param     $dir
+     * @param     $namespace
+     * @param int $flag
+     * @return mixed
      */
-    protected function buildRepository($name, $namespace = '')
+    public function build($name, $dir, $namespace, $flag = BuilderAbstract::BUILD_PSR4)
     {
-        $entity = $name;
-        if (!empty($namespace)) {
-            $entity = "{$namespace}\\Entity\\{$name}";
-            $namespace = PHP_EOL . 'namespace ' . $namespace . '\\Repository;' . PHP_EOL;
-        }
-
-        $maps = [];
-        $mapKeys = [];
-        foreach ($this->table->getNewFields() as $alias => $field) {
-            $mapName = $alias;
-            if (empty($mapName)) {
-                $mapName = $field->getName();
-            }
-            $mapKeys[] = "'" . $field->getName() . '\' => ' . "'" . $mapName . "'";
-            $maps[] = <<<M
-        '{$mapName}' => [
-            'type' => '{$field->getType()}',
-            'name' => '{$field->getName()}',
-            'length'=> {$field->getLength()},
-        ],
-M;
-        }
-
-        $mapKeys = implode(',', $mapKeys);
-
-        $maps = implode(PHP_EOL, $maps);
-
+        $name = ucfirst($name);
+        $fields = $this->generateFields($name, $namespace, $dir);
         $table = $this->table->getName();
+
+        $entity = ltrim($namespace . '\\Entity\\', '\\') . $name;
+        $namespace = ltrim($namespace . '\\Repository', '\\');
 
         $repository = <<<R
 <?php
-{$namespace}
+
+namespace {$namespace};
+
 use FastD\Database\ORM\Repository;
 
 class {$name}Repository extends Repository
@@ -73,17 +51,7 @@ class {$name}Repository extends Repository
      */
     protected \$table = '{$table}';
 
-    /**
-     * @var array
-     */
-    protected \$structure = [
-{$maps}
-    ];
-
-    /**
-     * @var array
-     */
-    protected \$fields = [{$mapKeys}];
+    {$fields}
 
     /**
      * @var string
@@ -92,20 +60,10 @@ class {$name}Repository extends Repository
 }
 R;
 
-        if (!is_dir($repositoryDir = $this->dir . '/Repository')) {
+        if (!is_dir($repositoryDir = $dir . '/Repository')) {
             mkdir($repositoryDir, 0755, true);
         }
 
-        file_put_contents($this->dir . '/Repository/' . $name . 'Repository.php', $repository);
-
-        return [
-            'maps' => $maps,
-            'keys' => $mapKeys,
-        ];
-    }
-
-    public function build()
-    {
-        // TODO: Implement build() method.
+        file_put_contents($dir . '/Repository/' . $name . 'Repository.php', $repository);
     }
 }

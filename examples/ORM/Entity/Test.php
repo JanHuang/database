@@ -6,7 +6,12 @@ use FastD\Database\ORM\Entity;
 
 class Test extends Entity
 {
-            
+    
+    /**
+     * @const string
+     */
+    const PRIMARY = \Fields\TestFields::PRIMARY;
+
     /**
      * Fields const
      * @const array
@@ -28,8 +33,6 @@ class Test extends Entity
      * @var string|null
      */
     protected $repository = 'Repository\TestRepository';
-
-    
     
     /**
      * @var int

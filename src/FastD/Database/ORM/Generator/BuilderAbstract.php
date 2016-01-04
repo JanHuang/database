@@ -98,6 +98,8 @@ abstract class BuilderAbstract
 
         $namespace = ltrim($namespace . '\\Fields', '\\');
 
+        $primary = $this->generatePrimaryKey();
+
         $f = <<<F
 <?php
 
@@ -105,18 +107,23 @@ namespace {$namespace};
 
 class {$class}
 {
-        /**
-         * Const array
-         * @const array
-         */
-         const FIELDS =
+    /**
+     * @const string
+     */
+    const PRIMARY = '{$primary}';
+
+    /**
+     * Const array
+     * @const array
+     */
+     const FIELDS =
 {$fields};
 
-         /**
-          * Const fields alias.
-          * @const array
-          */
-         const ALIAS =
+     /**
+      * Const fields alias.
+      * @const array
+      */
+     const ALIAS =
 {$alias};
 
 }
@@ -129,6 +136,11 @@ F;
         file_put_contents($dir . '/Fields/' . $class . '.php', $f);
 
         return <<<CON
+
+    /**
+     * @const string
+     */
+    const PRIMARY = \\{$namespace}\\{$class}::PRIMARY;
 
     /**
      * Fields const
@@ -147,7 +159,7 @@ CON
 
     protected function generatePrimaryKey()
     {
-
+        return $this->table->getPrimary();
     }
 
     /**

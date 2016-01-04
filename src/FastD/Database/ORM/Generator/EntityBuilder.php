@@ -26,7 +26,6 @@ class EntityBuilder extends BuilderAbstract
         $name = ucfirst($name);
         $properties= [];
         $methods = [];
-        $primary = '';
 
         foreach ($this->table->getFields() as $alias => $field) {
             $properties[] = $this->generateProperty($alias, $field->getType());
@@ -38,7 +37,7 @@ class EntityBuilder extends BuilderAbstract
         $table = $this->table->getName();
         $fields = $this->generateFields($name, $namespace, $dir);
 
-        $namespace = 'namespace ' . ltrim($namespace . '\\Entity;', '\\');
+        $namespace = ltrim($namespace . '\\Entity', '\\');
 
         $properties = implode(PHP_EOL, $properties);
         $methods = implode(PHP_EOL, $methods);
@@ -46,7 +45,7 @@ class EntityBuilder extends BuilderAbstract
         $entity = <<<E
 <?php
 
-{$namespace}
+namespace {$namespace};
 
 use FastD\Database\ORM\Entity;
 
@@ -63,8 +62,6 @@ class {$name} extends Entity
      * @var string|null
      */
     protected \$repository = '{$repository}';
-
-    {$primary}
     {$properties}
     {$methods}
 }
