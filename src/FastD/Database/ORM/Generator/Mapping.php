@@ -23,7 +23,7 @@ use FastD\Database\ORM\Parser\TableParser;
  *
  * @package FastD\Database\ORM\Mapper
  */
-class Builder
+class Mapping
 {
     /**
      * @var DriverInterface
@@ -129,6 +129,26 @@ class Builder
                 continue;
             }
             $entity = new EntityBuilder($table, $dir);
+            $entity->buildEntity($namespace . $table->getName());
+        }
+
+        return true;
+    }
+
+    /**
+     * Auto mapping entity repository.
+     *
+     * @param        $dir
+     * @param string $namespace
+     */
+    public function buildRepository($dir, $namespace = '')
+    {
+        $namespace = empty($namespace) ? '' : $namespace . '\\';
+        foreach ($this->getTables() as $table) {
+            if (empty($table->getNewFields())) {
+                continue;
+            }
+            $entity = new RepositoryBuilder($table, $dir);
             $entity->buildEntity($namespace . $table->getName());
         }
 

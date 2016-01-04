@@ -14,9 +14,8 @@
 
 include __DIR__.'/../../vendor/autoload.php';
 
-use FastD\Database\ORM\Generator\Builder;
 use FastD\Database\Drivers\MySQL;
-
+use FastD\Database\ORM\Generator\Mapping;
 
 $mysql = new MySQL([
     'database_type' => 'mysql',
@@ -27,7 +26,7 @@ $mysql = new MySQL([
     'database_name' => 'test',
 ]);
 
-$builder = new Builder($mysql);
+$builder = new Mapping($mysql);
 
 
 $builder->addTable(
