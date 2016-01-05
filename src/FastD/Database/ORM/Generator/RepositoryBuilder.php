@@ -31,11 +31,33 @@ class RepositoryBuilder extends BuilderAbstract
     public function build($name, $dir, $namespace, $flag = BuilderAbstract::BUILD_PSR4)
     {
         $name = ucfirst($name);
-        $fields = $this->generateFields($name, $namespace, $dir);
         $table = $this->table->getName();
-
         $entity = ltrim($namespace . '\\Entity\\', '\\') . $name;
+        $fields = $this->generateFields($name, $namespace, $dir);
+
         $namespace = ltrim($namespace . '\\Repository', '\\');
+        $diff = $this->compare($namespace . '\\' . $name . 'Repository');
+
+        $properties = [];
+
+        $properties['table'] = <<<T
+    /**
+     * @var string
+     */
+    protected \$table = '{$table}';
+
+T;
+        $properties['entity'] = <<<R
+    /**
+     * @var string|null
+     */
+    protected \$entity = '{$entity}';
+
+R;
+        $properties = array_merge($diff['properties'], $properties);
+
+        $properties = rtrim(implode(PHP_EOL, array_values($properties)));
+        $methods = rtrim(implode(PHP_EOL, array_values($diff['methods'])));
 
         $repository = <<<R
 <?php
@@ -46,17 +68,11 @@ use FastD\Database\ORM\Repository;
 
 class {$name}Repository extends Repository
 {
-    /**
-     * @var string
-     */
-    protected \$table = '{$table}';
+{$fields}
 
-    {$fields}
+{$properties}
 
-    /**
-     * @var string
-     */
-    protected \$entity = '{$entity}';
+{$methods}
 }
 R;
 

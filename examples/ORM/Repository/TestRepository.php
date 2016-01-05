@@ -7,11 +7,6 @@ use FastD\Database\ORM\Repository;
 class TestRepository extends Repository
 {
     /**
-     * @var string
-     */
-    protected $table = 'test';
-
-        /**
      * @const string
      */
     const PRIMARY = \Examples\Fields\TestFields::PRIMARY;
@@ -31,5 +26,16 @@ class TestRepository extends Repository
     /**
      * @var string
      */
+    protected $table = 'test';
+
+    /**
+     * @var string|null
+     */
     protected $entity = 'Examples\Entity\Test';
+
+    /**
+     * test
+     */
+    public function test()
+    {}
 }

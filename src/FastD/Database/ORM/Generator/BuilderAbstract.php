@@ -70,11 +70,10 @@ abstract class BuilderAbstract
         return 'mixed';
     }
 
-    public function parseName($name)
-    {
-
-    }
-
+    /**
+     * @param $name
+     * @return mixed|string
+     */
     public function parseGetSetterName($name)
     {
         if (strpos($name, '_')) {
@@ -87,6 +86,11 @@ abstract class BuilderAbstract
         return $name;
     }
 
+    /**
+     * @param        $name
+     * @param string $getset
+     * @return string
+     */
     public function parseGetSetterMethod($name, $getset = 'set')
     {
         return $getset . ucfirst($this->parseGetSetterName($name));
@@ -158,7 +162,11 @@ P;
 M;
 
             if (!empty($docs)) {
-                $content = $docs . PHP_EOL . $content;
+                $content = trim($content);
+                $content = <<<C
+    {$docs}
+    {$content}
+C;
             }
             $methods[$method->getName()] = $content;
         }
@@ -169,6 +177,12 @@ M;
         ];
     }
 
+    /**
+     * @param $name
+     * @param $namespace
+     * @param $dir
+     * @return string
+     */
     protected function generateFields($name, $namespace, $dir)
     {
         $class = ucfirst($name) . 'Fields';
@@ -250,6 +264,9 @@ CON
 ;
     }
 
+    /**
+     * @return string
+     */
     protected function generatePrimaryKey()
     {
         return $this->table->getPrimary();
@@ -284,6 +301,11 @@ CON
 P;
     }
 
+    /**
+     * @param $name
+     * @param $type
+     * @return string
+     */
     protected function generateGetter($name, $type)
     {
         $name = $this->parseGetSetterName($name);

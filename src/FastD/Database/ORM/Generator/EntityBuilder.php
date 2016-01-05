@@ -83,7 +83,7 @@ E;
         if (!is_dir($entityDir = $dir . '/Entity')) {
             mkdir($entityDir, 0755, true);
         }
-        highlight_string($entity);
+
         file_put_contents($dir . '/Entity/' . $name . '.php', $entity);
     }
 }
