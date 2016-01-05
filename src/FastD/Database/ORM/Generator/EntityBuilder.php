@@ -24,27 +24,44 @@ class EntityBuilder extends BuilderAbstract
     public function build($name, $dir, $namespace, $flag = BuilderAbstract::BUILD_PSR4)
     {
         $name = ucfirst($name);
-        $properties= [];
+        $properties = [];
         $methods = [];
 
-        foreach ($this->table->getFields() as $alias => $field) {
+        $repository = ltrim("{$namespace}\\Repository\\{$name}Repository", '\\');
+        $table = $this->table->getName();
+
+        $properties['table'] = <<<T
+    /**
+     * @var string
+     */
+    protected \$table = '{$table}';
+
+T;
+        $properties['repository'] = <<<R
+    /**
+     * @var string|null
+     */
+    protected \$repository = '{$repository}';
+
+R;
+
+        foreach ($this->table->getNewFields() as $alias => $field) {
             $properties[$alias] = $this->generateProperty($alias, $field->getType());
-            $methods[$alias] = $this->generateGetSetter($alias, $field->getType());
+            $methods[$this->parseGetSetterMethod($alias, 'get')] = $this->generateGetter($alias, $field->getType());
+            $methods[$this->parseGetSetterMethod($alias, 'set')] = $this->generateSetter($alias, $field->getType());
         }
 
-        $repository = ltrim("{$namespace}\\Repository\\{$name}Repository", '\\');
-
-        $table = $this->table->getName();
         $fields = $this->generateFields($name, $namespace, $dir);
 
         $namespace = ltrim($namespace . '\\Entity', '\\');
 
         $diff = $this->compare($namespace . '\\' . $name);
-        echo '<pre>';
-        print_r($diff);
 
-        $properties = implode(PHP_EOL, array_values($properties));
-        $methods = implode(PHP_EOL, array_values($methods));
+        $properties = array_merge($diff['properties'], $properties);
+        $methods = array_merge($diff['methods'], $methods);
+
+        $properties = rtrim(implode(PHP_EOL, array_values($properties)));
+        $methods = rtrim(implode(PHP_EOL, array_values($methods)));
 
         $entity = <<<E
 <?php
@@ -55,26 +72,18 @@ use FastD\Database\ORM\Entity;
 
 class {$name} extends Entity
 {
-    {$fields}
+{$fields}
 
-    /**
-     * @var string
-     */
-    protected \$table = '{$table}';
+{$properties}
 
-    /**
-     * @var string|null
-     */
-    protected \$repository = '{$repository}';
-    {$properties}
-    {$methods}
+{$methods}
 }
 E;
 
         if (!is_dir($entityDir = $dir . '/Entity')) {
             mkdir($entityDir, 0755, true);
         }
-
+        highlight_string($entity);
         file_put_contents($dir . '/Entity/' . $name . '.php', $entity);
     }
 }

@@ -11,8 +11,7 @@ class TestRepository extends Repository
      */
     protected $table = 'test';
 
-    
-    /**
+        /**
      * @const string
      */
     const PRIMARY = \Examples\Fields\TestFields::PRIMARY;

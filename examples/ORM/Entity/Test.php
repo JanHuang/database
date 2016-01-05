@@ -6,7 +6,6 @@ use FastD\Database\ORM\Entity;
 
 class Test extends Entity
 {
-    
     /**
      * @const string
      */
@@ -33,27 +32,27 @@ class Test extends Entity
      * @var string|null
      */
     protected $repository = 'Examples\Repository\TestRepository';
-    
-    /**
-     * @var int
-     */
-    public $id;
-
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-    public $nickName;
 
     /**
      * @var int
      */
-    public $age;
-    
+    protected $id;
+
+    /**
+     * @var string
+     */
+    protected $nickName;
+
+    /**
+     * @var int
+     */
+    protected $age;
+
+    /**
+     * @var string
+     */
+    protected $trueName;
+
     /**
      * setId
      *
@@ -75,29 +74,6 @@ class Test extends Entity
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * setName
-     *
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * getName
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -145,4 +121,34 @@ class Test extends Entity
     {
         return $this->age;
     }
+
+    /**
+     * getTrueName
+     *
+     * @return string
+     */
+    public function getTrueName()
+    {
+        return $this->trueName;
+    }
+
+    /**
+     * setTrueName
+     *
+     * @param string $trueName
+     * @return $this
+     */
+    public function setTrueName($trueName)
+    {
+        $this->trueName = $trueName;
+
+        return $this;
+    }
+
+    public function testExists()
+    {
+        
+    }
+
+    public function ssa(){}
 }

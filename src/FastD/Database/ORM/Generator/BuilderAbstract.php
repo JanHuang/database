@@ -75,6 +75,23 @@ abstract class BuilderAbstract
 
     }
 
+    public function parseGetSetterName($name)
+    {
+        if (strpos($name, '_')) {
+            $arr = explode('_', $name);
+            $name = array_shift($arr);
+            foreach ($arr as $value) {
+                $name .= ucfirst($value);
+            }
+        }
+        return $name;
+    }
+
+    public function parseGetSetterMethod($name, $getset = 'set')
+    {
+        return $getset . ucfirst($this->parseGetSetterName($name));
+    }
+
     /**
      * Reflection defined name;
      *
@@ -117,13 +134,33 @@ P;
 
         $methods = [];
         // get custom defined methods.
+        $file = new \SplFileObject($class->getFileName());
         foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
             if ($method->getDeclaringClass()->getName() !== $name) {
                 continue;
             }
-            $methods[$method->getName()] = <<<M
+            $content = (function () use ($file, $method) {
+                $file->seek($method->getStartLine() - 1);
+                $length = $method->getEndLine() - $method->getStartLine();
+                $i = 0;
+                $content = [];
+                while ($i <= $length) {
+                    $content[] = $file->current();
+                    $file->next();
+                    $i++;
+                }
+                return trim(implode('', $content));
+            })();
+            $docs = trim($method->getDocComment());
+            $content = <<<M
+    {$content}
 
 M;
+
+            if (!empty($docs)) {
+                $content = $docs . PHP_EOL . $content;
+            }
+            $methods[$method->getName()] = $content;
         }
 
         return [
@@ -193,7 +230,6 @@ F;
         file_put_contents($dir . '/Fields/' . $class . '.php', $f);
 
         return <<<CON
-
     /**
      * @const string
      */
@@ -229,13 +265,7 @@ CON
      */
     protected function generateProperty($name, $type = '', $defaultValue = null)
     {
-        if (strpos($name, '_')) {
-            $arr = explode('_', $name);
-            $name = array_shift($arr);
-            foreach ($arr as $value) {
-                $name .= ucfirst($value);
-            }
-        }
+        $name = $this->parseGetSetterName($name);
 
         $type = $this->parseType($type);
 
@@ -246,12 +276,34 @@ CON
         }
 
         return <<<P
-
     /**
      * @var {$type}
      */
-    public \${$name}{$value};
+    protected \${$name}{$value};
+
 P;
+    }
+
+    protected function generateGetter($name, $type)
+    {
+        $name = $this->parseGetSetterName($name);
+
+        $method = 'get' . ucfirst($name);
+
+        $type = $this->parseType($type);
+
+        return <<<GS
+    /**
+     * {$method}
+     *
+     * @return {$type}
+     */
+    public function {$method}()
+    {
+        return \$this->{$name};
+    }
+
+GS;
     }
 
     /**
@@ -261,44 +313,28 @@ P;
      * @param string $type
      * @return string
      */
-    protected function generateGetSetter($name, $type = '')
+    protected function generateSetter($name, $type = '')
     {
-        if (strpos($name, '_')) {
-            $arr = explode('_', $name);
-            $name = array_shift($arr);
-            foreach ($arr as $value) {
-                $name .= ucfirst($value);
-            }
-        }
+        $name = $this->parseGetSetterName($name);
 
-        $method = ucfirst($name);
+        $method = 'set' . ucfirst($name);
 
         $type = $this->parseType($type);
 
         return <<<GS
-
     /**
-     * set{$method}
+     * {$method}
      *
      * @param {$type} \${$name}
      * @return \$this
      */
-    public function set{$method}(\${$name})
+    public function {$method}(\${$name})
     {
         \$this->{$name} = \${$name};
 
         return \$this;
     }
 
-    /**
-     * get{$method}
-     *
-     * @return {$type}
-     */
-    public function get{$method}()
-    {
-        return \$this->{$name};
-    }
 GS;
     }
 
@@ -309,21 +345,6 @@ GS;
     public function isExists($file)
     {
         return file_exists($file);
-    }
-
-    /**
-     * @param $name
-     * @return string
-     */
-    public function fetchContent($name)
-    {
-        if (!class_exists($name)) {
-            return '';
-        }
-
-        $name = new \ReflectionClass($name);
-
-        return '';
     }
 
     /**
