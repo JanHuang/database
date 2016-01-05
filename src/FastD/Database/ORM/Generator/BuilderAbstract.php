@@ -75,10 +75,61 @@ abstract class BuilderAbstract
 
     }
 
-    public function reflectionFile($name)
+    /**
+     * Reflection defined name;
+     *
+     * @param string $name Compare class name
+     * @return array
+     */
+    public function compare($name)
     {
-        $name = new \ReflectionClass($name);
-        print_r($name);die;
+        $class = new \ReflectionClass($name);
+
+        $properties = [];
+        // get custom defined properties.
+        foreach ($class->getProperties(\ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED) as $property) {
+            if ($property->getDeclaringClass()->getName() !== $name) {
+                continue;
+            }
+
+            $property->setAccessible(true);
+            $modifier = (function () use ($property) {
+                $static = $property->isStatic() ? ' static ' : '';
+                $modify = 'public';
+                if ($property->isPrivate()) {
+                    $modify = 'private';
+                }
+                if ($property->isProtected()) {
+                    $modify = 'protected';
+                }
+                return $modify . $static;
+            })();
+
+            $value = (function () use ($property, $class) {
+                return null === $property->getValue($class) ? '' : " = '{$property->getValue($class)}'";
+            })();
+
+            $properties[$property->getName()] = <<<P
+    {$property->getDocComment()}
+    {$modifier} \${$property->getName()}{$value};
+P;
+        }
+
+        $methods = [];
+        // get custom defined methods.
+        foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+            if ($method->getDeclaringClass()->getName() !== $name) {
+                continue;
+            }
+            $methods[$method->getName()] = <<<M
+
+M;
+        }
+
+        return [
+            'properties' => $properties,
+            'methods' => $methods
+        ];
     }
 
     protected function generateFields($name, $namespace, $dir)
@@ -199,7 +250,7 @@ CON
     /**
      * @var {$type}
      */
-    protected \${$name}{$value};
+    public \${$name}{$value};
 P;
     }
 

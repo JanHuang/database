@@ -28,8 +28,8 @@ class EntityBuilder extends BuilderAbstract
         $methods = [];
 
         foreach ($this->table->getFields() as $alias => $field) {
-            $properties[] = $this->generateProperty($alias, $field->getType());
-            $methods[] = $this->generateGetSetter($alias, $field->getType());
+            $properties[$alias] = $this->generateProperty($alias, $field->getType());
+            $methods[$alias] = $this->generateGetSetter($alias, $field->getType());
         }
 
         $repository = ltrim("{$namespace}\\Repository\\{$name}Repository", '\\');
@@ -39,10 +39,12 @@ class EntityBuilder extends BuilderAbstract
 
         $namespace = ltrim($namespace . '\\Entity', '\\');
 
-        $this->reflectionFile($namespace . '\\' . $name);
+        $diff = $this->compare($namespace . '\\' . $name);
+        echo '<pre>';
+        print_r($diff);
 
-        $properties = implode(PHP_EOL, $properties);
-        $methods = implode(PHP_EOL, $methods);
+        $properties = implode(PHP_EOL, array_values($properties));
+        $methods = implode(PHP_EOL, array_values($methods));
 
         $entity = <<<E
 <?php

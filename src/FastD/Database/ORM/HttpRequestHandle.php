@@ -23,10 +23,7 @@ use FastD\Http\Request;
  */
 class HttpRequestHandle
 {
-    /**
-     * @var array
-     */
-    protected $structure = [];
+    const FIELDS    = [];
 
     /**
      * @var array
@@ -60,11 +57,11 @@ class HttpRequestHandle
             throw new \Exception("Request params error.");
         }
         foreach ($params as $name => $value) {
-            if (array_key_exists($name, $this->structure)) {
-                if (strlen($value) > $this->structure[$name]['length']) {
+            if (array_key_exists($name, static::FIELDS)) {
+                if (strlen($value) > static::FIELDS[$name]['length']) {
                     throw new \Exception("Params length invalid.");
                 }
-                $name = $this->structure[$name]['name'];
+                $name = static::FIELDS[$name]['name'];
                 $this->data[$name] = ':' . $name;
                 $this->params[$name] = $value;
             }

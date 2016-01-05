@@ -37,22 +37,22 @@ class Test extends Entity
     /**
      * @var int
      */
-    protected $id;
+    public $id;
 
     /**
      * @var string
      */
-    protected $name;
+    public $name;
 
     /**
      * @var string
      */
-    protected $nickName;
+    public $nickName;
 
     /**
      * @var int
      */
-    protected $age;
+    public $age;
     
     /**
      * setId
