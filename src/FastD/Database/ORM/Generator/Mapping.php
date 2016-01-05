@@ -130,15 +130,23 @@ class Mapping
         return true;
     }
 
+    /**
+     * Build entity and repository.
+     *
+     * @param $namespace
+     * @param $dir
+     * @return bool
+     */
     public function buildEntity($namespace, $dir)
     {
-        $namespace = empty($namespace) ? '' : $namespace . '\\';
+        $namespace = empty($namespace) ? '' : $namespace;
         foreach ($this->getTables() as $table) {
             if (empty($table->getNewFields())) {
                 continue;
             }
             $entity = new EntityBuilder($table);
             $entity->build($table->getName(), $dir, $namespace);
+
             $entity = new RepositoryBuilder($table, $dir);
             $entity->build($table->getName(), $dir, $namespace);
         }

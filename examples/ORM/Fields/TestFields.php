@@ -1,6 +1,6 @@
 <?php
 
-namespace Fields;
+namespace Examples\Fields;
 
 class TestFields
 {

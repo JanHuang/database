@@ -12,7 +12,9 @@
  * WebSite: http://www.janhuang.me
  */
 
-include __DIR__.'/../../vendor/autoload.php';
+$loader = include __DIR__.'/../../vendor/autoload.php';
+
+$loader->add('Examples\\', realpath(__DIR__ . '/../../examples'));
 
 use FastD\Database\Drivers\MySQL;
 use FastD\Database\ORM\Generator\Mapping;
@@ -115,6 +117,6 @@ $builder->addTable(
 //$result = $builder->buildTableIfTableNotExists();
 
 echo '<pre>';
-//$tables = $builder->updateTablesFromEntity();
-$builder->buildEntity('\\', __DIR__);
+$tables = $builder->updateTablesFromEntity();
+$builder->buildEntity('Examples', __DIR__);
 //$builder->buildEntity(__DIR__, 'Examples\\');

@@ -23,26 +23,16 @@ use FastD\Database\Drivers\DriverInterface;
  */
 abstract class Entity extends HttpRequestHandle implements \ArrayAccess
 {
+    const FIELDS    = [];
+    const ALIAS     = [];
+    const PRIMARY   = '';
+
     /**
      * Operation DB table name.
      *
      * @var string
      */
     protected $table;
-
-    /**
-     * The table table structure.
-     *
-     * @var array
-     */
-    protected $structure;
-
-    /**
-     * The table all field as field alias.
-     *
-     * @var array
-     */
-    protected $fields;
 
     /**
      * Query result row.
@@ -64,13 +54,6 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
      * @var DriverInterface
      */
     protected $driver;
-
-    /**
-     * Table primary name.
-     *
-     * @var string
-     */
-    protected $primary = 'id';
 
     /**
      * Table primary value.
@@ -132,9 +115,17 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     /**
      * @return array
      */
+    public function getAlias()
+    {
+        return static::ALIAS;
+    }
+
+    /**
+     * @return array
+     */
     public function getFields()
     {
-        return $this->fields;
+        return static::FIELDS;
     }
 
     /**
@@ -142,7 +133,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
      */
     public function getPrimary()
     {
-        return $this->primary;
+        return static::PRIMARY;
     }
 
     /**
@@ -188,10 +179,10 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
                     $this->getTable()
                 )
                 ->field(
-                    array() === $fields ? $this->fields : $fields
+                    array() === $fields ? $this->getAlias() : $fields
                 )
                 ->find([
-                    $this->primary => $this->id
+                    $this->getPrimary()=> $this->id
                 ])
             ;
 
@@ -222,7 +213,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
         $where = [];
 
         if (null !== $this->id) {
-            $where[$this->primary] = $this->id;
+            $where[$this->getPrimary()] = $this->id;
         }
 
         $id = $this->driver

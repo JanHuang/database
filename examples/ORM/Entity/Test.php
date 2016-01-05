@@ -1,6 +1,6 @@
 <?php
 
-namespace Entity;
+namespace Examples\Entity;
 
 use FastD\Database\ORM\Entity;
 
@@ -10,19 +10,19 @@ class Test extends Entity
     /**
      * @const string
      */
-    const PRIMARY = \Fields\TestFields::PRIMARY;
+    const PRIMARY = \Examples\Fields\TestFields::PRIMARY;
 
     /**
      * Fields const
      * @const array
      */
-    const FIELDS = \Fields\TestFields::FIELDS;
+    const FIELDS = \Examples\Fields\TestFields::FIELDS;
 
     /**
      * Fields alias
      * @const array
      */
-    const ALIAS = \Fields\TestFields::ALIAS;
+    const ALIAS = \Examples\Fields\TestFields::ALIAS;
 
     /**
      * @var string
@@ -32,7 +32,7 @@ class Test extends Entity
     /**
      * @var string|null
      */
-    protected $repository = 'Repository\TestRepository';
+    protected $repository = 'Examples\Repository\TestRepository';
     
     /**
      * @var int

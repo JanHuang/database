@@ -75,6 +75,12 @@ abstract class BuilderAbstract
 
     }
 
+    public function reflectionFile($name)
+    {
+        $name = new \ReflectionClass($name);
+        print_r($name);die;
+    }
+
     protected function generateFields($name, $namespace, $dir)
     {
         $class = ucfirst($name) . 'Fields';

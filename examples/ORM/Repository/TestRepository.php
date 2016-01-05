@@ -1,6 +1,6 @@
 <?php
 
-namespace Repository;
+namespace Examples\Repository;
 
 use FastD\Database\ORM\Repository;
 
@@ -15,22 +15,22 @@ class TestRepository extends Repository
     /**
      * @const string
      */
-    const PRIMARY = \Fields\TestFields::PRIMARY;
+    const PRIMARY = \Examples\Fields\TestFields::PRIMARY;
 
     /**
      * Fields const
      * @const array
      */
-    const FIELDS = \Fields\TestFields::FIELDS;
+    const FIELDS = \Examples\Fields\TestFields::FIELDS;
 
     /**
      * Fields alias
      * @const array
      */
-    const ALIAS = \Fields\TestFields::ALIAS;
+    const ALIAS = \Examples\Fields\TestFields::ALIAS;
 
     /**
      * @var string
      */
-    protected $entity = 'Entity\Test';
+    protected $entity = 'Examples\Entity\Test';
 }

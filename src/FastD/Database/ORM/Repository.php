@@ -22,20 +22,14 @@ use FastD\Database\Drivers\DriverInterface;
  */
 abstract class Repository extends HttpRequestHandle
 {
+    const FIELDS    = [];
+    const ALIAS     = [];
+    const PRIMARY   = '';
+
     /**
      * @var string
      */
     protected $table;
-
-    /**
-     * @var array
-     */
-    protected $fields;
-
-    /**
-     * @var array
-     */
-    protected $keys;
 
     /**
      * @var string
@@ -89,7 +83,23 @@ abstract class Repository extends HttpRequestHandle
      */
     public function getFields()
     {
-        return $this->fields;
+        return static::FIELDS;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAlias()
+    {
+        return static::ALIAS;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrimary()
+    {
+        return static::PRIMARY;
     }
 
     /**

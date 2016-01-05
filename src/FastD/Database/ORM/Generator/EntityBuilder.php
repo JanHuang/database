@@ -39,6 +39,8 @@ class EntityBuilder extends BuilderAbstract
 
         $namespace = ltrim($namespace . '\\Entity', '\\');
 
+        $this->reflectionFile($namespace . '\\' . $name);
+
         $properties = implode(PHP_EOL, $properties);
         $methods = implode(PHP_EOL, $methods);
 
