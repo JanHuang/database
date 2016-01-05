@@ -103,18 +103,6 @@ abstract class Repository extends HttpRequestHandle
     }
 
     /**
-     * @return Entity
-     */
-    public function getEntity()
-    {
-        if (!($this->entity instanceof Entity)) {
-            $this->entity = new $this->entity($this->getDriver());
-        }
-
-        return clone $this->entity;
-    }
-
-    /**
      * Fetch one row.
      *
      * @param array $where
@@ -147,7 +135,7 @@ abstract class Repository extends HttpRequestHandle
                 $this->getTable()
             )
             ->where($where)
-            ->field(array () === $field ? $this->getFields() : $field)
+            ->field(array () === $field ? $this->getAlias() : $field)
             ->findAll()
         ;
     }

@@ -64,15 +64,15 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
 
     /**
      * @param int $id
-     * @param \FastD\Database\Drivers\DriverInterface $driverInterface
+     * @param DriverInterface $driverInterface
      */
-    public function __construct($id = null, \FastD\Database\Drivers\DriverInterface $driverInterface = null)
+    public function __construct($id = null, DriverInterface $driverInterface = null)
     {
         $this->id = $id;
 
         $this->setDriver($driverInterface);
 
-        if (null === $id) {
+        if (null !== $id) {
             $this->find();
         }
     }
@@ -107,9 +107,9 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     /**
      * @return array
      */
-    public function getStructure()
+    public function getFields()
     {
-        return $this->structure;
+        return static::FIELDS;
     }
 
     /**
@@ -118,14 +118,6 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     public function getAlias()
     {
         return static::ALIAS;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFields()
-    {
-        return static::FIELDS;
     }
 
     /**
@@ -182,7 +174,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
                     array() === $fields ? $this->getAlias() : $fields
                 )
                 ->find([
-                    $this->getPrimary()=> $this->id
+                    $this->getPrimary() => $this->id
                 ])
             ;
 
