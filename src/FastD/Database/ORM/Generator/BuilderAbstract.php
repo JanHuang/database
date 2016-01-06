@@ -191,7 +191,7 @@ C;
         $list = [];
         $alias = [];
         foreach ($fields as $name => $field) {
-            $list[] = [
+            $list[$name] = [
                 'alias'     => $name,
                 'name'      => $field->getName(),
                 'length'    => $field->getLength(),

@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/12/16
- * Time: 下午5:37
+ * Date: 16/1/7
+ * Time: 上午12:12
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,12 +12,9 @@
  * WebSite: http://www.janhuang.me
  */
 
-include __DIR__ . '/boot.php';
-
 use FastD\Database\Drivers\MySQL;
-use FastD\Database\ORM\Generator\Mapping;
 
-$mysql = new MySQL([
+return new MySQL([
     'database_type' => 'mysql',
     'database_user' => 'root',
     'database_pwd'  => '123456',
@@ -25,9 +22,3 @@ $mysql = new MySQL([
     'database_port' => 3306,
     'database_name' => 'test',
 ]);
-
-$builder = new Mapping($mysql);
-
-echo '<pre>';
-$result = $builder->buildEntity('Examples\\ORM', __DIR__);
-print_r($result);

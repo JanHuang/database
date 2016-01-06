@@ -24,6 +24,7 @@ use FastD\Http\Request;
 class HttpRequestHandle
 {
     const FIELDS    = [];
+    const ALIAS     = [];
 
     /**
      * @var array
@@ -56,14 +57,17 @@ class HttpRequestHandle
         if (array() === $params) {
             throw new \Exception("Request params error.");
         }
+
         foreach ($params as $name => $value) {
             if (array_key_exists($name, static::FIELDS)) {
-                if (strlen($value) > static::FIELDS[$name]['length']) {
+                $field = static::FIELDS[$name];
+                if (strlen($value) > $field['length']) {
                     throw new \Exception("Params length invalid.");
                 }
-                $name = static::FIELDS[$name]['name'];
-                $this->data[$name] = ':' . $name;
-                $this->params[$name] = $value;
+                $method = 'set' . ucfirst($name);
+                if (method_exists($this, $method)) {
+                    $this->$method($value);
+                }
             }
         }
     }

@@ -141,31 +141,12 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     }
 
     /**
-     * @param array $row
-     * @return $this
-     */
-    public function setRow(array $row)
-    {
-        $this->init($row);
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getRow()
-    {
-        return $this->row;
-    }
-
-    /**
      * @param array $fields
      * @return $this|bool
      */
     public function find(array $fields = [])
     {
-        if (empty($this->getRow())) {
+        if (empty($this->row)) {
             $row = $this->driver
                 ->table(
                     $this->getTable()
@@ -192,14 +173,14 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     {
         $data = [];
         $values = [];
-        foreach ($this->getFields() as $field => $alias) {
+        foreach ($this->getAlias() as $field => $alias) {
             $method = 'get' . ucfirst($alias);
             $value = $this->$method();
             if (null === $value) {
                 continue;
             }
-            $data[$field] = ':' . $field;
-            $values[$field] = $value;
+            $data[$field] = ':' . $alias;
+            $values[$alias] = $value;
         }
 
         $where = [];
@@ -228,11 +209,11 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
      * @param array $data
      * @return $this
      */
-    public function init(array $data)
+    protected function init(array $data)
     {
         $this->row = $data;
 
-        foreach ($this->getFields() as $field => $alias) {
+        foreach ($this->getAlias() as $field => $alias) {
             $method = 'set' . ucfirst($alias);
             $this->$method(isset($data[$alias]) ? $data[$alias] : null);
         }

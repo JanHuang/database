@@ -46,6 +46,11 @@ class Test extends Entity
     /**
      * @var string
      */
+    protected $telNumber;
+
+    /**
+     * @var string
+     */
     protected $nickName;
 
     /**
@@ -57,11 +62,6 @@ class Test extends Entity
      * @var int
      */
     protected $gender;
-
-    /**
-     * @var string
-     */
-    protected $telNumber;
 
     /**
      * getId
@@ -200,9 +200,4 @@ class Test extends Entity
 
         return $this;
     }
-
-    /**
-     * as
-     */
-    public function test(){}
 }

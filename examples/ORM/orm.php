@@ -12,9 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-$loader = include __DIR__.'/../../vendor/autoload.php';
-
-$loader->setPsr4('Examples\\', __DIR__ . '/../../examples');
+include __DIR__ . '/boot.php';
 
 use FastD\Database\Drivers\MySQL;
 use FastD\Database\ORM\Generator\Mapping;

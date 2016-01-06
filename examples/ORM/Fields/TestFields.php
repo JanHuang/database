@@ -15,7 +15,7 @@ class TestFields
      */
      const FIELDS =
 array (
-  0 => 
+  'id' => 
   array (
     'alias' => 'id',
     'name' => 'id',
@@ -24,16 +24,16 @@ array (
     'unsigned' => true,
     'default' => NULL,
   ),
-  1 => 
+  'trueName' => 
   array (
     'alias' => 'trueName',
     'name' => 'true_name',
-    'length' => '20',
+    'length' => '10',
     'notnull' => true,
     'unsigned' => false,
-    'default' => '',
+    'default' => NULL,
   ),
-  2 => 
+  'telNumber' => 
   array (
     'alias' => 'telNumber',
     'name' => 'tel_number',
@@ -42,7 +42,7 @@ array (
     'unsigned' => false,
     'default' => NULL,
   ),
-  3 => 
+  'nickName' => 
   array (
     'alias' => 'nickName',
     'name' => 'nick_name',
@@ -51,7 +51,7 @@ array (
     'unsigned' => false,
     'default' => '',
   ),
-  4 => 
+  'age' => 
   array (
     'alias' => 'age',
     'name' => 'age',
@@ -60,7 +60,7 @@ array (
     'unsigned' => false,
     'default' => '1',
   ),
-  5 => 
+  'gender' => 
   array (
     'alias' => 'gender',
     'name' => 'gender',
