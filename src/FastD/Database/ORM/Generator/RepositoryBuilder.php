@@ -30,7 +30,7 @@ class RepositoryBuilder extends BuilderAbstract
      */
     public function build($name, $dir, $namespace, $flag = BuilderAbstract::BUILD_PSR4)
     {
-        $name = ucfirst($name);
+        $name = $this->parseName(ucfirst($name));
         $table = $this->table->getName();
         $entity = ltrim($namespace . '\\Entity\\', '\\') . $name;
         $fields = $this->generateFields($name, $namespace, $dir);
@@ -81,5 +81,7 @@ R;
         }
 
         file_put_contents($dir . '/Repository/' . $name . 'Repository.php', $repository);
+
+        return highlight_string($repository, true);
     }
 }

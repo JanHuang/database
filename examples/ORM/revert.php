@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 15/12/30
- * Time: 下午10:05
+ * Date: 15/12/16
+ * Time: 下午5:37
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,10 +12,10 @@
  * WebSite: http://www.janhuang.me
  */
 
-include  __DIR__ . '/../../vendor/autoload.php';
+include __DIR__.'/../../vendor/autoload.php';
 
 use FastD\Database\Drivers\MySQL;
-use FastD\Database\ORM\Generator\Revert;
+use FastD\Database\ORM\Generator\Mapping;
 
 $mysql = new MySQL([
     'database_type' => 'mysql',
@@ -26,7 +26,7 @@ $mysql = new MySQL([
     'database_name' => 'test',
 ]);
 
-$builder = new Revert($mysql);
+$builder = new Mapping($mysql);
+
 echo '<pre>';
-$builder->build(__DIR__);
-//print_r($builder);
+$builder->buildEntity('Examples', __DIR__);

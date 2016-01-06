@@ -31,7 +31,7 @@ $builder = new Mapping($mysql);
 
 $builder->addTable(
     [
-        'table' => 'test',
+        'table' => 'test_2',
         'suffix' => '',
         'prefix' => '',
         'cache' => '', // 默认值 Entity/cache/md5.php

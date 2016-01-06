@@ -110,8 +110,6 @@ class TableParser
             ->getQuery()
             ->getAll();
 
-        $this->new_fields = [];
-
         foreach ($fields as $field) {
             $field = new FieldParser($field, true);
             $this->fields[$field->getName()] = $field;
@@ -119,6 +117,8 @@ class TableParser
                 $this->primary = $field->getName();
             }
         }
+
+        $this->new_fields = $this->fields;
     }
 
     /**
@@ -275,6 +275,7 @@ class TableParser
         $alters = [];
         $index = [];
         $drop = [];
+
         foreach ($this->getNewFields() as $alias => $field) {
             $oldField = $this->getField($field->getName());
             if (!$field->equals($oldField)) {
@@ -313,23 +314,5 @@ class TableParser
             "CREATE TABLE `{$this->getName()}` (".PHP_EOL.
             $create.
             PHP_EOL.") ENGINE {$this->getEngine()} CHARSET {$this->getCharset()}";
-    }
-
-    /**
-     * @param      $dir
-     * @param bool $content
-     * @return string|boolean
-     */
-    public function makeDump($dir, $content = true)
-    {
-
-    }
-
-    /**
-     * Revert db table structure to php file.
-     */
-    public function map()
-    {
-
     }
 }

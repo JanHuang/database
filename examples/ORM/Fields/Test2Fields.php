@@ -2,7 +2,7 @@
 
 namespace Examples\Fields;
 
-class TestFields
+class Test2Fields
 {
     /**
      * @const string

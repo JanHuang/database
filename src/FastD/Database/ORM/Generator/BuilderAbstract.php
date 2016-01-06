@@ -14,6 +14,7 @@
 
 namespace FastD\Database\ORM\Generator;
 
+use FastD\Database\ORM\Parser\NameParseTrait;
 use FastD\Database\ORM\Parser\TableParser;
 
 /**
@@ -25,6 +26,8 @@ use FastD\Database\ORM\Parser\TableParser;
  */
 abstract class BuilderAbstract
 {
+    use NameParseTrait;
+
     /**
      * @const int generate autoload.
      */
@@ -76,14 +79,7 @@ abstract class BuilderAbstract
      */
     public function parseGetSetterName($name)
     {
-        if (strpos($name, '_')) {
-            $arr = explode('_', $name);
-            $name = array_shift($arr);
-            foreach ($arr as $value) {
-                $name .= ucfirst($value);
-            }
-        }
-        return $name;
+        return $this->parseName($name);
     }
 
     /**
@@ -213,6 +209,8 @@ C;
         $namespace = ltrim($namespace . '\\Fields', '\\');
 
         $primary = $this->generatePrimaryKey();
+
+        $class = $this->parseName($class);
 
         $f = <<<F
 <?php

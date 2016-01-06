@@ -23,7 +23,7 @@ class EntityBuilder extends BuilderAbstract
 {
     public function build($name, $dir, $namespace, $flag = BuilderAbstract::BUILD_PSR4)
     {
-        $name = ucfirst($name);
+        $name = $this->parseName(ucfirst($name));
         $properties = [];
         $methods = [];
 
@@ -85,5 +85,7 @@ E;
         }
 
         file_put_contents($dir . '/Entity/' . $name . '.php', $entity);
+
+        return highlight_string($entity, true);
     }
 }

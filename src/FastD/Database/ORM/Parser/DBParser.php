@@ -25,6 +25,8 @@ use FastD\Database\Drivers\DriverInterface;
  */
 class DBParser
 {
+    use NameParseTrait;
+
     /**
      * @var DriverInterface
      */
@@ -118,5 +120,13 @@ class DBParser
         ;
 
         return $db['name'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDebug()
+    {
+        return $this->debug;
     }
 }

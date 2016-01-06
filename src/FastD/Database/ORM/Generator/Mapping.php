@@ -39,12 +39,13 @@ class Mapping
      * Builder constructor.
      *
      * @param DriverInterface|null $driverInterface
+     * @param bool $debug
      */
-    public function __construct(DriverInterface $driverInterface = null)
+    public function __construct(DriverInterface $driverInterface = null, $debug = true)
     {
         $this->driver = $driverInterface;
 
-        $this->parser = new DBParser($driverInterface);
+        $this->parser = new DBParser($driverInterface, $debug);
     }
 
     /**
@@ -127,17 +128,6 @@ class Mapping
         foreach ($this->makeAllSql() as $sql) {
             $this->driver->createQuery($sql)->getQuery()->getAll();
         }
-        return true;
-    }
-
-    /**
-     * Generate entity and repository into exists tables.
-     *
-     * @param string $table
-     * @return bool
-     */
-    public function updateEntityFromTable($table = null)
-    {
         return true;
     }
 

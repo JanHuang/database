@@ -4,34 +4,34 @@ namespace Examples\Repository;
 
 use FastD\Database\ORM\Repository;
 
-class TestRepository extends Repository
+class Test2Repository extends Repository
 {
     /**
      * @const string
      */
-    const PRIMARY = \Examples\Fields\TestFields::PRIMARY;
+    const PRIMARY = \Examples\Fields\Test2Fields::PRIMARY;
 
     /**
      * Fields const
      * @const array
      */
-    const FIELDS = \Examples\Fields\TestFields::FIELDS;
+    const FIELDS = \Examples\Fields\Test2Fields::FIELDS;
 
     /**
      * Fields alias
      * @const array
      */
-    const ALIAS = \Examples\Fields\TestFields::ALIAS;
+    const ALIAS = \Examples\Fields\Test2Fields::ALIAS;
 
     /**
      * @var string
      */
-    protected $table = 'test';
+    protected $table = 'test_2';
 
     /**
      * @var string|null
      */
-    protected $entity = 'Examples\Entity\Test';
+    protected $entity = 'Examples\Entity\Test2';
 
 
 }
