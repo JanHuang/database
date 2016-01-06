@@ -85,7 +85,6 @@ class Mapping
             );
             $this->parser->addTable($table);
         }
-
         return $this;
     }
 
@@ -126,6 +125,7 @@ class Mapping
     public function updateTablesFromEntity()
     {
         foreach ($this->makeAllSql() as $sql) {
+            echo $sql;
             $this->driver->createQuery($sql)->getQuery()->getAll();
         }
         return true;
@@ -141,6 +141,7 @@ class Mapping
     public function buildEntity($namespace, $dir)
     {
         $namespace = empty($namespace) ? '' : $namespace;
+
         foreach ($this->getTables() as $table) {
             if (empty($table->getNewFields())) {
                 continue;

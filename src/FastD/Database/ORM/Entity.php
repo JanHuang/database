@@ -165,7 +165,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
      */
     public function find(array $fields = [])
     {
-        if (null === $this->getRow()) {
+        if (empty($this->getRow())) {
             $row = $this->driver
                 ->table(
                     $this->getTable()

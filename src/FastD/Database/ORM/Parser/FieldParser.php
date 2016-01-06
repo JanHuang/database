@@ -89,12 +89,15 @@ class FieldParser
     /**
      * FieldParser constructor.
      *
-     * @param bool $isExists
      * @param array $field
+     * @param bool $isExists
+     * @param bool $flag
      */
-    public function __construct(array $field, $isExists = false)
+    public function __construct(array $field, $isExists = false, $flag = false)
     {
-        if ($isExists) {
+        $this->exists = $isExists;
+
+        if ($this->isExists() && !$flag) {
             $this->parseExistsField($field);
         } else {
             $this->parseNotExistsField($field);
@@ -172,7 +175,6 @@ class FieldParser
         $this->primary = 'primary' === $this->key ? true : false;
         $this->unique = 'unique' === $this->key ? true : false;
         $this->index = 'index' === $this->key ? true : false;
-        $this->exists = false;
     }
 
     /**
@@ -285,7 +287,7 @@ class FieldParser
      */
     public function makeAlterSQL(TableParser $tableParser)
     {
-        return $this->exists ?
+        return !$this->isExists() ?
             "ALTER TABLE `{$tableParser->getName()}` ADD `{$this->getName()}` {$this->getType()}" .
             ($this->getLength() > 0 ? "({$this->getLength()})" : '') .
             ($this->isUnsigned() ? " UNSIGNED" : '') .
@@ -365,12 +367,12 @@ class FieldParser
     }
 
     /**
-     * @param FieldParser|null $parser
+     * @param FieldParser|null $fieldParser
      * @return bool
      */
-    public function equals(FieldParser $parser = null)
+    public function equals(FieldParser $fieldParser = null)
     {
-        return (string)$this === (string)$parser;
+        return (string)$this === (string)$fieldParser;
     }
 
     /**

@@ -19,25 +19,25 @@ array (
   array (
     'alias' => 'id',
     'name' => 'id',
-    'length' => '10',
-    'notnull' => true,
+    'length' => 10,
+    'notnull' => false,
     'unsigned' => true,
-    'default' => '0',
+    'default' => 0,
   ),
   1 => 
   array (
-    'alias' => 'name',
-    'name' => 'name',
-    'length' => '20',
+    'alias' => 'trueName',
+    'name' => 'true_name',
+    'length' => 20,
     'notnull' => true,
     'unsigned' => false,
     'default' => '',
   ),
   2 => 
   array (
-    'alias' => 'nick_name',
+    'alias' => 'nickName',
     'name' => 'nick_name',
-    'length' => '20',
+    'length' => 20,
     'notnull' => true,
     'unsigned' => false,
     'default' => '',
@@ -46,10 +46,10 @@ array (
   array (
     'alias' => 'age',
     'name' => 'age',
-    'length' => '2',
+    'length' => 2,
     'notnull' => true,
     'unsigned' => false,
-    'default' => '1',
+    'default' => 1,
   ),
 );
 
@@ -60,8 +60,8 @@ array (
      const ALIAS =
 array (
   'id' => 'id',
-  'name' => 'name',
-  'nick_name' => 'nick_name',
+  'true_name' => 'trueName',
+  'nick_name' => 'nickName',
   'age' => 'age',
 );
 

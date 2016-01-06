@@ -41,7 +41,7 @@ class Test extends Entity
     /**
      * @var string
      */
-    protected $name;
+    protected $trueName;
 
     /**
      * @var string
@@ -77,24 +77,24 @@ class Test extends Entity
     }
 
     /**
-     * getName
+     * getTrueName
      *
      * @return string
      */
-    public function getName()
+    public function getTrueName()
     {
-        return $this->name;
+        return $this->trueName;
     }
 
     /**
-     * setName
+     * setTrueName
      *
-     * @param string $name
+     * @param string $trueName
      * @return $this
      */
-    public function setName($name)
+    public function setTrueName($trueName)
     {
-        $this->name = $name;
+        $this->trueName = $trueName;
 
         return $this;
     }

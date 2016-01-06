@@ -121,12 +121,4 @@ class DBParser
 
         return $db['name'];
     }
-
-    /**
-     * @return bool
-     */
-    public function isDebug()
-    {
-        return $this->debug;
-    }
 }

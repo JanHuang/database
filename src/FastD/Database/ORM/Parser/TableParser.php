@@ -23,20 +23,22 @@ use FastD\Database\Drivers\DriverInterface;
  */
 class TableParser
 {
+    use NameParseTrait;
+
     /**
      * @var array|bool
      */
     protected $info;
 
     /**
-     * @var array
+     * @var FieldParser[]
      */
-    protected $new_fields;
+    protected $new_fields = [];
 
     /**
-     * @var array|bool
+     * @var FieldParser[]
      */
-    protected $fields;
+    protected $fields = [];
 
     /**
      * @var array|bool
@@ -112,13 +114,13 @@ class TableParser
 
         foreach ($fields as $field) {
             $field = new FieldParser($field, true);
-            $this->fields[$field->getName()] = $field;
+            $alias = $this->parseName($field->getName());
+            $this->fields[$alias] = $field;
+            $this->new_fields[$alias] = $field;
             if ('primary' == $field->getKey()) {
                 $this->primary = $field->getName();
             }
         }
-
-        $this->new_fields = $this->fields;
     }
 
     /**
@@ -126,13 +128,33 @@ class TableParser
      */
     protected function parseNotExistsTable(array $fields)
     {
+        $this->new_fields = [];
+        echo '<pre>';
         foreach ($fields['fields'] as $alias => $field) {
-            $field = new FieldParser($field, false);
+            $isExists = false;
+            $flag = false;
+            if (array_key_exists($alias, $this->fields) && $this->fields[$alias]->getName()) {
+                $isExists = true;
+                $flag = true;
+            }
+
+            $field = new FieldParser($field, $isExists, $flag);
+
             $this->new_fields[$alias] = $field;
             if ('primary' == $field->getKey()) {
                 $this->primary = $field->getName();
             }
         }
+    }
+
+    /**
+     * Merge fields.
+     *
+     * @param array $fields
+     */
+    protected function mergeFields(array $fields)
+    {
+
     }
 
     /**
@@ -278,15 +300,18 @@ class TableParser
 
         foreach ($this->getNewFields() as $alias => $field) {
             $oldField = $this->getField($field->getName());
+
             if (!$field->equals($oldField)) {
                 $alters[] = $field->makeAlterSQL($this);
             }
 
-            if (!$field->isPrimary() && null == $field->getKey() && null != $oldField->getKey()) {
-                $drop[] = $oldField->makeDropIndexSQL($this);
+            if (null !== $oldField) {
+                if (!empty($oldField->getKey()) && !$field->isPrimary() && null == $field->getKey() && null != $oldField->getKey()) {
+                    $drop[] = $oldField->makeDropIndexSQL($this);
+                }
             }
 
-            if (!$oldField->isPrimary() && null != $field->getKey() && $field->getKey() != $oldField->getKey()) {
+            if (null !== $oldField && (!$oldField->isPrimary() && null != $field->getKey() && $field->getKey() != $oldField->getKey())) {
                 $index[] = $field->makeAddIndexSQL($this);
             }
         }
