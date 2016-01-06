@@ -46,6 +46,11 @@ class Test extends Entity
     /**
      * @var string
      */
+    protected $telNumber;
+
+    /**
+     * @var string
+     */
     protected $nickName;
 
     /**
@@ -65,8 +70,9 @@ class Test extends Entity
      */
     public function getId()
     {
-        return 1;
+        return $this->id;
     }
+
     /**
      * setId
      *
@@ -79,6 +85,7 @@ class Test extends Entity
 
         return $this;
     }
+
     /**
      * getTrueName
      *
@@ -88,6 +95,7 @@ class Test extends Entity
     {
         return $this->trueName;
     }
+
     /**
      * setTrueName
      *
@@ -100,6 +108,30 @@ class Test extends Entity
 
         return $this;
     }
+
+    /**
+     * getTelNumber
+     *
+     * @return string
+     */
+    public function getTelNumber()
+    {
+        return $this->telNumber;
+    }
+
+    /**
+     * setTelNumber
+     *
+     * @param string $telNumber
+     * @return $this
+     */
+    public function setTelNumber($telNumber)
+    {
+        $this->telNumber = $telNumber;
+
+        return $this;
+    }
+
     /**
      * getNickName
      *
@@ -109,6 +141,7 @@ class Test extends Entity
     {
         return $this->nickName;
     }
+
     /**
      * setNickName
      *
@@ -121,6 +154,7 @@ class Test extends Entity
 
         return $this;
     }
+
     /**
      * getAge
      *
@@ -130,6 +164,7 @@ class Test extends Entity
     {
         return $this->age;
     }
+
     /**
      * setAge
      *
@@ -142,6 +177,7 @@ class Test extends Entity
 
         return $this;
     }
+
     /**
      * getGender
      *
@@ -151,6 +187,7 @@ class Test extends Entity
     {
         return $this->gender;
     }
+
     /**
      * setGender
      *

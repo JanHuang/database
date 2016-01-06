@@ -30,3 +30,4 @@ $builder = new Mapping($mysql);
 
 echo '<pre>';
 $builder->buildEntity('Examples\\ORM', __DIR__);
+$builder->buildYml(__DIR__ . '/orm');

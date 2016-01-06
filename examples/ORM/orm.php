@@ -83,6 +83,6 @@ $builder->addTable(
     ]
 );
 echo '<pre>';
-$tables = $builder->updateTablesFromEntity();
+$tables = $builder->updateTables();
 $builder->buildEntity('Examples\\ORM', __DIR__);
 //$builder->buildEntity(__DIR__, 'Examples\\');

@@ -122,7 +122,7 @@ class Mapping
      *
      * @return bool
      */
-    public function updateTablesFromEntity()
+    public function updateTables()
     {
         foreach ($this->makeAllSql() as $sql) {
             echo $sql;
@@ -151,6 +151,25 @@ class Mapping
 
             $entity = new RepositoryBuilder($table, $dir);
             $entity->build($table->getName(), $dir, $namespace);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $dir
+     * @return bool
+     */
+    public function buildYml($dir)
+    {
+        $namespace = empty($namespace) ? '' : $namespace;
+
+        foreach ($this->getTables() as $table) {
+            if (empty($table->getNewFields())) {
+                continue;
+            }
+            $yml = new YmlBuilder($table);
+            $yml->build($table->getName(), $dir, $namespace);
         }
 
         return true;
