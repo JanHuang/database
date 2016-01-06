@@ -29,4 +29,4 @@ $mysql = new MySQL([
 $builder = new Mapping($mysql);
 
 echo '<pre>';
-$builder->buildEntity('Examples', __DIR__);
+$builder->buildEntity('Examples\\ORM', __DIR__);

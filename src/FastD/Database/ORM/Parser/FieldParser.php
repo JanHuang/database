@@ -147,7 +147,6 @@ class FieldParser
         $this->index = 'index' === $this->key ? true : false;
 
         $this->name = $field['Field'];
-        $this->exists = true;
     }
 
     /**

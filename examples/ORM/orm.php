@@ -71,10 +71,18 @@ $builder->addTable(
                 'default' => 1,
 //                'key' => 'unique' // 默认索引名为 name_unique_key
             ],
+            'gender' => [
+                'name' => 'gender',
+                'type' => 'tinyint',
+                'length' => 1,
+                'notnull' => true, // 默认true
+                'default' => 1,
+//                'key' => 'unique' // 默认索引名为 name_unique_key
+            ],
         ]
     ]
 );
 echo '<pre>';
 $tables = $builder->updateTablesFromEntity();
-$builder->buildEntity('Examples', __DIR__);
+$builder->buildEntity('Examples\\ORM', __DIR__);
 //$builder->buildEntity(__DIR__, 'Examples\\');

@@ -58,6 +58,7 @@ R;
         $diff = $this->compare($namespace . '\\' . $name);
 
         $properties = array_merge($diff['properties'], $properties);
+
         $methods = array_merge($methods, $diff['methods']);
 
         $properties = rtrim(implode(PHP_EOL, array_values($properties)));

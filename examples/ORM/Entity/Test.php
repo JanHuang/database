@@ -1,6 +1,6 @@
 <?php
 
-namespace Examples\Entity;
+namespace Examples\ORM\Entity;
 
 use FastD\Database\ORM\Entity;
 
@@ -9,19 +9,19 @@ class Test extends Entity
     /**
      * @const string
      */
-    const PRIMARY = \Examples\Fields\TestFields::PRIMARY;
+    const PRIMARY = \Examples\ORM\Fields\TestFields::PRIMARY;
 
     /**
      * Fields const
      * @const array
      */
-    const FIELDS = \Examples\Fields\TestFields::FIELDS;
+    const FIELDS = \Examples\ORM\Fields\TestFields::FIELDS;
 
     /**
      * Fields alias
      * @const array
      */
-    const ALIAS = \Examples\Fields\TestFields::ALIAS;
+    const ALIAS = \Examples\ORM\Fields\TestFields::ALIAS;
 
     /**
      * @var string
@@ -31,7 +31,7 @@ class Test extends Entity
     /**
      * @var string|null
      */
-    protected $repository = 'Examples\Repository\TestRepository';
+    protected $repository = 'Examples\ORM\Repository\TestRepository';
 
     /**
      * @var int
@@ -54,15 +54,19 @@ class Test extends Entity
     protected $age;
 
     /**
+     * @var int
+     */
+    protected $gender;
+
+    /**
      * getId
      *
      * @return int
      */
     public function getId()
     {
-        return $this->id;
+        return 1;
     }
-
     /**
      * setId
      *
@@ -75,7 +79,6 @@ class Test extends Entity
 
         return $this;
     }
-
     /**
      * getTrueName
      *
@@ -85,7 +88,6 @@ class Test extends Entity
     {
         return $this->trueName;
     }
-
     /**
      * setTrueName
      *
@@ -98,7 +100,6 @@ class Test extends Entity
 
         return $this;
     }
-
     /**
      * getNickName
      *
@@ -108,7 +109,6 @@ class Test extends Entity
     {
         return $this->nickName;
     }
-
     /**
      * setNickName
      *
@@ -121,7 +121,6 @@ class Test extends Entity
 
         return $this;
     }
-
     /**
      * getAge
      *
@@ -131,7 +130,6 @@ class Test extends Entity
     {
         return $this->age;
     }
-
     /**
      * setAge
      *
@@ -141,6 +139,27 @@ class Test extends Entity
     public function setAge($age)
     {
         $this->age = $age;
+
+        return $this;
+    }
+    /**
+     * getGender
+     *
+     * @return int
+     */
+    public function getGender()
+    {
+        return $this->gender;
+    }
+    /**
+     * setGender
+     *
+     * @param int $gender
+     * @return $this
+     */
+    public function setGender($gender)
+    {
+        $this->gender = $gender;
 
         return $this;
     }

@@ -129,7 +129,7 @@ class TableParser
     protected function parseNotExistsTable(array $fields)
     {
         $this->new_fields = [];
-        echo '<pre>';
+
         foreach ($fields['fields'] as $alias => $field) {
             $isExists = false;
             $flag = false;
@@ -137,24 +137,12 @@ class TableParser
                 $isExists = true;
                 $flag = true;
             }
-
             $field = new FieldParser($field, $isExists, $flag);
-
             $this->new_fields[$alias] = $field;
             if ('primary' == $field->getKey()) {
                 $this->primary = $field->getName();
             }
         }
-    }
-
-    /**
-     * Merge fields.
-     *
-     * @param array $fields
-     */
-    protected function mergeFields(array $fields)
-    {
-
     }
 
     /**
@@ -299,7 +287,7 @@ class TableParser
         $drop = [];
 
         foreach ($this->getNewFields() as $alias => $field) {
-            $oldField = $this->getField($field->getName());
+            $oldField = $this->getField($alias);
 
             if (!$field->equals($oldField)) {
                 $alters[] = $field->makeAlterSQL($this);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Examples\Fields;
+namespace Examples\ORM\Fields;
 
 class TestFields
 {
@@ -51,6 +51,15 @@ array (
     'unsigned' => false,
     'default' => 1,
   ),
+  4 => 
+  array (
+    'alias' => 'gender',
+    'name' => 'gender',
+    'length' => 1,
+    'notnull' => true,
+    'unsigned' => false,
+    'default' => 1,
+  ),
 );
 
      /**
@@ -63,6 +72,7 @@ array (
   'true_name' => 'trueName',
   'nick_name' => 'nickName',
   'age' => 'age',
+  'gender' => 'gender',
 );
 
 }
