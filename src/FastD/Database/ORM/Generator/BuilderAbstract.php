@@ -104,6 +104,12 @@ abstract class BuilderAbstract
      */
     public function compare($name)
     {
+        if (!class_exists($name)) {
+            return [
+                'properties' => [],
+                'methods' => [],
+            ];
+        }
         $class = new \ReflectionClass($name);
 
         $properties = [];
