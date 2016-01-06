@@ -125,7 +125,6 @@ class Mapping
     public function updateTables()
     {
         foreach ($this->makeAllSql() as $sql) {
-            echo $sql;
             $this->driver->createQuery($sql)->getQuery()->getAll();
         }
         return true;
@@ -162,14 +161,12 @@ class Mapping
      */
     public function buildYml($dir)
     {
-        $namespace = empty($namespace) ? '' : $namespace;
-
         foreach ($this->getTables() as $table) {
             if (empty($table->getNewFields())) {
                 continue;
             }
             $yml = new YmlBuilder($table);
-            $yml->build($table->getName(), $dir, $namespace);
+            $yml->build($table->getName(), $dir, null);
         }
 
         return true;
