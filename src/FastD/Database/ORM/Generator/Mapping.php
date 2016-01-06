@@ -102,6 +102,21 @@ class Mapping
     }
 
     /**
+     * @return array
+     */
+    public function makeAllSql()
+    {
+        $query = [];
+        foreach ($this->getTables() as $table) {
+            $sql = $table->makeSQL();
+            if (!empty($sql)) {
+                $query[] = $sql;
+            }
+        }
+        return $query;
+    }
+
+    /**
      * Update table if table is exists.
      * Create table if table is not exists.
      *
@@ -109,13 +124,9 @@ class Mapping
      */
     public function updateTablesFromEntity()
     {
-        foreach ($this->getTables() as $table) {
-            $sql = $table->makeSQL();
-            if (!empty($sql)) {
-                $this->driver->createQuery($sql)->getQuery()->getAll();
-            }
+        foreach ($this->makeAllSql() as $sql) {
+            $this->driver->createQuery($sql)->getQuery()->getAll();
         }
-
         return true;
     }
 
