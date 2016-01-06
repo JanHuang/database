@@ -4,7 +4,7 @@
  * User: janhuang
  * Date: 15/3/12
  * Time: 上午11:15
- * Github: https://www.github.com/janhuang 
+ * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
  * Blog: http://segmentfault.com/blog/janhuang
@@ -116,7 +116,7 @@ abstract class Repository extends HttpRequestHandle
                 $this->getTable()
             )
             ->where($where)
-            ->field(array () === $field ? $this->getFields() : $field)
+            ->field(array () === $field ? $this->getAlias() : $field)
             ->find()
             ;
     }

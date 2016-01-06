@@ -64,10 +64,14 @@ class HttpRequestHandle
                 if (strlen($value) > $field['length']) {
                     throw new \Exception("Params length invalid.");
                 }
+                // for entity
                 $method = 'set' . ucfirst($name);
                 if (method_exists($this, $method)) {
                     $this->$method($value);
                 }
+                // for repository
+                $this->data[$field['name']] = ':' . $name;
+                $this->params[$name] = $value;
             }
         }
     }

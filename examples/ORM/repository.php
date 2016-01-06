@@ -12,29 +12,21 @@
  * WebSite: http://www.janhuang.me
  */
 
-include __DIR__ . '/../vendor/autoload.php';
+include  __DIR__ . '/boot.php';
 
-use FastD\Database\Drivers\MySQL;
-
-$driver = new MySQL([
-    'database_user' => 'root',
-    'database_pwd'  => '123456',
-    'database_host' => '127.0.0.1',
-    'database_port' => 3306,
-    'database_name' => 'test',
-]);
+$driver = include __DIR__ . '/../getMysql.php';
 
 $repository = $driver->getRepository('Examples:ORM:Repository:Test');
 
 $request = \FastD\Http\Request::createRequestHandle();
-$request->query->set('trueName', 'janhuang');
-$repository->handleRequest($request);
+$request->query->set('trueName', '黄总');
+$repository->bindRequest($request);
 
 echo '<pre>';
 var_dump($repository->save([], ['id' => 1]));
 print_r($repository->getQueryBuilder());
 echo '<pre>';
-$row = $repository->find(['id' => 1]);
+$row = $repository->findAll(['id' => 1]);
 print_r($row);
 //print_r($repository->findToEntity(['id' => 1]));
 /*print_r($repository);
