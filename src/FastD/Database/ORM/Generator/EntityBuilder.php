@@ -76,7 +76,6 @@ class {$name} extends Entity
 {$fields}
 
 {$properties}
-
 {$methods}
 }
 E;

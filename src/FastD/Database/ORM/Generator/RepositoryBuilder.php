@@ -71,7 +71,6 @@ class {$name}Repository extends Repository
 {$fields}
 
 {$properties}
-
 {$methods}
 }
 R;

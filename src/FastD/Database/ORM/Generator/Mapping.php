@@ -135,24 +135,27 @@ class Mapping
      *
      * @param $namespace
      * @param $dir
-     * @return bool
+     * @return array
      */
     public function buildEntity($namespace, $dir)
     {
+        $result = [];
+
         $namespace = empty($namespace) ? '' : $namespace;
 
         foreach ($this->getTables() as $table) {
             if (empty($table->getNewFields())) {
                 continue;
             }
+            $name = $table->getName();
             $entity = new EntityBuilder($table);
-            $entity->build($table->getName(), $dir, $namespace);
+            $result['entity'][$name] = $entity->build($name, $dir, $namespace);
 
             $entity = new RepositoryBuilder($table, $dir);
-            $entity->build($table->getName(), $dir, $namespace);
+            $result['repository'][$name] = $entity->build($name, $dir, $namespace);
         }
 
-        return true;
+        return $result;
     }
 
     /**

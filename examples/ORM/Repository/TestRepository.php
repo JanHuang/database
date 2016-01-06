@@ -33,5 +33,4 @@ class TestRepository extends Repository
      */
     protected $entity = 'Examples\ORM\Entity\Test';
 
-
 }

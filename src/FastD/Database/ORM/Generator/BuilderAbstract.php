@@ -106,6 +106,7 @@ abstract class BuilderAbstract
                 'methods' => [],
             ];
         }
+
         $class = new \ReflectionClass($name);
 
         $properties = [];
@@ -157,12 +158,10 @@ P;
                 }
                 return trim(implode('', $content));
             })();
-            $docs = trim($method->getDocComment());
             $content = <<<M
     {$content}
-
 M;
-
+            $docs = rtrim($method->getDocComment());
             if (!empty($docs)) {
                 $content = trim($content);
                 $content = <<<C
@@ -170,7 +169,7 @@ M;
     {$content}
 C;
             }
-            $methods[$method->getName()] = $content;
+            $methods[$method->getName()] = PHP_EOL . $content;
         }
 
         return [

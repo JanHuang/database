@@ -12,7 +12,9 @@
  * WebSite: http://www.janhuang.me
  */
 
-include __DIR__.'/../../vendor/autoload.php';
+$loader = include __DIR__.'/../../vendor/autoload.php';
+
+$loader->setPsr4('Examples\\', __DIR__ . '/../../examples');
 
 use FastD\Database\Drivers\MySQL;
 use FastD\Database\ORM\Generator\Mapping;
@@ -29,5 +31,5 @@ $mysql = new MySQL([
 $builder = new Mapping($mysql);
 
 echo '<pre>';
-$builder->buildEntity('Examples\\ORM', __DIR__);
-$builder->buildYml(__DIR__ . '/orm');
+$result = $builder->buildEntity('Examples\\ORM', __DIR__);
+print_r($result);
