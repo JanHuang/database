@@ -23,6 +23,9 @@
             "FastD\\": "src/FastD"
         }
     },
+    "config": {
+        "bin-dir": ""
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.0.x-dev"
