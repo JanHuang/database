@@ -317,14 +317,20 @@ class FieldParser
      */
     public function makeCreateSQL()
     {
-        return
+        $sql =
             "`{$this->getName()}` {$this->getType()}" .
             ($this->getLength() > 0 ? "({$this->getLength()})" : '') .
             ($this->isUnsigned() ? " UNSIGNED" : '') .
             ($this->isNotNull() ? " NOT NULL" : '') .
-            (null !== $this->getDefault() ? " DEFAULT '{$this->getDefault()}'" : '') .
-            (null !== $this->getComment() ? " COMMENT '{$this->getComment()}'" : '') . ''
-            ;
+            ((null !== $this->getDefault() && !$this->isPrimary()) ? " DEFAULT '{$this->getDefault()}'" : '') .
+            (null !== $this->getComment() ? " COMMENT '{$this->getComment()}'" : '')
+        ;
+
+        if ($this->isPrimary()) {
+            $sql .= ' PRIMARY KEY AUTO_INCREMENT';
+        }
+
+        return $sql;
     }
 
     /**
@@ -379,13 +385,16 @@ class FieldParser
      */
     public function __toString()
     {
-        return
-            $this->getName() .
-            $this->getType() .
-            $this->getComment() .
-            $this->getDefault() .
-            $this->getExtra() .
-            $this->getLength()
-            ;
+        $array = [
+            $this->getName(),
+            $this->getType(),
+            $this->getLength(),
+        ];
+
+        if (!$this->isPrimary()) {
+            $array[] = $this->getDefault();
+        }
+
+        return implode('', $array);
     }
 }

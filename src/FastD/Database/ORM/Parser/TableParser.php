@@ -203,7 +203,19 @@ class TableParser
      */
     public function getField($name)
     {
-        return array_key_exists($name, $this->fields) ? $this->fields[$name] : null;
+        if (array_key_exists($name, $this->fields)) {
+            return $this->fields[$name];
+        }
+
+        return (function () use ($name) {
+            foreach ($this->getFields() as $field) {
+                if ($field->getName() == $name) {
+                    return $field;
+                }
+            }
+
+            return null;
+        })();
     }
 
     /**
@@ -287,8 +299,7 @@ class TableParser
         $drop = [];
 
         foreach ($this->getNewFields() as $alias => $field) {
-            $oldField = $this->getField($alias);
-
+            $oldField = $this->getField($field->getName());
             if (!$field->equals($oldField)) {
                 $alters[] = $field->makeAlterSQL($this);
             }
