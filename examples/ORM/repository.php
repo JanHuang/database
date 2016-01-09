@@ -23,7 +23,7 @@ $request->query->set('trueName', '黄');
 $repository->bindRequest($request);
 
 echo '<pre>';
-print_r($repository->pagination(1, 5, 5, 25)->where(['true_name' => '黄总'])->orderBy(['id' => 'desc'])->getPagination());
+print_r($repository->pagination(1, 5, 5, 25)->where(['true_name' => '黄总'])->getPagination());
 //var_dump($repository->findAll());
 //var_dump($repository->find());
 //var_dump($repository->save([], ['id' => 15]));

@@ -249,7 +249,9 @@ class MySQLQueryBuilder extends QueryBuilderFactory
      */
     public function having(array $having)
     {
-        $this->having = ' HAVING ' . $this->parseWhere($having);
+        if (!empty($having)) {
+            $this->having = ' HAVING ' . $this->parseWhere($having);
+        }
 
         return $this;
     }
@@ -291,7 +293,9 @@ class MySQLQueryBuilder extends QueryBuilderFactory
      */
     public function groupBy(array $groupBy)
     {
-        $this->group = ' GROUP BY `' . implode('`,`', $groupBy) . '`';
+        if (!empty($groupBy)) {
+            $this->group = ' GROUP BY `' . implode('`,`', $groupBy) . '`';
+        }
 
         return $this;
     }
@@ -302,17 +306,20 @@ class MySQLQueryBuilder extends QueryBuilderFactory
      */
     public function orderBy(array $orderBy)
     {
-        $orders = [];
-        foreach ($orderBy as $field => $order) {
-            if (!is_integer($field)) {
-                $orders[] = '`' . $field . '` ' . $order;
-            } else {
-                $orders[] = $order;
+        if (!empty($orderBy)) {
+            $orders = [];
+            foreach ($orderBy as $field => $order) {
+                if (!is_integer($field)) {
+                    $orders[] = '`' . $field . '` ' . $order;
+                } else {
+                    $orders[] = $order;
+                }
             }
+
+            $this->order = ' ORDER BY ' . implode(',', $orders);
+            unset($orders);
         }
 
-        $this->order = ' ORDER BY ' . implode(',', $orders);
-        unset($orders);
         return $this;
     }
 
@@ -322,7 +329,9 @@ class MySQLQueryBuilder extends QueryBuilderFactory
      */
     public function like(array $like)
     {
-        $this->like = ' WHERE ' . $this->parseWhere($like, ' LIKE ');
+        if (!empty($like)) {
+            $this->like = ' WHERE ' . $this->parseWhere($like, ' LIKE ');
+        }
 
         return $this;
     }
@@ -333,7 +342,9 @@ class MySQLQueryBuilder extends QueryBuilderFactory
      */
     public function notLike(array $like)
     {
-        $this->not_like = ' WHERE ' . $this->parseWhere($like, ' NOT LIKE ');
+        if (!empty($like)) {
+            $this->not_like = ' WHERE ' . $this->parseWhere($like, ' NOT LIKE ');
+        }
 
         return $this;
     }
