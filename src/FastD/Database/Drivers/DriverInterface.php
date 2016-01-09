@@ -14,6 +14,7 @@
 
 namespace FastD\Database\Drivers;
 
+use FastD\Database\Drivers\Query\Paging\Pagination;
 use FastD\Database\ORM\Repository;
 use FastD\Database\Drivers\Query\QueryBuilderInterface;
 
@@ -187,11 +188,20 @@ interface DriverInterface
     public function save(array $data, array $where = [], array $params = []);
 
     /**
-     * @param array $where
+     *
+     * @param $page
+     * @param $showList
+     * @param $showPage
+     * @param $lastId
+     * @return Pagination
+     */
+    public function pagination($page, $showList, $showPage, $lastId);
+
+    /**
      * @param array $params
      * @return int
      */
-    public function count(array $where = [], array $params = []);
+    public function count(array $params = []);
 
     /**
      * Get table repository object.

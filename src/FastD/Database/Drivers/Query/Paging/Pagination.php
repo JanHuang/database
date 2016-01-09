@@ -14,6 +14,7 @@
 
 namespace FastD\Database\Drivers\Query\Paging;
 
+use FastD\Database\Drivers\Driver;
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\Drivers\Query\QueryBuilderInterface;
 
@@ -96,7 +97,7 @@ class Pagination
     {
         if ($driverOrTotal instanceof DriverInterface) {
             $this->driver = $driverOrTotal;
-            $this->totalRows = $this->fetchQueryContextTotalRows(clone $driverOrTotal->getQueryContext());
+            $this->totalRows = $this->fetchQueryContextTotalRows($driverOrTotal);
         } else if (is_numeric($driverOrTotal)) {
             $this->totalRows = $driverOrTotal;
         }
@@ -174,7 +175,7 @@ class Pagination
 
     /**
      * @param int $page
-     * @return QueryPagination
+     * @return $this
      */
     public function page($page)
     {
@@ -231,13 +232,12 @@ class Pagination
     }
 
     /**
-     * @param QueryContextInterface $context
+     * @param DriverInterface $driverInterface
      * @return array|bool|mixed
      */
-    public function fetchQueryContextTotalRows(QueryBuilderInterface $queryBuilderInterface)
+    public function fetchQueryContextTotalRows(DriverInterface $driverInterface)
     {
-        $sql = $queryBuilderInterface->limit(0,1)->fields(['COUNT(1) as total'])->select()->getSql();
-        return $this->driver->createQuery($sql)->getQuery()->getOne('total');
+        return (int)$driverInterface->count();
     }
 
     /**
@@ -349,25 +349,25 @@ class Pagination
      */
     public function getResult()
     {
-        if (null !== $this->result || !($this->driver instanceof Driver)) {
+        if (null !== $this->result || !($this->driver instanceof DriverInterface)) {
             return $this->result;
         }
 
-        $context = $this->driver->getQueryContext();
+        $queryBuilder = $this->driver->getQueryBuilder();
 
         if (null !== $this->lastId) {
-            if (!empty($context->where)) {
+            if (!empty($queryBuilder->where)) {
                 $joint = ' AND ';
             } else {
                 $joint = ' WHERE ';
             }
-            $context->where .= $joint . '`id` > ' . $this->lastId;
-            $context->limit($this->showList);
+            $queryBuilder->where .= $joint . '`id` > ' . $this->lastId;
+            $queryBuilder->limit(0, $this->showList);
         } else {
-            $context->limit($this->showList, $this->offset);
+            $queryBuilder->limit($this->showList, $this->offset);
         }
 
-        $sql = $context->select()->getSql();
+        $sql = $queryBuilder->select()->getSql();
 
         $result = $this->driver->createQuery($sql)->getQuery()->getAll();
 
@@ -380,10 +380,5 @@ class Pagination
         $this->result = $result;
         unset($result);
         return $this->result;
-    }
-
-    public function getQueryString()
-    {
-        return null === $this->driver ? null : $this->driver->getQueryString();
     }
 }

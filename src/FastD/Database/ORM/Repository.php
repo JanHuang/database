@@ -14,6 +14,7 @@
 namespace FastD\Database\ORM;
 
 use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\Drivers\Query\Paging\Pagination;
 
 /**
  * Class Repository
@@ -22,9 +23,9 @@ use FastD\Database\Drivers\DriverInterface;
  */
 abstract class Repository extends HttpRequestHandle
 {
-    const FIELDS    = [];
-    const ALIAS     = [];
-    const PRIMARY   = '';
+    const FIELDS = [];
+    const ALIAS = [];
+    const PRIMARY = '';
 
     /**
      * @var string
@@ -116,28 +117,26 @@ abstract class Repository extends HttpRequestHandle
                 $this->getTable()
             )
             ->where($where)
-            ->field(array () === $field ? $this->getAlias() : $field)
-            ->find()
-            ;
+            ->field(array() === $field ? $this->getAlias() : $field)
+            ->find();
     }
 
     /**
      * Fetch all rows.
      *
-     * @param array $where
+     * @param array        $where
      * @param array|string $field
      * @return array The found object.
      */
-    public function findAll(array $where = [],  array $field = [])
+    public function findAll(array $where = [], array $field = [])
     {
         return $this->driver
             ->table(
                 $this->getTable()
             )
             ->where($where)
-            ->field(array () === $field ? $this->getAlias() : $field)
-            ->findAll()
-        ;
+            ->field(array() === $field ? $this->getAlias() : $field)
+            ->findAll();
     }
 
     /**
@@ -181,12 +180,12 @@ abstract class Repository extends HttpRequestHandle
      * @param int  $showList
      * @param int  $showPage
      * @param null $lastId
-     * @return
+     * @return Pagination
      */
-    /*public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
+    public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
-        return $this->driver->pagination($this->getTable(), $page, $showList, $showPage, $lastId);
-    }*/
+        return $this->getDriver()->pagination($page, $showList, $showPage, $lastId);
+    }
 
     /**
      * Return query errors.
@@ -199,10 +198,11 @@ abstract class Repository extends HttpRequestHandle
     }
 
     /**
-     * @return \FastD\Database\Drivers\Query\QueryBuilderInterface
+     * @param string $table
+     * @return DriverInterface
      */
-    public function getQueryBuilder()
+    public function createQueryBuilder($table = null)
     {
-        return $this->driver->getQueryBuilder();
+        return $this->getDriver()->table($table ?? $this->getTable());
     }
 }

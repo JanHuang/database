@@ -15,6 +15,7 @@
 namespace FastD\Database\Drivers;
 
 use FastD\Database\Drivers\Query\MySQLQueryBuilder;
+use FastD\Database\Drivers\Query\Paging\Pagination;
 use FastD\Database\Drivers\Query\QueryBuilderInterface;
 use FastD\Database\ORM\Repository;
 
@@ -356,17 +357,15 @@ abstract class Driver implements DriverInterface
     }
 
     /**
-     * @param array $where
      * @param array $params
      * @return int|bool
      */
-    public function count(array $where = [], array $params = [])
+    public function count(array $params = [])
     {
         return $this
             ->field([
                 'count(1)' => 'total'
             ])
-            ->where($where)
             ->find($params)['total']
         ;
     }
@@ -381,6 +380,18 @@ abstract class Driver implements DriverInterface
         $this->getPDOStatement()->bindParam(':' . $name, $value);
 
         return $this;
+    }
+
+    /**
+     * @param $page
+     * @param $showList
+     * @param $showPage
+     * @param $lastId
+     * @return Pagination
+     */
+    public function pagination($page, $showList, $showPage, $lastId)
+    {
+        return new Pagination($this, $page, $showList, $showPage, $lastId);
     }
 
     /**

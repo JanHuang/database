@@ -16,7 +16,7 @@ include  __DIR__ . '/boot.php';
 
 $driver = include __DIR__ . '/../getMysql.php';
 
-$repository = $driver->getRepository('Examples:ORM:Repository:Test');
+$repository = new \Examples\ORM\Repository\TestRepository($driver);
 
 $request = \FastD\Http\Request::createRequestHandle();
 $request->query->set('trueName', '黄总');
@@ -24,10 +24,7 @@ $repository->bindRequest($request);
 
 echo '<pre>';
 var_dump($repository->save([], ['id' => 1]));
-print_r($repository->getQueryBuilder());
-echo '<pre>';
-$row = $repository->findAll(['id' => 1]);
-print_r($row);
+$repository->createQueryBuilder();
 //print_r($repository->findToEntity(['id' => 1]));
 /*print_r($repository);
 print_r($repository->getFields());
