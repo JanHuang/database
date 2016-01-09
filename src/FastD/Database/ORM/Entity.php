@@ -74,7 +74,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
         $this->setDriver($driverInterface);
 
         if (null !== $id) {
-            $this->find();
+            $this->init($this->find());
         }
     }
 
@@ -131,7 +131,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
 
     /**
      * @param array $fields
-     * @return $this|bool
+     * @return array|bool
      */
     public function find(array $fields = [])
     {
