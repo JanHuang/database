@@ -56,11 +56,11 @@ interface QueryBuilderInterface
     public function table($table);
 
     /**
-     * @param $offset
      * @param $limit
+     * @param $offset
      * @return $this
      */
-    public function limit($offset, $limit);
+    public function limit($limit, $offset = 0);
 
     /**
      * @param array $groupBy

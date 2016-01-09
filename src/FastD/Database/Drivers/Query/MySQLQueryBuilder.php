@@ -132,6 +132,7 @@ class MySQLQueryBuilder extends QueryBuilderFactory
         $where = [];
 
         foreach ($conditions as $key => $value) {
+            $assign = '=';
             if (false !== ($start = strpos($key, '['))) {
                 $assign = substr($key, $start + 1, -1);
                 $key = substr($key, 0, $start);

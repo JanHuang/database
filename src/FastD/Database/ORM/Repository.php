@@ -15,6 +15,7 @@ namespace FastD\Database\ORM;
 
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\Drivers\Query\MySQLQueryBuilder;
+use FastD\Database\Drivers\Query\Paging\Pagination;
 use FastD\Database\Drivers\Query\QueryBuilderInterface;
 
 /**
@@ -216,5 +217,19 @@ abstract class Repository extends HttpRequestHandle
     public function createQueryBuilder($table = null)
     {
         return MySQLQueryBuilder::factory()->table($table ?? $this->getTable());
+    }
+
+    /**
+     * @param      $page
+     * @param int  $showList
+     * @param int  $showPage
+     * @param null $lastId
+     * @return Pagination
+     */
+    public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
+    {
+        $pagination = new Pagination($this->getDriver(), $page, $showList, $showPage, $lastId);
+
+        return $pagination->table($this->getTable())->fields($this->getAlias());
     }
 }

@@ -14,9 +14,8 @@
 
 namespace FastD\Database\Drivers\Query\Paging;
 
-use FastD\Database\Drivers\Driver;
 use FastD\Database\Drivers\DriverInterface;
-use FastD\Database\Drivers\Query\QueryBuilderInterface;
+use FastD\Database\Drivers\Query\MySQLQueryBuilder;
 
 /**
  * Class QueryPagination
@@ -29,6 +28,26 @@ class Pagination
      * @var DriverInterface
      */
     private $driver;
+
+    /**
+     * @var array
+     */
+    protected $fields = [];
+
+    /**
+     * @var string
+     */
+    protected $table;
+
+    /**
+     * @var array
+     */
+    protected $orderBy = [];
+
+    /**
+     * @var array
+     */
+    protected $where = [];
 
     /**
      * The query or custom total row.
@@ -87,22 +106,20 @@ class Pagination
     }
 
     /**
-     * @param DriverInterface|int|null   $driverOrTotal
-     * @param int               $currentPage
-     * @param int               $showList
-     * @param int               $showPage
-     * @param null              $lastId
+     * @param DriverInterface|int|null $driverOrTotal
+     * @param int                      $currentPage
+     * @param int                      $showList
+     * @param int                      $showPage
+     * @param null                     $lastId
      */
     public function initialize($driverOrTotal = null, $currentPage = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
         if ($driverOrTotal instanceof DriverInterface) {
             $this->driver = $driverOrTotal;
-            $this->totalRows = $this->fetchQueryContextTotalRows($driverOrTotal);
         } else if (is_numeric($driverOrTotal)) {
             $this->totalRows = $driverOrTotal;
         }
 
-        // initialize attribute
         $this->currentPage = $currentPage;
 
         $this->showList = $showList;
@@ -111,9 +128,9 @@ class Pagination
 
         $this->lastId = $lastId;
 
-        $this->totalPages = ceil($this->totalRows / $this->showList);
-
-        $this->offset = ($this->currentPage - 1) * $this->showList;
+        if (null !== $lastId) {
+            $this->where = ['id[>]' => $this->lastId];
+        }
     }
 
     /**
@@ -232,15 +249,6 @@ class Pagination
     }
 
     /**
-     * @param DriverInterface $driverInterface
-     * @return array|bool|mixed
-     */
-    public function fetchQueryContextTotalRows(DriverInterface $driverInterface)
-    {
-        return (int)$driverInterface->getOne('total');
-    }
-
-    /**
      * @return int
      */
     public function getTotalRows()
@@ -345,40 +353,99 @@ class Pagination
     }
 
     /**
-     * @return array|bool
+     * @param array $fields
+     * @return $this
+     */
+    public function fields(array $fields)
+    {
+        $this->fields = $fields;
+
+        return $this;
+    }
+
+    /**
+     * @param $table
+     * @return $this
+     */
+    public function table($table)
+    {
+        $this->table = $table;
+
+        return $this;
+    }
+
+    /**
+     * @param array $where
+     * @return $this
+     */
+    public function where(array $where)
+    {
+        $where = array_merge($this->where, $where);
+
+        $this->where = [];
+        $this->where['AND'] = $where;
+
+        return $this;
+    }
+
+    /**
+     * @param array $orderBy
+     * @return $this
+     */
+    public function orderBy(array $orderBy)
+    {
+        $this->orderBy = $orderBy;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function getPagination()
+    {
+        if ($this->driver instanceof DriverInterface) {
+            $this->totalRows = $this
+                ->driver
+                ->createQuery(
+                    MySQLQueryBuilder::factory()
+                        ->table($this->table)
+                        ->where($this->where)
+                        ->fields(['count(1) as total'])->select()
+                )
+                ->getQuery()
+                ->getOne('total')
+            ;
+            $this->result = $this
+                ->driver
+                ->createQuery(
+                    MySQLQueryBuilder::factory()
+                        ->table($this->table)
+                        ->fields($this->fields)
+                        ->where($this->where)
+                        ->orderBy($this->orderBy)
+                        ->limit($this->getShowList(), $this->offset)
+                        ->select()
+                )
+                ->getQuery()
+                ->getAll()
+            ;
+            $end = end($this->result);
+            $this->lastId = isset($end['id']) ? $end['id'] : null;
+        }
+
+        $this->totalPages = ceil($this->totalRows / $this->showList);
+
+        $this->offset = ($this->currentPage - 1) * $this->showList;
+
+        return $this;
+    }
+
+    /**
+     * @return array|null
      */
     public function getResult()
     {
-        if (null !== $this->result || !($this->driver instanceof DriverInterface)) {
-            return $this->result;
-        }
-
-        $queryBuilder = $this->driver->getQueryBuilder();
-
-        if (null !== $this->lastId) {
-            if (!empty($queryBuilder->where)) {
-                $joint = ' AND ';
-            } else {
-                $joint = ' WHERE ';
-            }
-            $queryBuilder->where .= $joint . '`id` > ' . $this->lastId;
-            $queryBuilder->limit(0, $this->showList);
-        } else {
-            $queryBuilder->limit($this->showList, $this->offset);
-        }
-
-        $sql = $queryBuilder->select()->getSql();
-
-        $result = $this->driver->createQuery($sql)->getQuery()->getAll();
-
-        $last = end($result);
-
-        $this->lastId = isset($last['id']) && $this->totalPages > 1 ? $last['id'] : 0;
-
-        unset($last, $context);
-
-        $this->result = $result;
-        unset($result);
         return $this->result;
     }
 }

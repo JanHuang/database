@@ -65,6 +65,19 @@ class MySQLQueryBuilderTest extends \PHPUnit_Framework_TestCase
             'SELECT * FROM `test` WHERE `a`=\'b\' AND `b`=\'c\';',
             $this->queryContext->getSql()
         );
+
+        $this->queryContext->table('test')->where(
+            [
+                'AND' => [
+                    'a' => 'b',
+                ]
+            ]
+        )->select();
+
+        $this->assertEquals(
+            'SELECT * FROM `test` WHERE `a`=\'b\';',
+            $this->queryContext->getSql()
+        );
     }
 
     public function testFields()

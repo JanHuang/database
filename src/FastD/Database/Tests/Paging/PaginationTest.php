@@ -22,6 +22,7 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
     public function testInstance()
     {
         $pagination = new Pagination(100, 1);
+        $pagination = $pagination->getPagination();
         $this->assertEquals(4, $pagination->getTotalPages());
         $this->assertEquals($pagination->getNextPage(), 2);
     }

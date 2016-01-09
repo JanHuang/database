@@ -23,11 +23,13 @@ $request->query->set('trueName', '黄');
 $repository->bindRequest($request);
 
 echo '<pre>';
-var_dump($repository->findAll());
-var_dump($repository->find());
-var_dump($repository->save([], ['id' => 15]));
-var_dump($repository->count());
-print_r($repository);
+print_r($repository->pagination(1, 5, 5, 25)->where(['true_name' => '黄总'])->orderBy(['id' => 'desc'])->getPagination());
+//var_dump($repository->findAll());
+//var_dump($repository->find());
+//var_dump($repository->save([], ['id' => 15]));
+//var_dump($repository->count());
+//var_dump($repository->pagination(1, 5));
+//print_r($repository);
 //print_r($repository->findToEntity(['id' => 1]));
 /*print_r($repository);
 print_r($repository->getFields());
