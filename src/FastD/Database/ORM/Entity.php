@@ -200,13 +200,15 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
      * @param array $data
      * @return $this
      */
-    protected function init(array $data)
+    protected function init($data)
     {
         $this->row = $data;
 
-        foreach ($this->getAlias() as $field => $alias) {
-            $method = 'set' . ucfirst($alias);
-            $this->$method(isset($data[$alias]) ? $data[$alias] : null);
+        if (false !== $data) {
+            foreach ($this->getAlias() as $field => $alias) {
+                $method = 'set' . ucfirst($alias);
+                $this->$method(isset($data[$alias]) ? $data[$alias] : null);
+            }
         }
 
         return $this;
