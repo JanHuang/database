@@ -15,6 +15,7 @@
 namespace FastD\Database\ORM;
 
 use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\Drivers\Query\MySQLQueryBuilder;
 
 /**
  * Class Entity
@@ -23,9 +24,9 @@ use FastD\Database\Drivers\DriverInterface;
  */
 abstract class Entity extends HttpRequestHandle implements \ArrayAccess
 {
-    const FIELDS    = [];
-    const ALIAS     = [];
-    const PRIMARY   = '';
+    const FIELDS = [];
+    const ALIAS = [];
+    const PRIMARY = '';
 
     /**
      * Operation DB table name.
@@ -63,7 +64,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     protected $id = null;
 
     /**
-     * @param int $id
+     * @param int             $id
      * @param DriverInterface $driverInterface
      */
     public function __construct($id = null, DriverInterface $driverInterface = null)
@@ -129,44 +130,27 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     }
 
     /**
-     * @return string
-     */
-    public function getRepository()
-    {
-        if (!($this->repository instanceof Repository)) {
-            $this->repository = new $this->repository($this->getDriver());
-        }
-
-        return $this->repository;
-    }
-
-    /**
      * @param array $fields
      * @return $this|bool
      */
     public function find(array $fields = [])
     {
-        if (empty($this->row)) {
-            $row = $this->driver
-                ->table(
-                    $this->getTable()
-                )
-                ->field(
-                    array() === $fields ? $this->getAlias() : $fields
-                )
-                ->find([
-                    $this->getPrimary() => $this->id
-                ])
-            ;
-
-            $this->init($row);
-        }
-
-        return $this->row;
+        return $this->driver
+            ->createQuery(
+                MySQLQueryBuilder::factory()
+                    ->table($this->getTable())
+                    ->where([$this->getPrimary() => $this->id,])
+                    ->fields(array() === $fields ? $this->getAlias() : $fields)
+                    ->select()
+            )
+            ->getQuery()
+            ->getOne()
+        ;
     }
 
     /**
      * Save row in database.
+     *
      * @return int|bool
      */
     public function save()
@@ -183,26 +167,33 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
             $values[$alias] = $value;
         }
 
-        $where = [];
-
+        // update
         if (null !== $this->id) {
-            $where[$this->getPrimary()] = $this->id;
+            unset($data[$this->getPrimary()], $values[$this->getPrimary()]);
+            return $this->driver
+                ->createQuery(
+                    MySQLQueryBuilder::factory()
+                        ->table($this->getTable())
+                        ->update($data, [$this->getPrimary() => $this->id,])
+                )
+                ->setParameter($values)
+                ->getQuery()
+                ->getAffected()
+                ;
         }
 
-        $id = $this->driver
-            ->table(
-                $this->getTable()
+        $this->id = $this->driver
+            ->createQuery(
+                MySQLQueryBuilder::factory()
+                    ->table($this->getTable())
+                    ->insert($data)
             )
-            ->save($data, $where, $values)
-        ;
+            ->setParameter($values)
+            ->getQuery()
+            ->getId()
+            ;
 
-        unset($data, $where, $value);
-
-        if (null === $this->id) {
-            $this->id = $id;
-        }
-
-        return $id;
+        return $this->id;
     }
 
     /**

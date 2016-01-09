@@ -19,7 +19,7 @@ namespace FastD\Database\Drivers\Query;
  *
  * @package FastD\Database\Drivers\QueryContext
  */
-class MySQLQueryBuilder implements QueryBuilderInterface
+class MySQLQueryBuilder extends QueryBuilderFactory
 {
     /**
      * @var string
@@ -349,19 +349,19 @@ class MySQLQueryBuilder implements QueryBuilderInterface
     }
 
     /**
-     * @return $this
+     * @return string
      */
     public function select()
     {
         $this->sql = 'SELECT ' . $this->fields . ' FROM ' . $this->table . $this->where . $this->like . $this->group . $this->having . $this->order . $this->limit . ';';
 
-        return $this;
+        return $this->getSql();
     }
 
     /**
      * @param array $data
      * @param array $where
-     * @return $this
+     * @return string
      */
     public function update(array $data, array $where = [])
     {
@@ -371,12 +371,12 @@ class MySQLQueryBuilder implements QueryBuilderInterface
 
         $this->sql = 'UPDATE ' . $this->table . ' SET ' . $this->value . $this->where . $this->limit . ';';
 
-        return $this;
+        return $this->getSql();
     }
 
     /**
      * @param array $where
-     * @return $this
+     * @return string
      */
     public function delete(array $where)
     {
@@ -384,12 +384,12 @@ class MySQLQueryBuilder implements QueryBuilderInterface
 
         $this->sql = 'DELETE FROM ' . $this->table . $this->where . $this->limit . ';';
 
-        return $this;
+        return $this->getSql();
     }
 
     /**
      * @param array $data
-     * @return $this
+     * @return string
      */
     public function insert(array $data)
     {
@@ -397,7 +397,7 @@ class MySQLQueryBuilder implements QueryBuilderInterface
 
         $this->sql = 'INSERT INTO ' . $this->table . $this->keys . ' VALUES ' . $this->value . ';';
 
-        return $this;
+        return $this->getSql();
     }
 
     /**

@@ -14,7 +14,8 @@
 namespace FastD\Database\ORM;
 
 use FastD\Database\Drivers\DriverInterface;
-use FastD\Database\Drivers\Query\Paging\Pagination;
+use FastD\Database\Drivers\Query\MySQLQueryBuilder;
+use FastD\Database\Drivers\Query\QueryBuilderInterface;
 
 /**
  * Class Repository
@@ -112,13 +113,17 @@ abstract class Repository extends HttpRequestHandle
      */
     public function find(array $where = [], array $field = [])
     {
-        return $this->driver
-            ->table(
-                $this->getTable()
+        return $this
+            ->createQuery(
+                $this
+                    ->createQueryBuilder()
+                    ->where($where)
+                    ->fields(array() === $field ? $this->getAlias() : $field)
+                    ->select()
             )
-            ->where($where)
-            ->field(array() === $field ? $this->getAlias() : $field)
-            ->find();
+            ->getQuery()
+            ->getOne()
+            ;
     }
 
     /**
@@ -130,13 +135,17 @@ abstract class Repository extends HttpRequestHandle
      */
     public function findAll(array $where = [], array $field = [])
     {
-        return $this->driver
-            ->table(
-                $this->getTable()
+        return $this
+            ->createQuery(
+                $this
+                    ->createQueryBuilder()
+                    ->where($where)
+                    ->fields(array() === $field ? $this->getAlias() : $field)
+                    ->select()
             )
-            ->where($where)
-            ->field(array() === $field ? $this->getAlias() : $field)
-            ->findAll();
+            ->getQuery()
+            ->getAll()
+            ;
     }
 
     /**
@@ -149,21 +158,36 @@ abstract class Repository extends HttpRequestHandle
      */
     public function save(array $data = [], array $where = [], array $params = [])
     {
-        return $this->driver
-            ->table(
-                $this->getTable()
+        if (empty($where)) {
+            return $this
+                ->createQuery(
+                    $this->createQueryBuilder()
+                        ->insert(array() === $data ? $this->data : $data)
+                )
+                ->setParameter([] === $params ? $this->params : $params)
+                ->getQuery()
+                ->getId();
+        }
+
+        return $this
+            ->createQuery(
+                $this
+                    ->createQueryBuilder()
+                    ->update(array() === $data ? $this->data : $data, $where)
             )
-            ->save(empty($data) ? $this->data : $data, $where, empty($params) ? $this->params : $params);
+            ->setParameter([] === $params ? $this->params : $params)
+            ->getQuery()
+            ->getAffected()
+            ;
     }
 
     /**
      * @param array $where
-     * @param array $params
      * @return int|bool
      */
-    public function count(array $where = [], array $params = [])
+    public function count(array $where = [])
     {
-        return $this->driver->table($this->getTable())->count($where, $params);
+        return (int)$this->find($where, ['count(id) as total'])['total'];
     }
 
     /**
@@ -173,18 +197,6 @@ abstract class Repository extends HttpRequestHandle
     public function createQuery($sql)
     {
         return $this->driver->createQuery($sql);
-    }
-
-    /**
-     * @param int  $page
-     * @param int  $showList
-     * @param int  $showPage
-     * @param null $lastId
-     * @return Pagination
-     */
-    public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
-    {
-        return $this->getDriver()->pagination($page, $showList, $showPage, $lastId);
     }
 
     /**
@@ -199,10 +211,10 @@ abstract class Repository extends HttpRequestHandle
 
     /**
      * @param string $table
-     * @return DriverInterface
+     * @return QueryBuilderInterface
      */
     public function createQueryBuilder($table = null)
     {
-        return $this->getDriver()->table($table ?? $this->getTable());
+        return MySQLQueryBuilder::factory()->table($table ?? $this->getTable());
     }
 }

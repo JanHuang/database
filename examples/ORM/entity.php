@@ -18,23 +18,20 @@ include __DIR__ . '/boot.php';
 use Examples\ORM\Entity\Test;
 use FastD\Http\Request;
 
-
-
 $driver = include __DIR__ . '/../getMysql.php';;
 
+
+echo '<pre>';
 $test = new Test(1, $driver);
-echo '<pre>';
-
 echo $test->getTrueName();
-$test->setTrueName('黄');
+$test->setTrueName('黄生');
 var_dump($test->save());
 
-echo '</pre>';
 
-$request = Request::createRequestHandle();
-$request->query->set('trueName', '黄总');
-$test->bindRequest($request);
-echo '<pre>';
-var_dump($test->save());
+//$request = Request::createRequestHandle();
+//$request->query->set('trueName', '黄总');
+//$test->bindRequest($request);
+//echo '<pre>';
+//var_dump($test->save());
 
 print_r($test);

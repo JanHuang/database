@@ -93,12 +93,6 @@ interface QueryBuilderInterface
     public function notLike(array $like);
 
     /**
-     * @param $sql
-     * @return $this
-     */
-    public function custom($sql);
-
-    /**
      * @return $this
      */
     public function select();
@@ -109,12 +103,6 @@ interface QueryBuilderInterface
      * @return $this
      */
     public function update(array $data, array $where = []);
-
-    /**
-     * @param array $where
-     * @return $this
-     */
-    public function delete(array $where);
 
     /**
      * @param array $data
@@ -131,8 +119,4 @@ interface QueryBuilderInterface
      * @return array
      */
     public function getLogs();
-
-//    public function func();
-
-//    public function subQuery();
 }

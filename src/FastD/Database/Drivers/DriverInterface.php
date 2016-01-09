@@ -59,71 +59,6 @@ interface DriverInterface
     public function setPDOStatement(\PDOStatement $PDOStatement);
 
     /**
-     * Query select where condition.
-     *
-     * @param array $where
-     * @return DriverInterface
-     */
-    public function where(array $where);
-
-    /**
-     * Query fields.
-     *
-     * @param array $field
-     * @return DriverInterface
-     */
-    public function field(array $field = ['*']);
-
-    /**
-     * Select join.
-     *
-     * @param        $table
-     * @param        $on
-     * @param string $type
-     * @return DriverInterface
-     */
-    public function join($table, $on, $type = 'LEFT');
-
-    /**
-     * Select to table name.
-     *
-     * @param $table
-     * @return DriverInterface
-     */
-    public function table($table);
-
-    /**
-     * @param $offset
-     * @param $limit
-     * @return DriverInterface
-     */
-    public function limit($offset, $limit);
-
-    /**
-     * @param array $groupBy
-     * @return DriverInterface
-     */
-    public function groupBy(array $groupBy);
-
-    /**
-     * @param array $orderBy
-     * @return DriverInterface
-     */
-    public function orderBy(array $orderBy);
-
-    /**
-     * @param array $having
-     * @return DriverInterface
-     */
-    public function having(array $having);
-
-    /**
-     * @param array $like
-     * @return DriverInterface
-     */
-    public function like(array $like);
-
-    /**
      * Create SQL query statement.
      *
      * @param $sql
@@ -141,16 +76,17 @@ interface DriverInterface
     /**
      * Bind pdo parameters.
      *
-     * @param $name
+     * @param array|string $name
      * @param $value
      * @return $this
      */
-    public function setParameter($name, $value);
+    public function setParameter($name, $value = null);
 
     /**
+     * @param string|null $name
      * @return array|bool
      */
-    public function getOne();
+    public function getOne($name = null);
 
     /**
      * @return array|bool
@@ -168,42 +104,6 @@ interface DriverInterface
     public function getAffected();
 
     /**
-     * @param array $params
-     * @return array|bool
-     */
-    public function find(array $params = []);
-
-    /**
-     * @param array $params
-     * @return array|bool
-     */
-    public function findAll(array $params = []);
-
-    /**
-     * @param array $data
-     * @param array $params
-     * @param array $where
-     * @return int|bool
-     */
-    public function save(array $data, array $where = [], array $params = []);
-
-    /**
-     *
-     * @param $page
-     * @param $showList
-     * @param $showPage
-     * @param $lastId
-     * @return Pagination
-     */
-    public function pagination($page, $showList, $showPage, $lastId);
-
-    /**
-     * @param array $params
-     * @return int
-     */
-    public function count(array $params = []);
-
-    /**
      * Get table repository object.
      *
      * @param string $repository
@@ -215,9 +115,4 @@ interface DriverInterface
      * @return array
      */
     public function getErrors();
-
-    /**
-     * @return QueryBuilderInterface
-     */
-    public function getQueryBuilder();
 }

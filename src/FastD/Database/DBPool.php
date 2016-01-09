@@ -23,6 +23,8 @@ use FastD\Database\Drivers\DriverInterface;
  */
 class DBPool implements \Iterator
 {
+    const VERSION = '2.0.0';
+
     /**
      * All database configuration information.
      *

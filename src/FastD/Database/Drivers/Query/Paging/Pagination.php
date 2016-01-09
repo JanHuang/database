@@ -237,7 +237,7 @@ class Pagination
      */
     public function fetchQueryContextTotalRows(DriverInterface $driverInterface)
     {
-        return (int)$driverInterface->count();
+        return (int)$driverInterface->getOne('total');
     }
 
     /**

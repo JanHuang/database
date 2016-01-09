@@ -19,12 +19,15 @@ $driver = include __DIR__ . '/../getMysql.php';
 $repository = new \Examples\ORM\Repository\TestRepository($driver);
 
 $request = \FastD\Http\Request::createRequestHandle();
-$request->query->set('trueName', '黄总');
+$request->query->set('trueName', '黄');
 $repository->bindRequest($request);
 
 echo '<pre>';
-var_dump($repository->save([], ['id' => 1]));
-$repository->createQueryBuilder();
+var_dump($repository->findAll());
+var_dump($repository->find());
+var_dump($repository->save([], ['id' => 15]));
+var_dump($repository->count());
+print_r($repository);
 //print_r($repository->findToEntity(['id' => 1]));
 /*print_r($repository);
 print_r($repository->getFields());

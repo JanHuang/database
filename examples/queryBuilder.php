@@ -18,7 +18,7 @@ use FastD\Database\Drivers\Query\MySQLQueryBuilder;
 
 $mysqlQueryBuilder = new MySQLQueryBuilder();
 
-$mysqlQueryBuilder
+$select = $mysqlQueryBuilder
     ->table('test')
     ->where(
         [
@@ -31,6 +31,6 @@ $mysqlQueryBuilder
     ->select()
 ;
 
-echo $mysqlQueryBuilder->getSql();
+echo $select;
 
 // SELECT * FROM `test` WHERE `name`!='' AND `age`>'18';

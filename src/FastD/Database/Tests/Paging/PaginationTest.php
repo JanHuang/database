@@ -36,16 +36,5 @@ class PaginationTest extends \PHPUnit_Framework_TestCase
             'database_port' => 3306,
             'database_name' => 'test',
         ]);
-
-
-        $driver->where(['id' => 1]);
-
-        $pagination = new Pagination($driver->table('test'));
-
-//        print_r($pagination);
-//        $this->assertEquals(1, $pagination->getTotalRows());
-
-        print_r($pagination->getResult());
-        print_r($pagination);
     }
 }

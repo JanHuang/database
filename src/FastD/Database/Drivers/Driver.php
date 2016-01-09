@@ -15,8 +15,6 @@
 namespace FastD\Database\Drivers;
 
 use FastD\Database\Drivers\Query\MySQLQueryBuilder;
-use FastD\Database\Drivers\Query\Paging\Pagination;
-use FastD\Database\Drivers\Query\QueryBuilderInterface;
 use FastD\Database\ORM\Repository;
 
 /**
@@ -104,135 +102,6 @@ abstract class Driver implements DriverInterface
     }
 
     /**
-     * @return QueryBuilderInterface
-     */
-    public function getQueryBuilder()
-    {
-        return $this->queryBuilder;
-    }
-
-    /**
-     * @param QueryBuilderInterface $queryBuilderInterface
-     * @return $this
-     */
-    public function setQueryBuilder(QueryBuilderInterface $queryBuilderInterface)
-    {
-        $this->queryBuilder = $queryBuilderInterface;
-
-        return $this;
-    }
-
-    /**
-     * Query select where condition.
-     *
-     * @param array $where
-     * @return DriverInterface
-     */
-    public function where(array $where)
-    {
-        $this->getQueryBuilder()->where($where);
-
-        return $this;
-    }
-
-    /**
-     * Query fields.
-     *
-     * @param array $field
-     * @return DriverInterface
-     */
-    public function field(array $field = ['*'])
-    {
-        $this->getQueryBuilder()->fields($field);
-
-        return $this;
-    }
-
-    /**
-     * Select join.
-     *
-     * @param        $table
-     * @param        $on
-     * @param string $type
-     * @return DriverInterface
-     */
-    public function join($table, $on, $type = 'LEFT')
-    {
-        $this->getQueryBuilder()->join($table, $on, $type);
-
-        return $this;
-    }
-
-    /**
-     * Select to table name.
-     *
-     * @param $table
-     * @return DriverInterface
-     */
-    public function table($table)
-    {
-        $this->getQueryBuilder()->table($table);
-
-        return $this;
-    }
-
-    /**
-     * @param $offset
-     * @param $limit
-     * @return DriverInterface
-     */
-    public function limit($offset, $limit)
-    {
-        $this->getQueryBuilder()->limit($offset, $limit);
-
-        return $this;
-    }
-
-    /**
-     * @param array $groupBy
-     * @return DriverInterface
-     */
-    public function groupBy(array $groupBy)
-    {
-        $this->getQueryBuilder()->groupBy($groupBy);
-
-        return $this;
-    }
-
-    /**
-     * @param array $orderBy
-     * @return DriverInterface
-     */
-    public function orderBy(array $orderBy)
-    {
-        $this->getQueryBuilder()->orderBy($orderBy);
-
-        return $this;
-    }
-
-    /**
-     * @param array $having
-     * @return DriverInterface
-     */
-    public function having(array $having)
-    {
-        $this->getQueryBuilder()->having($having);
-
-        return $this;
-    }
-
-    /**
-     * @param array $like
-     * @return DriverInterface
-     */
-    public function like(array $like)
-    {
-        $this->getQueryBuilder()->like($like);
-
-        return $this;
-    }
-
-    /**
      * @param $sql
      * @return DriverInterface
      */
@@ -257,10 +126,15 @@ abstract class Driver implements DriverInterface
 
     /**
      * Get one row to PDOStatement.
+     *
+     * @param string|null $name
+     * @return array|bool
      */
-    public function getOne()
+    public function getOne($name = null)
     {
-        return $this->getPDOStatement()->fetch(\PDO::FETCH_ASSOC);
+        $row = $this->getPDOStatement()->fetch(\PDO::FETCH_ASSOC);
+
+        return null === $name ? $row : $row[$name];
     }
 
     /**
@@ -288,110 +162,23 @@ abstract class Driver implements DriverInterface
     }
 
     /**
-     * @param array $params
-     * @return array|bool
-     */
-    public function find(array $params = [])
-    {
-        $this->createQuery(
-            $this->getQueryBuilder()->select()->getSql()
-        );
-
-        foreach ($params as $name => $param) {
-            $this->setParameter($name, $param);
-        }
-
-        $this->getQuery();
-
-        return $this->getOne();
-    }
-
-    /**
-     * @param array $params
-     * @return array|bool
-     */
-    public function findAll(array $params = [])
-    {
-        $this->createQuery(
-            $this->getQueryBuilder()->select()->getSql()
-        );
-
-        foreach ($params as $name => $param) {
-            $this->setParameter($name, $param);
-        }
-
-        $this->getQuery();
-
-        return $this->getAll();
-    }
-
-    /**
-     * @param array $data
-     * @param array $where
-     * @param array $params
-     * @return int|bool If insert to be return last id. Or affected row.
-     */
-    public function save(array $data, array $where = [], array $params = [])
-    {
-        if (empty($where)) {
-            $this->createQuery(
-                $this->getQueryBuilder()->insert($data)->getSql()
-            );
-
-            foreach ($params as $name => $param) {
-                $this->setParameter($name, $param);
-            }
-
-            return $this->getQuery()->getId();
-        }
-
-        $this->createQuery(
-            $this->getQueryBuilder()->update($data, $where)->getSql()
-        );
-
-        foreach ($params as $name => $param) {
-            $this->setParameter($name, $param);
-        }
-
-        return $this->getQuery()->getAffected();
-    }
-
-    /**
-     * @param array $params
-     * @return int|bool
-     */
-    public function count(array $params = [])
-    {
-        return $this
-            ->field([
-                'count(1)' => 'total'
-            ])
-            ->find($params)['total']
-        ;
-    }
-
-    /**
-     * @param $name
+     * @param array|string $name
      * @param $value
      * @return $this
      */
-    public function setParameter($name, $value)
+    public function setParameter($name, $value = null)
     {
-        $this->getPDOStatement()->bindParam(':' . $name, $value);
+        if (is_string($name) && null !== $value) {
+            $params[$name] = $value;
+        } else {
+            $params = $name;
+        }
+
+        foreach ($params as $name => $value) {
+            $this->getPDOStatement()->bindParam(':' . $name, $value);
+        }
 
         return $this;
-    }
-
-    /**
-     * @param $page
-     * @param $showList
-     * @param $showPage
-     * @param $lastId
-     * @return Pagination
-     */
-    public function pagination($page, $showList, $showPage, $lastId)
-    {
-        return new Pagination($this, $page, $showList, $showPage, $lastId);
     }
 
     /**
