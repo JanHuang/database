@@ -128,6 +128,8 @@ class Pagination
 
         $this->lastId = $lastId;
 
+        $this->offset = ($this->currentPage - 1) * $this->showList;
+
         if (null !== $lastId) {
             $this->where = ['id[>]' => $this->lastId];
         }
@@ -435,8 +437,6 @@ class Pagination
         }
 
         $this->totalPages = ceil($this->totalRows / $this->showList);
-
-        $this->offset = ($this->currentPage - 1) * $this->showList;
 
         return $this;
     }
