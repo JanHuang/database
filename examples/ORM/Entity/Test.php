@@ -47,7 +47,6 @@ class Test extends Entity
      * @var string
      */
     protected $telNumber;
-
     /**
      * @var string
      */
@@ -105,29 +104,6 @@ class Test extends Entity
     public function setTrueName($trueName)
     {
         $this->trueName = $trueName;
-
-        return $this;
-    }
-
-    /**
-     * getTelNumber
-     *
-     * @return string
-     */
-    public function getTelNumber()
-    {
-        return $this->telNumber;
-    }
-
-    /**
-     * setTelNumber
-     *
-     * @param string $telNumber
-     * @return $this
-     */
-    public function setTelNumber($telNumber)
-    {
-        $this->telNumber = $telNumber;
 
         return $this;
     }
@@ -197,6 +173,29 @@ class Test extends Entity
     public function setGender($gender)
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    /**
+     * getTelNumber
+     *
+     * @return string
+     */
+    public function getTelNumber()
+    {
+        return $this->telNumber;
+    }
+
+    /**
+     * setTelNumber
+     *
+     * @param string $telNumber
+     * @return $this
+     */
+    public function setTelNumber($telNumber)
+    {
+        $this->telNumber = $telNumber;
 
         return $this;
     }

@@ -45,6 +45,11 @@ abstract class Driver implements DriverInterface
     protected $queryBuilder;
 
     /**
+     * @var array
+     */
+    protected $parameters = [];
+
+    /**
      * @return string
      */
     public function getName()
@@ -119,7 +124,7 @@ abstract class Driver implements DriverInterface
      */
     public function getQuery()
     {
-        $this->getPDOStatement()->execute();
+        $this->getPDOStatement()->execute($this->parameters);
 
         return $this;
     }
@@ -175,7 +180,7 @@ abstract class Driver implements DriverInterface
         }
 
         foreach ($params as $name => $value) {
-            $this->getPDOStatement()->bindParam(':' . $name, $value);
+            $this->parameters[':' . $name] = $value;
         }
 
         return $this;

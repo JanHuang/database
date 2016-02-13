@@ -182,7 +182,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
                 ;
         }
 
-        $this->id = $this->driver
+        return $this->driver
             ->createQuery(
                 MySQLQueryBuilder::factory()
                     ->table($this->getTable())
@@ -192,8 +192,6 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
             ->getQuery()
             ->getId()
             ;
-
-        return $this->id;
     }
 
     /**

@@ -20,5 +20,5 @@ return new MySQL([
     'database_pwd'  => '123456',
     'database_host' => '127.0.0.1',
     'database_port' => 3306,
-    'database_name' => 'test',
+    'database_name' => 'fd_db',
 ]);

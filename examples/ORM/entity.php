@@ -22,10 +22,13 @@ $driver = include __DIR__ . '/../getMysql.php';;
 
 
 echo '<pre>';
-$test = new Test(1, $driver);
-echo $test->getTrueName();
-$test->setTrueName('黄生');
-var_dump($test->save());
+$test = new Test(29, $driver);
+$test->setAge(182);
+$test->setGender(12);
+$test->setNickName('janhaung22');
+$test->setTrueName('黄生2233');
+print_r($test->save());
+print_r($test);
 
 
 //$request = Request::createRequestHandle();
@@ -33,5 +36,3 @@ var_dump($test->save());
 //$test->bindRequest($request);
 //echo '<pre>';
 //var_dump($test->save());
-
-print_r($test);

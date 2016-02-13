@@ -21,8 +21,9 @@ $repository = new \Examples\ORM\Repository\TestRepository($driver);
 $request = \FastD\Http\Request::createRequestHandle();
 $request->query->set('trueName', '黄');
 $repository->bindRequest($request);
-
 echo '<pre>';
+print_r($repository->find(['id' => 29]));
+print_r($repository->createQuery('select * from test where id = :id')->setParameter('id', 29)->getQuery()->getOne());
 print_r($repository->pagination(1, 5)->where(['true_name' => '黄总'])->getPagination());
 //var_dump($repository->findAll());
 //var_dump($repository->find());

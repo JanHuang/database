@@ -23,7 +23,7 @@ $mysql = new MySQL([
     'database_pwd'  => '123456',
     'database_host' => '127.0.0.1',
     'database_port' => 3306,
-    'database_name' => 'test',
+    'database_name' => 'fd_db',
 ]);
 
 $builder = new Mapping($mysql);
@@ -85,4 +85,5 @@ $builder->addTable(
 echo '<pre>';
 $tables = $builder->updateTables();
 $builder->buildEntity('Examples\\ORM', __DIR__);
+print_r($tables);
 //$builder->buildEntity(__DIR__, 'Examples\\');
