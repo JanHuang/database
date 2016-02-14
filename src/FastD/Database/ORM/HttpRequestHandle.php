@@ -29,12 +29,12 @@ class HttpRequestHandle
     /**
      * @var array
      */
-    protected $data;
+    protected $data = [];
 
     /**
      * @var array
      */
-    protected $params;
+    protected $params = [];
 
     /**
      * @param Request $request
