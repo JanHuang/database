@@ -22,13 +22,20 @@ $driver = include __DIR__ . '/../getMysql.php';;
 
 
 echo '<pre>';
-$test = new Test(29, $driver);
+$test = new Test(null, $driver);
 $test->setAge(182);
 $test->setGender(12);
 $test->setNickName('janhaung22');
 $test->setTrueName('黄生2233');
 print_r($test->save());
-print_r($test);
+
+$test = new Test($test->save(), $driver);
+$test->setAge(183);
+$test->setGender(12);
+$test->setNickName('janhaung22');
+$test->setTrueName('黄生2233');
+print_r($test->save());
+//print_r($test);
 
 
 //$request = Request::createRequestHandle();

@@ -126,6 +126,8 @@ abstract class Driver implements DriverInterface
     {
         $this->getPDOStatement()->execute($this->parameters);
 
+        $this->parameters = [];
+
         return $this;
     }
 
