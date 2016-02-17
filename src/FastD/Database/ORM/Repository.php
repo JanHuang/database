@@ -47,7 +47,7 @@ abstract class Repository extends HttpRequestHandle
     /**
      * @param DriverInterface $driverInterface
      */
-    public function __construct(DriverInterface $driverInterface = null)
+    public function __construct(DriverInterface $driverInterface)
     {
         $this->setDriver($driverInterface);
     }

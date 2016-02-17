@@ -4,7 +4,7 @@
  * User: janhuang
  * Date: 15/2/8
  * Time: 下午7:08
- * Github: https://www.github.com/janhuang 
+ * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
  * Blog: http://segmentfault.com/blog/janhuang
@@ -13,7 +13,7 @@
 
 namespace FastD\Database;
 
-use FastD\Database\Drivers\DriverFactory;
+use FastD\Database\Drivers\Driver;
 use FastD\Database\Drivers\DriverInterface;
 
 /**
@@ -21,7 +21,7 @@ use FastD\Database\Drivers\DriverInterface;
  *
  * @package FastD\Database
  */
-class DBPool implements \Iterator
+class Fdb implements \Iterator
 {
     const VERSION = '2.0.0';
 
@@ -47,6 +47,13 @@ class DBPool implements \Iterator
         $this->config = $config;
     }
 
+    public function createPool()
+    {
+        foreach ($this->config as $name => $value) {
+            $this->getDriver($name);
+        }
+    }
+
     /**
      * @param $name
      * @return DriverInterface
@@ -57,7 +64,25 @@ class DBPool implements \Iterator
             return $this->drivers[$name];
         }
 
-        return $this->addDriver($name, $this->config[$name]);
+        $this->setDriver($name, new Driver(new \PDO(
+            (function ($config) {
+                if (isset($config['dsn'])) {
+                    return $config['dsn'];
+                }
+
+                return sprintf(
+                    'mysql:host=%s;port=%s;dbname=%s;charset=%s',
+                    $config['host'],
+                    $config['port'],
+                    $config['dbname'],
+                    $config['charset'] ?? 'utf8'
+                );
+            })($this->config[$name]),
+            $this->config[$name]['user'],
+            $this->config[$name]['pwd']
+        ), $name));
+
+        return $this->drivers[$name];
     }
 
     /**
@@ -70,7 +95,6 @@ class DBPool implements \Iterator
     }
 
     /**
-     * @param                 $name
      * @param DriverInterface $driverInterface
      * @return $this
      */
@@ -79,22 +103,6 @@ class DBPool implements \Iterator
         $this->drivers[$name] = $driverInterface;
 
         return $this;
-    }
-
-    /**
-     * @param       $name
-     * @param array $config
-     * @return DriverInterface
-     */
-    public function addDriver($name, array $config)
-    {
-        $driver = DriverFactory::createDriver($config);
-
-        $driver->setName($name);
-
-        $this->setDriver($name, $driver);
-
-        return $driver;
     }
 
     /**

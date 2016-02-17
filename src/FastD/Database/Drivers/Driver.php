@@ -22,7 +22,7 @@ use FastD\Database\ORM\Repository;
  *
  * @package FastD\Database\Drivers
  */
-abstract class Driver implements DriverInterface
+class Driver implements DriverInterface
 {
     /**
      * @var string
@@ -50,22 +50,23 @@ abstract class Driver implements DriverInterface
     protected $parameters = [];
 
     /**
+     * Driver constructor.
+     * @param \PDO $PDO
+     * @param null $name
+     */
+    public function __construct(\PDO $PDO, $name = null)
+    {
+        $this->pdo = $PDO;
+
+        $this->name = $name;
+    }
+
+    /**
      * @return string
      */
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * @param string $name
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     /**
@@ -218,5 +219,14 @@ abstract class Driver implements DriverInterface
     {
         $this->pdo = null;
         $this->pdo_statement = null;
+    }
+
+    /**
+     * @param $name
+     * @return DriverInterface
+     */
+    public function setName($name)
+    {
+        // TODO: Implement setName() method.
     }
 }

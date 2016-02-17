@@ -67,7 +67,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
      * @param array             $condition
      * @param DriverInterface $driverInterface
      */
-    public function __construct(array $condition = null, DriverInterface $driverInterface = null)
+    public function __construct(array $condition = null, DriverInterface $driverInterface)
     {
         $this->condition = $condition;
 

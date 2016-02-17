@@ -13,6 +13,7 @@
     <testsuites>
         <testsuite name="FastD php simple framework Tests">
             <directory>./src/FastD/Database/Tests</directory>
+            <directory>./src/FastD/Database/Tests/Fdb</directory>
         </testsuite>
     </testsuites>
 </phpunit>

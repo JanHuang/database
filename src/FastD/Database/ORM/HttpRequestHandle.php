@@ -61,9 +61,6 @@ class HttpRequestHandle
         foreach ($params as $name => $value) {
             if (array_key_exists($name, static::FIELDS)) {
                 $field = static::FIELDS[$name];
-                if (strlen($value) > $field['length']) {
-                    throw new \Exception("Params length invalid.");
-                }
                 // for entity
                 $method = 'set' . ucfirst($name);
                 if (method_exists($this, $method)) {
