@@ -59,21 +59,21 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     /**
      * Table primary value.
      *
-     * @var int|string
+     * @var array
      */
-    protected $id = null;
+    protected $condition = null;
 
     /**
-     * @param int             $id
+     * @param array             $condition
      * @param DriverInterface $driverInterface
      */
-    public function __construct($id = null, DriverInterface $driverInterface = null)
+    public function __construct(array $condition = null, DriverInterface $driverInterface = null)
     {
-        $this->id = $id;
+        $this->condition = $condition;
 
         $this->setDriver($driverInterface);
 
-        if (null !== $id) {
+        if (null !== $condition) {
             $this->init($this->find());
         }
     }
@@ -139,7 +139,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
             ->createQuery(
                 MySQLQueryBuilder::factory()
                     ->table($this->getTable())
-                    ->where([$this->getPrimary() => $this->id,])
+                    ->where($this->condition)
                     ->fields(array() === $fields ? $this->getAlias() : $fields)
                     ->select()
             )
