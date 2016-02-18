@@ -55,7 +55,7 @@ class DriverTest extends Fixture_Database_TestCast
 
     public function testRepositoryDefined()
     {
-        $repository = $this->driver->getRepository('FastD:Database:Tests:Repository:Dbunit');
+        $repository = $this->driver->getRepository('FastD:Database:Tests:Orm:Repository:Dbunit');
 
         $this->assertInstanceOf(Repository::class, $repository);
     }

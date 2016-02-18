@@ -20,7 +20,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Tests\Repository;
+namespace FastD\Database\Tests\Orm\Repository;
 
 use FastD\Database\ORM\Repository;
 

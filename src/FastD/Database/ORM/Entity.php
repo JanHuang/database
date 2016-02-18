@@ -14,8 +14,8 @@
 
 namespace FastD\Database\ORM;
 
-use FastD\Database\Drivers\DriverInterface;
-use FastD\Database\Drivers\Query\MySQLQueryBuilder;
+use FastD\Database\DriverInterface;
+use FastD\Database\Query\Mysql;
 
 /**
  * Class Entity
@@ -26,14 +26,8 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
 {
     const FIELDS = [];
     const ALIAS = [];
-    const PRIMARY = '';
-
-    /**
-     * Operation DB table name.
-     *
-     * @var string
-     */
-    protected $table;
+    const PRIMARY = null;
+    const TABLE = null;
 
     /**
      * Query result row.
@@ -41,13 +35,6 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
      * @var array
      */
     protected $row = [];
-
-    /**
-     * Reflection repository class name.
-     *
-     * @var string
-     */
-    protected $repository;
 
     /**
      * DB driver.
@@ -64,37 +51,23 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     protected $condition = null;
 
     /**
-     * @param array             $condition
-     * @param DriverInterface $driverInterface
+     * Entity constructor.
+     * @param array|null $condition
+     * @param DriverInterface|null $driverInterface
      */
-    public function __construct(array $condition = null, DriverInterface $driverInterface)
+    public function __construct(array $condition = null, DriverInterface $driverInterface = null)
     {
         $this->condition = $condition;
 
-        $this->setDriver($driverInterface);
-
-        if (null !== $condition) {
-            $this->init($this->find());
-        }
-    }
-
-    /**
-     * @return DriverInterface
-     */
-    public function getDriver()
-    {
-        return $this->driver;
-    }
-
-    /**
-     * @param DriverInterface $driverInterface
-     * @return $this
-     */
-    public function setDriver(DriverInterface $driverInterface = null)
-    {
         $this->driver = $driverInterface;
 
-        return $this;
+        if (null !== $condition) {
+            $this->row = $this->find();
+            foreach ($this->getAlias() as $field => $alias) {
+                $method = 'set' . ucfirst($alias);
+                $this->$method(isset($data[$alias]) ? $data[$alias] : null);
+            }
+        }
     }
 
     /**
@@ -102,7 +75,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
      */
     public function getTable()
     {
-        return $this->table;
+        return static::TABLE;
     }
 
     /**
@@ -133,17 +106,17 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
      * @param array $fields
      * @return array|bool
      */
-    public function find(array $fields = [])
+    public function find(array $fields = null)
     {
         return $this->driver
-            ->createQuery(
-                MySQLQueryBuilder::factory()
+            ->query(
+                Mysql::singleton()
                     ->table($this->getTable())
                     ->where($this->condition)
-                    ->fields(array() === $fields ? $this->getAlias() : $fields)
+                    ->fields($fields ?? $this->getAlias())
                     ->select()
             )
-            ->getQuery()
+            ->execute()
             ->getOne()
         ;
     }
@@ -168,48 +141,29 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
         }
 
         // update
-        if (null !== $this->id) {
-            unset($data[$this->getPrimary()], $values[$this->getPrimary()]);
+        if (null !== $this->condition) {
             return $this->driver
-                ->createQuery(
-                    MySQLQueryBuilder::factory()
+                ->query(
+                    Mysql::singleton()
                         ->table($this->getTable())
-                        ->update($data, [$this->getPrimary() => $this->id,])
+                        ->update($data, $this->condition)
                 )
                 ->setParameter($values)
-                ->getQuery()
+                ->execute()
                 ->getAffected()
                 ;
         }
 
         return $this->driver
-            ->createQuery(
-                MySQLQueryBuilder::factory()
+            ->query(
+                Mysql::singleton()
                     ->table($this->getTable())
                     ->insert($data)
             )
             ->setParameter($values)
-            ->getQuery()
+            ->execute()
             ->getId()
             ;
-    }
-
-    /**
-     * @param array $data
-     * @return $this
-     */
-    protected function init($data)
-    {
-        $this->row = $data;
-
-        if (false !== $data) {
-            foreach ($this->getAlias() as $field => $alias) {
-                $method = 'set' . ucfirst($alias);
-                $this->$method(isset($data[$alias]) ? $data[$alias] : null);
-            }
-        }
-
-        return $this;
     }
 
     /**
