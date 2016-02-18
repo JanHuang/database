@@ -13,7 +13,7 @@
 
 namespace FastD\Database\ORM;
 
-use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\DriverInterface;
 use FastD\Database\Drivers\Query\MySQLQueryBuilder;
 use FastD\Database\Drivers\Query\Paging\Pagination;
 use FastD\Database\Drivers\Query\QueryBuilderInterface;
@@ -47,7 +47,7 @@ abstract class Repository extends HttpRequestHandle
     /**
      * @param DriverInterface $driverInterface
      */
-    public function __construct(DriverInterface $driverInterface)
+    public function __construct(DriverInterface $driverInterface = null)
     {
         $this->setDriver($driverInterface);
     }
@@ -197,7 +197,7 @@ abstract class Repository extends HttpRequestHandle
      */
     public function createQuery($sql)
     {
-        return $this->driver->createQuery($sql);
+        return $this->driver->query($sql);
     }
 
     /**

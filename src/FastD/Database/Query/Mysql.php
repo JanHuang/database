@@ -12,130 +12,38 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Drivers\Query;
+namespace FastD\Database\Query;
 
 /**
- * Class MySQLQueryContext
+ * Class Mysql
  *
- * @package FastD\Database\Drivers\QueryContext
+ * @package FastD\Database\Query
  */
-class MySQLQueryBuilder extends QueryBuilderFactory
+class Mysql extends QueryBuilder
 {
     /**
-     * @var string
-     */
-    protected $table;
-
-    /**
-     * @var string
-     */
-    protected $where;
-
-    /**
-     * @var string
-     */
-    protected $fields = '*';
-
-    /**
-     * @var string
-     */
-    protected $limit;
-
-    /**
-     * @var string
-     */
-    protected $join;
-
-    /**
-     * @var string
-     */
-    protected $group;
-
-    /**
-     * @var string
-     */
-    protected $order;
-
-    /**
-     * @var string
-     */
-    protected $like;
-
-    /**
-     * @var string
-     */
-    protected $not_like;
-
-    /**
-     * @var string
-     */
-    protected $having;
-
-    /**
-     * @var string
-     */
-    protected $value;
-
-    /**
-     * @var string
-     */
-    protected $keys;
-
-    /**
-     * @var string
-     */
-    protected $sql;
-
-    /**
-     * @var array
-     */
-    protected $logs = [];
-
-    /**
-     * @const int
-     */
-    const BUILDER_INSERT = 1;
-
-    /**
-     * @const int
-     */
-    const BUILDER_UPDATE = 2;
-
-    /**
-     * @const int
-     */
-    const BUILDER_DELETE = 3;
-
-    /**
      * @param array $where
-     * @param string $assign
      * @return string
      */
     protected function parseWhere(array $where, $assign = '=')
     {
-        if (empty($where)) {
-            return '';
-        }
-
         $conditions = reset($where);
-
         $joint = '';
 
         if (is_array($conditions)) {
             $jointArr = array_keys($where);
-            $joint = $jointArr[0];
+            $joint = $jointArr[0]; // set assign
             unset($jointArr);
         } else {
             $conditions = $where;
         }
 
         $where = [];
-
         foreach ($conditions as $key => $value) {
-            $assign = '=';
             if (false !== ($start = strpos($key, '['))) {
-                $assign = substr($key, $start + 1, -1);
-                $key = substr($key, 0, $start);
+                $end = strpos($key, ']');
+                $assign = substr($key, $start + 1, $end - $start - 1);
+                $key = substr($key, $end + 1);
             }
 
             if (0 !== strpos($value, ':')) {
@@ -188,11 +96,16 @@ class MySQLQueryBuilder extends QueryBuilderFactory
 
     /**
      * @param $table
+     * @param null $alias
      * @return $this
      */
-    public function table($table)
+    public function table($table, $alias = null)
     {
-        $this->table = str_replace('``', '`', '`' . $table . '`');
+        $this->table = '`' . $table . '`';
+
+        if (null !== $alias) {
+            $this->table .= ' AS `' . $alias . '`';
+        }
 
         return $this;
     }
@@ -203,10 +116,9 @@ class MySQLQueryBuilder extends QueryBuilderFactory
      */
     public function where(array $where = [])
     {
-        $where = $this->parseWhere($where);
-
-        if ('' != $where) {
+        if (null != ($where = $this->parseWhere($where))) {
             $this->where = ' WHERE ' . $where;
+            unset($where);
         }
 
         return $this;
@@ -216,29 +128,15 @@ class MySQLQueryBuilder extends QueryBuilderFactory
      * @param array $fields
      * @return $this
      */
-    public function fields(array $fields = [])
+    public function fields(array $fields)
     {
-        if (array() !== $fields) {
-            $this->fields = '';
-            foreach ($fields as $name => $alias) {
-                if (is_integer($name)) {
-                    if (false === strpos($alias, ' ')) {
-                        $this->fields .= '`' . $alias . '`,';
-                    } else {
-                        $this->fields .= $alias . ',';
-                    }
-                } else {
-                    // has custom function
-                    if (false === strpos($name, '(')) {
-                        $name = '`' . $name . '`';
-                    }
-                    $this->fields .= $name . ' AS `' . $alias . '`,';
-                }
-            }
-            $this->fields = trim($this->fields, ',');
-        } else {
-            $this->fields = '*';
+        $this->fields = '';
+
+        foreach ($fields as $name => $alias) {
+            $this->fields .= is_integer($name) ? ('`' . $alias . '`,') : '`'. $name . '` AS `' . $alias . '`,';
         }
+
+        $this->fields = trim($this->fields, ',');
 
         return $this;
     }
@@ -343,19 +241,8 @@ class MySQLQueryBuilder extends QueryBuilderFactory
     public function notLike(array $like)
     {
         if (!empty($like)) {
-            $this->not_like = ' WHERE ' . $this->parseWhere($like, ' NOT LIKE ');
+            $this->like = ' WHERE ' . $this->parseWhere($like, ' NOT LIKE ');
         }
-
-        return $this;
-    }
-
-    /**
-     * @param $sql
-     * @return $this
-     */
-    public function custom($sql)
-    {
-        $this->sql = $sql;
 
         return $this;
     }

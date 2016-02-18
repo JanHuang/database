@@ -1,5 +1,13 @@
 <?php
 /**
+ * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+/**
  * Created by PhpStorm.
  * User: janhuang
  * Date: 15/2/8
@@ -13,15 +21,12 @@
 
 namespace FastD\Database;
 
-use FastD\Database\Drivers\Driver;
-use FastD\Database\Drivers\DriverInterface;
-
 /**
- * Class Database
+ * Class Fdb
  *
  * @package FastD\Database
  */
-class Fdb implements \Iterator
+class Fdb implements \Iterator, \Countable
 {
     const VERSION = '2.0.0';
 
@@ -47,11 +52,31 @@ class Fdb implements \Iterator
         $this->config = $config;
     }
 
+    /**
+     * @return $this
+     */
     public function createPool()
     {
         foreach ($this->config as $name => $value) {
             $this->getDriver($name);
         }
+
+        return $this;
+    }
+
+    public function createPdo(array $config)
+    {
+        return new \PDO(
+            sprintf(
+                'mysql:host=%s;port=%s;dbname=%s;charset=%s',
+                $config['host'],
+                $config['port'],
+                $config['dbname'],
+                $config['charset'] ?? 'utf8'
+            ),
+            $config['user'],
+            $config['pwd']
+        );
     }
 
     /**
@@ -64,23 +89,11 @@ class Fdb implements \Iterator
             return $this->drivers[$name];
         }
 
-        $this->setDriver($name, new Driver(new \PDO(
-            (function ($config) {
-                if (isset($config['dsn'])) {
-                    return $config['dsn'];
-                }
-
-                return sprintf(
-                    'mysql:host=%s;port=%s;dbname=%s;charset=%s',
-                    $config['host'],
-                    $config['port'],
-                    $config['dbname'],
-                    $config['charset'] ?? 'utf8'
-                );
-            })($this->config[$name]),
-            $this->config[$name]['user'],
-            $this->config[$name]['pwd']
-        ), $name));
+        /**
+         * Anonymous function.
+         * Return \PDO.
+         */
+        $this->setDriver($name, new Driver($this->createPdo($this->config[$name])));
 
         return $this->drivers[$name];
     }
@@ -95,6 +108,7 @@ class Fdb implements \Iterator
     }
 
     /**
+     * @param string $name
      * @param DriverInterface $driverInterface
      * @return $this
      */
@@ -164,5 +178,19 @@ class Fdb implements \Iterator
     public function rewind()
     {
         reset($this->drivers);
+    }
+
+    /**
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count()
+    {
+        return count($this->drivers);
     }
 }

@@ -1,5 +1,13 @@
 <?php
 /**
+ * Copyright (c) 2016. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+/**
  * Created by PhpStorm.
  * User: janhuang
  * Date: 15/12/13
@@ -12,51 +20,23 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Drivers;
+namespace FastD\Database;
 
-use FastD\Database\Drivers\Query\Paging\Pagination;
 use FastD\Database\ORM\Repository;
-use FastD\Database\Drivers\Query\QueryBuilderInterface;
 
 /**
  * Interface DriverInterface
+ *
+ * Driver prototype.
  *
  * @package FastD\Database\Drivers
  */
 interface DriverInterface
 {
     /**
-     * @param $name
-     * @return DriverInterface
-     */
-    public function setName($name);
-
-    /**
-     * @return string
-     */
-    public function getName();
-
-    /**
      * @return \PDO
      */
-    public function getPDO();
-
-    /**
-     * @param \PDO $PDO
-     * @return DriverInterface
-     */
-    public function setPDO(\PDO $PDO);
-
-    /**
-     * @return \PDOStatement
-     */
-    public function getPDOStatement();
-
-    /**
-     * @param \PDOStatement $PDOStatement
-     * @return $this
-     */
-    public function setPDOStatement(\PDOStatement $PDOStatement);
+    public function getPdo();
 
     /**
      * Create SQL query statement.
@@ -64,29 +44,28 @@ interface DriverInterface
      * @param $sql
      * @return DriverInterface
      */
-    public function createQuery($sql);
+    public function query($sql);
+
+    /**
+     * Bind pdo parameters.
+     *
+     * @param array $parameters
+     * @return $this
+     */
+    public function setParameter(array $parameters);
 
     /**
      * Execute create PDO query statement.
      *
      * @return $this
      */
-    public function getQuery();
+    public function execute();
 
     /**
-     * Bind pdo parameters.
-     *
-     * @param array|string $name
-     * @param $value
-     * @return $this
-     */
-    public function setParameter($name, $value = null);
-
-    /**
-     * @param string|null $name
+     * @param string|null $field Get field value.
      * @return array|bool
      */
-    public function getOne($name = null);
+    public function getOne($field = null);
 
     /**
      * @return array|bool
@@ -112,7 +91,13 @@ interface DriverInterface
     public function getRepository($repository);
 
     /**
-     * @return array
+     * @return DriverError
      */
-    public function getErrors();
+    public function getError();
+
+    /**
+     * DriverInterface constructor.
+     * @param \PDO $pdo
+     */
+    public function __construct(\PDO $pdo);
 }

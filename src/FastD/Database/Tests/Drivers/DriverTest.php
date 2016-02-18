@@ -14,6 +14,8 @@
 
 namespace FastD\Database\Tests\Drivers;
 
+use FastD\Database\Driver;
+use FastD\Database\ORM\Repository;
 use FastD\Database\Tests\Fixture_Database_TestCast;
 
 /**
@@ -23,24 +25,167 @@ use FastD\Database\Tests\Fixture_Database_TestCast;
  */
 class DriverTest extends Fixture_Database_TestCast
 {
-    /**
-     *
-     */
     const CONNECTION = [
-        'host'      => '127.0.0.1',
-        'port'      => '3306',
-        'dbname'    => 'dbunit',
-        'user'      => 'root',
-        'pwd'       => '123456'
+        'host' => '127.0.0.1',
+        'port' => '3306',
+        'dbname' => 'dbunit',
+        'user' => 'root',
+        'pwd' => '123456'
     ];
 
+    const NAME = 'dbunit';
+
     /**
-     * Testing usage..
-     *
-     * new Driver(\PDO());
+     * @var Driver
      */
-    public function testUsage()
+    protected $driver;
+
+    public function setUp()
     {
-        echo "hello world";
+        $this->driver = $this->createDriver();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testRepositoryUndefined()
+    {
+        $this->driver->getRepository('abc');
+    }
+
+    public function testRepositoryDefined()
+    {
+        $repository = $this->driver->getRepository('FastD:Database:Tests:Repository:Dbunit');
+
+        $this->assertInstanceOf(Repository::class, $repository);
+    }
+
+    /**
+     * id: 1
+     * content: "Hello buddy!"
+     * name: "joe"
+     * create_at: 2010-04-24 17:15:23
+     * -
+     * id: 2
+     * content: "I like it!"
+     * name: "janhuang"
+     * create_at: 2010-04-26 12:14:20
+     */
+    public function testDriverQuery()
+    {
+        $rows = $this->driver->query('select * from base')->execute()->getAll();
+
+        $this->assertNotEmpty($rows);
+
+        $this->assertNotFalse($rows);
+
+        $rows = $this->driver->query('select * from base2')->execute()->getAll();
+
+        $this->assertEmpty($rows);
+
+        $error = $this->driver->getError();
+
+        $this->assertEquals('1146', $error->getCode());
+
+        $row = $this->driver->query('select * from base where id = 1')->execute()->getOne();
+
+        $this->assertEquals('joe', $row['name']);
+
+        /*$this->assertEquals([
+            [
+                'id' => '1',
+                'content' => 'Hello buddy!',
+                'name' => 'joe',
+                'create_at' => '2010-04-24 17:15:23'
+            ],
+            [
+                'id' => '2',
+                'content' => 'I like it!',
+                'name' => 'janhuang',
+                'create_at' => '2010-04-26 12:14:20'
+            ],
+
+        ], $rows);*/
+    }
+
+    public function testDriverParameters()
+    {
+        $parameters = $this
+            ->driver
+            ->setParameter([
+                'name' => 'janhuang'
+            ])
+            ->getParameters()
+            ;
+
+        $this->assertEquals([':name' => 'janhuang'], $parameters);
+
+        $parameters = $this
+            ->driver
+            ->setParameter([
+                'name' => 'janhuang',
+                'age' => '18'
+            ])
+            ->getParameters()
+            ;
+
+        $this->assertEquals([':name' => 'janhuang', ':age' => '18'], $parameters);
+
+
+    }
+
+    public function testDriverBindParameters()
+    {
+        $row = $this
+            ->driver
+            ->query('select * from base where id = :id')
+            ->setParameter([
+                'id' => 1
+            ])
+            ->execute()
+            ->getOne()
+        ;
+
+        $this->assertEquals('joe', $row['name']);
+
+        $row = $this
+            ->driver
+            ->query('select * from base where id = :id')
+            ->setParameter([
+                'id' => 1
+            ])
+            ->execute()
+            ->getAll()
+        ;
+
+        $this->assertEquals('joe', $row[0]['name']);
+
+        $id = $this
+            ->driver
+            ->query('insert into base (name) values(:name)')
+            ->setParameter([
+                'name' => 'ken'
+            ])
+            ->execute()
+            ->getId()
+            ;
+
+        $this->assertNotEmpty($id);
+
+        $this->assertEquals(3, $id);
+
+        $affected = $this
+            ->driver
+            ->query('update base set name = :name where id = :id')
+            ->setParameter([
+                'name' => 'Dr\' Huang',
+                'id' => 1
+            ])
+            ->execute()
+            ->getAffected();
+
+        $this->assertNotEmpty($affected);
+
+        $this->assertEquals(1, $affected);
     }
 }

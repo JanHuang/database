@@ -14,6 +14,7 @@
 
 namespace FastD\Database\Tests;
 
+use FastD\Database\Driver;
 use PHPUnit_Extensions_Database_DB_IDatabaseConnection;
 
 /**
@@ -31,11 +32,20 @@ abstract class Fixture_Database_TestCast extends \PHPUnit_Extensions_Database_Te
     const CONNECTION = [];
 
     /**
-     * @return class
+     * @const name.
      */
-    protected function buildDSN()
+    const NAME = null;
+
+    /**
+     * @return \PDO
+     */
+    protected function createPdo(array $config = null)
     {
-        return new class(static::CONNECTION)
+        if (null === $config) {
+            $config = static::CONNECTION;
+        }
+
+        $dsn = new class($config)
         {
             private $user;
             private $pwd;
@@ -77,6 +87,8 @@ abstract class Fixture_Database_TestCast extends \PHPUnit_Extensions_Database_Te
                 return $this->name;
             }
         };
+
+        return new \PDO($dsn->getDSN(), $dsn->getUser(), $dsn->getPwd());
     }
 
     /**
@@ -86,9 +98,7 @@ abstract class Fixture_Database_TestCast extends \PHPUnit_Extensions_Database_Te
      */
     protected function getConnection()
     {
-        $dsn = $this->buildDSN();
-
-        return $this->createDefaultDBConnection(new \PDO($dsn->getDSN(), $dsn->getUser(), $dsn->getPwd()), $dsn->getName());
+        return $this->createDefaultDBConnection($this->createPdo(), static::NAME);
     }
 
     /**
@@ -99,5 +109,14 @@ abstract class Fixture_Database_TestCast extends \PHPUnit_Extensions_Database_Te
     protected function getDataSet()
     {
         return new \PHPUnit_Extensions_Database_DataSet_YamlDataSet(__DIR__ . '/DataSet/base.yml');
+    }
+
+    /**
+     * @param $config
+     * @return Driver
+     */
+    public function createDriver($config = null)
+    {
+        return new Driver($this->createPdo($config));
     }
 }

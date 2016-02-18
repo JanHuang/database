@@ -27,6 +27,38 @@ class FdbTest extends Fixture_Database_TestCast
         'pwd'       => '123456'
     ];
 
+    const NAME = 'dbunit';
+
+    public function testDriver()
+    {
+        $fdb = new Fdb([
+            "read" => [
+                'host'      => '127.0.0.1',
+                'port'      => '3306',
+                'dbname'    => 'dbunit',
+                'user'      => 'root',
+                'pwd'       => '123456'
+            ],
+            "write" => [
+                'host'      => '127.0.0.1',
+                'port'      => '3306',
+                'dbname'    => 'dbunit',
+                'user'      => 'root',
+                'pwd'       => '123456'
+            ],
+        ]);
+
+        $this->assertInstanceOf('FastD\Database\DriverInterface', $fdb->getDriver('read'));
+
+        $this->assertInstanceOf('\PDO', $fdb->getDriver('read')->getPdo());
+
+        $this->assertEquals(1, $fdb->count());
+
+        $fdb->createPool();
+
+        $this->assertEquals(2, $fdb->count());
+    }
+
     public function testIterator()
     {
         $fdb = new Fdb([
@@ -48,8 +80,12 @@ class FdbTest extends Fixture_Database_TestCast
 
         $fdb->createPool();
 
+        $keys = [];
+
         foreach ($fdb as $key => $value) {
-            var_dump($key);
+            $keys[] = $key;
         }
+
+        $this->assertEquals(['read', 'write'], $keys);
     }
 }
