@@ -18,5 +18,21 @@ use FastD\Database\ORM\Entity;
 
 class Dbunit extends Entity
 {
+    /**
+     * @const string
+     */
+    const PRIMARY = 'id';
+
+    /**
+     * Fields const
+     * @const array
+     */
+    const FIELDS = \Examples\ORM\Fields\TestFields::FIELDS;
+
+    /**
+     * Fields alias
+     * @const array
+     */
+    const ALIAS = \Examples\ORM\Fields\TestFields::ALIAS;
 
 }

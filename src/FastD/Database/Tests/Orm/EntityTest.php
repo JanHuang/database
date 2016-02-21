@@ -15,6 +15,7 @@
 namespace FastD\Database\Tests\Orm;
 
 use FastD\Database\Tests\Fixture_Database_TestCast;
+use FastD\Database\Tests\Orm\Entity\Dbunit;
 
 class EntityTest extends Fixture_Database_TestCast
 {
@@ -28,6 +29,8 @@ class EntityTest extends Fixture_Database_TestCast
 
     public function testConstruct()
     {
+        $dbunit = new Dbunit(null, $this->createDriver());
+
 
     }
 }
