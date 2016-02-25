@@ -264,19 +264,29 @@ class Table implements BuilderInterface
         $fields = [];
         $keys = [];
 
+        $concat = ', ';
+
+        if (Field::FIELD_CHANGE === $flag) {
+            $concat = ';';
+        }
+
         foreach ($this->fields as $name => $field) {
             if (isset($this->new_fields[$name])) {
                 $field->changeTo($this->new_fields[$name]);
             }
 
             if (null !== ($key = $field->getKey())) {
-                $keys[] = $key->toSql($flag);
+                if (Field::FIELD_CREATE === $flag) {
+                    $keys[] = $key->toSql($flag);
+                } else if (Field::FIELD_CHANGE === $flag) {
+                    $keys[] = "ALTER TABLE `{$this->getTable()}` " . $key->toSql($flag);
+                }
             }
 
             $fields[] = $field->toSql($flag);
         }
 
-        return implode(', ' . PHP_EOL, array_merge($fields, $keys));
+        return implode($concat . PHP_EOL, array_merge($fields, $keys));
     }
 
     /**

@@ -145,21 +145,6 @@ class Key implements BuilderInterface
     {
         $key = strtolower($this->getKey() . '_' . $this->getField());
 
-        /*switch ($this->type) {
-            case self::KEY_PRIMARY:
-                $key = "PRIMARY KEY (`{$this->getField()}`)";
-                break;
-            case self::KEY_INDEX:
-                $key = "KEY `{$key}` (`{$this->getField()}`)";
-                break;
-            case self::KEY_UNIQUE;
-                $key = "UNIQUE KEY `{$key}` (`{$this->getField()}`)";
-                break;
-            case self::KEY_FULLTEXT:
-                $key = 'fulltext';
-                break;
-        }*/
-
         switch ($flag) {
             case Field::FIELD_CREATE:
                 if ($this->isPrimary()) {
