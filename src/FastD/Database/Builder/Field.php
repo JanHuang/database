@@ -77,6 +77,11 @@ class Field implements BuilderInterface
     protected $key;
 
     /**
+     * @var Field
+     */
+    protected $to_change;
+
+    /**
      * Field constructor.
      * @param $name
      * @param $type
@@ -297,6 +302,21 @@ class Field implements BuilderInterface
         return $this;
     }
 
+    /**
+     * @param Field $field
+     * @return $this
+     */
+    public function changeTo(Field $field)
+    {
+        $this->to_change = $field;
+
+        return $this;
+    }
+
+    /**
+     * @param int $flag
+     * @return string
+     */
     public function toSql($flag = self::FIELD_CREATE)
     {
         $length = $this->getLength() ? '(' . $this->getLength() . ')' : '';
@@ -313,6 +333,17 @@ class Field implements BuilderInterface
             case self::FIELD_ADD:
                 return "ADD `{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";
             case self::FIELD_CHANGE:
+                if (null !== $this->to_change) {
+                    $length = $this->to_change->getLength() ? '(' . $this->to_change->getLength() . ')' : '';
+                    $unsigned = $this->to_change->isUnsigned() ? ' unsigned ' : '';
+                    $nullable = $this->to_change->isNullable() ? '' : ' NOT NULL';
+                    $default = '';
+                    if (!$this->to_change->isNullable()) {
+                        $default = $this->to_change->getDefault() ? ' DEFAULT \'' . $this->to_change->getDefault() . '\'' : '';
+                    }
+                    $comment = $this->to_change->getComment() ? ' COMMENT \'' . $this->to_change->getComment() . '\'' : '';
+                    return "CHANGE `{$this->getName()}` `{$this->to_change->getName()}` {$this->to_change->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";
+                }
                 return "CHANGE `{$this->getName()}` `{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";
             case self::FIELD_DROP:
                 return "DROP `{$this->getName()}`";
@@ -321,6 +352,10 @@ class Field implements BuilderInterface
         throw new \InvalidArgumentException(sprintf('Operation ["%s"] is undefined.', $flag));
     }
 
+    /**
+     * @param null $flag
+     * @return string
+     */
     public function toYml($flag = null)
     {
         return '';

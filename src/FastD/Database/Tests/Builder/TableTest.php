@@ -27,4 +27,31 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($table->getTable(), 'demo');
     }
+
+    public function testCreate()
+    {
+        $table = new Table('demo', [
+            new Field('name', 'varchar')
+        ]);
+
+        echo $table->toSql(Table::TABLE_CREATE);
+    }
+
+    public function testChange()
+    {
+        $table = new Table('demo', [
+            new Field('name', 'varchar')
+        ]);
+
+        $table->addField('name', new Field('nickname', 'char'));
+
+        echo $table->toSql(Table::TABLE_CHANGE);
+    }
+
+    public function testDrop()
+    {
+        $table = new Table('demo');
+
+        $this->assertEquals($table->toSql(Table::TABLE_DROP), 'DROP TABLE `demo`;');
+    }
 }

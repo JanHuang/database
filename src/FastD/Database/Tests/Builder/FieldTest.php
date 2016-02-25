@@ -56,10 +56,23 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('`name` varchar(20) NOT NULL DEFAULT \'janhuang\' COMMENT \'姓名\'', $name->toSql());
     }
 
-    public function testAddSql()
+    public function testChangeSql()
+    {
+        $name = new Field('name', 'varchar', 20);
+
+        $name->changeTo(new Field('name2', 'char', 30));
+
+        $this->assertEquals('CHANGE `name` `name2` char(30) NOT NULL', $name->toSql(Field::FIELD_CHANGE));
+    }
+
+    public function testSql()
     {
         $name = new Field('name', 'varchar', 20);
 
         $this->assertEquals('ADD `name` varchar(20) NOT NULL', $name->toSql(Field::FIELD_ADD));
+
+        $this->assertEquals('CHANGE `name` `name` varchar(20) NOT NULL', $name->toSql(Field::FIELD_CHANGE));
+
+        $this->assertEquals('DROP `name`', $name->toSql(Field::FIELD_DROP));
     }
 }

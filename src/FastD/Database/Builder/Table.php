@@ -36,14 +36,19 @@ class Table implements BuilderInterface
     protected $fields = [];
 
     /**
-     * @var string
+     * @var Field[]
      */
-    protected $charset;
+    protected $new_fields = [];
 
     /**
      * @var string
      */
-    protected $engine;
+    protected $charset = 'utf8';
+
+    /**
+     * @var string
+     */
+    protected $engine = 'InnoDB';
 
     /**
      * @var string
@@ -64,7 +69,41 @@ class Table implements BuilderInterface
     {
         $this->table = $table;
 
-        $this->fields = $fields;
+        foreach ($fields as $field) {
+            $this->fields[$field->getName()] = $field;
+        }
+    }
+
+    /**
+     * @return Field[]
+     */
+    public function getNewFields()
+    {
+        return $this->new_fields;
+    }
+
+    /**
+     * @param Field[] $new_fields
+     * @return $this
+     */
+    public function setNewFields($new_fields)
+    {
+        $this->new_fields = $new_fields;
+
+
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param Field $field
+     * @return $this
+     */
+    public function addField($name, Field $field)
+    {
+        $this->new_fields[$name] = $field;
+
+        return $this;
     }
 
     /**
@@ -181,21 +220,34 @@ class Table implements BuilderInterface
         return $this;
     }
 
+    /**
+     * @param $flag
+     * @return string
+     */
     protected function getFieldsToSql($flag)
     {
         $sql = [];
-        foreach ($this->fields as $field) {
+
+        foreach ($this->fields as $name => $field) {
+            if (isset($this->new_fields[$name])) {
+                $field->changeTo($this->new_fields[$name]);
+            }
+
             $sql[] = $field->toSql($flag);
         }
 
         return implode(', ' . PHP_EOL, $sql);
     }
 
-    public function toSql($flag = null)
+    /**
+     * @param int $flag
+     * @return string
+     */
+    public function toSql($flag = self::TABLE_CREATE)
     {
         switch ($flag) {
             case self::TABLE_CREATE:
-                return "CREATE TABLE `{$this->getTable()}`({$this->getFieldsToSql(Field::FIELD_CREATE)}) ENGINE={$this->getEngine()} CHARSET={$this->getCharset()};";
+                return "CREATE TABLE `{$this->getTable()}`(" . PHP_EOL . "{$this->getFieldsToSql(Field::FIELD_CREATE)} " . PHP_EOL . ") ENGINE={$this->getEngine()} CHARSET={$this->getCharset()};";
             case self::TABLE_CHANGE:
                 return "ALTER TABLE `{$this->getTable()}` {$this->getFieldsToSql(Field::FIELD_CHANGE)};";
             case self::TABLE_DROP:
@@ -205,8 +257,11 @@ class Table implements BuilderInterface
         throw new \InvalidArgumentException(sprintf('Operation ["%s"] is undefined.', $flag));
     }
 
+    /**
+     * @param null $flag
+     */
     public function toYml($flag = null)
     {
-        // TODO: Implement toYml() method.
+        return '';
     }
 }
