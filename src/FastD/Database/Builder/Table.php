@@ -41,6 +41,11 @@ class Table implements BuilderInterface
     protected $new_fields = [];
 
     /**
+     * @var Key[]
+     */
+    protected $keys = [];
+
+    /**
      * @var string
      */
     protected $charset = 'utf8';
@@ -121,6 +126,36 @@ class Table implements BuilderInterface
     public function setPrefix($prefix)
     {
         $this->prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
+     * @return Key[]
+     */
+    public function getKeys()
+    {
+        return $this->keys;
+    }
+
+    /**
+     * @param Key[] $keys
+     * @return $this
+     */
+    public function setKeys($keys)
+    {
+        $this->keys = $keys;
+
+        return $this;
+    }
+
+    /**
+     * @param Key $key
+     * @return $this
+     */
+    public function addKey(Key $key)
+    {
+        $this->keys[] = $key;
 
         return $this;
     }

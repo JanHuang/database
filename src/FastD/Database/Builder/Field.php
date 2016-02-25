@@ -25,6 +25,7 @@ class Field implements BuilderInterface
     const FIELD_CHANGE = 2;
     const FIELD_DROP = 3;
     const FIELD_CREATE = 4;
+    const FIELD_INDEX = 5;
 
     /**
      * @var string
@@ -82,6 +83,21 @@ class Field implements BuilderInterface
     protected $to_change;
 
     /**
+     * @var bool
+     */
+    protected $primary = false;
+
+    /**
+     * @var bool
+     */
+    protected $index = false;
+
+    /**
+     * @var bool
+     */
+    protected $unique = false;
+
+    /**
      * Field constructor.
      * @param $name
      * @param $type
@@ -91,7 +107,15 @@ class Field implements BuilderInterface
      * @param string $default
      * @param string $comment
      */
-    public function __construct($name, $type = 'varchar', $length = 255, $alias = '', $nullable = false, $default = '', $comment = '')
+    public function __construct(
+        $name,
+        $type = 'varchar',
+        $length = 255,
+        $alias = '',
+        $nullable = false,
+        $default = '',
+        $comment = ''
+    )
     {
         $this->name = $name;
 
@@ -261,6 +285,18 @@ class Field implements BuilderInterface
     {
         $this->key = $key;
 
+        switch ($key) {
+            case 'PRI':
+                $this->setPrimary(true);
+                break;
+            case 'UNI':
+                $this->setUnique(true);
+                break;
+            case 'MUL':
+                $this->setIndex(true);
+                break;
+        }
+
         return $this;
     }
 
@@ -303,6 +339,63 @@ class Field implements BuilderInterface
     }
 
     /**
+     * @return boolean
+     */
+    public function isPrimary()
+    {
+        return $this->primary;
+    }
+
+    /**
+     * @param boolean $primary
+     * @return $this
+     */
+    public function setPrimary($primary)
+    {
+        $this->primary = $primary;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isUnique()
+    {
+        return $this->unique;
+    }
+
+    /**
+     * @param boolean $unique
+     * @return $this
+     */
+    public function setUnique($unique)
+    {
+        $this->unique = $unique;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isIndex()
+    {
+        return $this->index;
+    }
+
+    /**
+     * @param boolean $index
+     * @return $this
+     */
+    public function setIndex($index)
+    {
+        $this->index = $index;
+
+        return $this;
+    }
+
+    /**
      * @param Field $field
      * @return $this
      */
@@ -327,9 +420,10 @@ class Field implements BuilderInterface
             $default = $this->getDefault() ? ' DEFAULT \'' . $this->getDefault() . '\'' : ' DEFAULT \'\'';
         }
         $comment = $this->getComment() ? ' COMMENT \'' . $this->getComment() . '\'' : '';
+        $extra = $this->getExtra() ? ' ' . $this->getExtra() : '';
         switch ($flag) {
             case self::FIELD_CREATE:
-                return "`{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";
+                return "`{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}{$extra}";
             case self::FIELD_ADD:
                 return "ADD `{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";
             case self::FIELD_CHANGE:
@@ -347,6 +441,8 @@ class Field implements BuilderInterface
                 return "CHANGE `{$this->getName()}` `{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";
             case self::FIELD_DROP:
                 return "DROP `{$this->getName()}`";
+            case self::FIELD_INDEX:
+                return "";
         }
 
         throw new \InvalidArgumentException(sprintf('Operation ["%s"] is undefined.', $flag));

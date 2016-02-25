@@ -35,9 +35,13 @@ class TableParserTest extends Fixture_Database_TestCast
 
         $table = $parser->getTableByDb('demo');
 
-        print_r($table->toSql());
+        echo PHP_EOL;
+
+        echo $table->toSql();
 
         $table = $parser->getTableByDb('base');
+
+        echo PHP_EOL;
 
         echo $table->toSql();
     }

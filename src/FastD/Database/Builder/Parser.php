@@ -14,8 +14,6 @@
 
 namespace FastD\Database\Builder;
 
-use FastD\Database\Builder\Field;
-use FastD\Database\Builder\Table;
 use FastD\Database\DriverInterface;
 use Symfony\Component\Yaml\Yaml;
 
@@ -88,15 +86,29 @@ WHERE
 
                 $fields = [];
 
-                foreach ($schemes as $field) {
-                    $type = $field['type'];
+                foreach ($schemes as $item => $value) {
+                    $type = $value['type'];
                     $length = 0;
                     if (false !== strpos($type, '(')) {
                         $length = substr($type, strpos($type, '(') + 1, -1);
                         $type = substr($type, 0, strpos($type, '('));
                     }
 
-                    $fields[] = new Field($field['field'], $type, $length, '', $field['nullable'] == 'NO' ? false : true, $field['default'], $field['comment']);
+                    $field = new Field(
+                        $value['field'],
+                        $type,
+                        $length,
+                        '',
+                        $value['nullable'] == 'NO' ? false : true,
+                        $value['default'],
+                        $value['comment']
+                    );
+                    $field
+                        ->setExtra($value['extra'])
+                        ->setKey($value['key'])
+                    ;
+
+                    $fields[] = $field;
                 }
 
                 $this->tables[$name] = new Table($name, $fields);
