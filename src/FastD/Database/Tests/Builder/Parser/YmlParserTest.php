@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: janhuang
  * Date: 16/2/25
- * Time: 下午4:34
+ * Time: 下午9:57
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,9 +12,16 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\ORM\Generator\Parser\Table;
+namespace FastD\Database\Tests\Builder\Parser;
 
-class TableParser
+use FastD\Database\Builder\Parser;
+
+class YmlParserTest extends \PHPUnit_Framework_TestCase
 {
+    public function testYml()
+    {
+        $parser = new Parser();
 
+        $table = $parser->getTableByYml(__DIR__ . '/../Yml/demo.yml');
+    }
 }

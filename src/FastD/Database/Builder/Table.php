@@ -259,6 +259,7 @@ class Table implements BuilderInterface
 
     /**
      * @param null $flag
+     * @return string
      */
     public function toYml($flag = null)
     {

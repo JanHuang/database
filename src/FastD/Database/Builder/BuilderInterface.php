@@ -14,9 +14,21 @@
 
 namespace FastD\Database\Builder;
 
+/**
+ * Interface BuilderInterface
+ * @package FastD\Database\Builder
+ */
 interface BuilderInterface
 {
+    /**
+     * @param null|int $flag
+     * @return string
+     */
     public function toSql($flag = null);
 
+    /**
+     * @param null|int $flag
+     * @return string
+     */
     public function toYml($flag = null);
 }

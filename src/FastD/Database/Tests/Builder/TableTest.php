@@ -34,7 +34,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
             new Field('name', 'varchar')
         ]);
 
-        echo $table->toSql(Table::TABLE_CREATE);
+//        echo $table->toSql(Table::TABLE_CREATE);
     }
 
     public function testChange()
@@ -45,7 +45,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         $table->addField('name', new Field('nickname', 'char'));
 
-        echo $table->toSql(Table::TABLE_CHANGE);
+//        echo $table->toSql(Table::TABLE_CHANGE);
     }
 
     public function testDrop()
