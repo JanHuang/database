@@ -324,7 +324,7 @@ class Field implements BuilderInterface
         $nullable = $this->isNullable() ? '' : ' NOT NULL';
         $default = '';
         if (!$this->isNullable()) {
-            $default = $this->getDefault() ? ' DEFAULT \'' . $this->getDefault() . '\'' : '';
+            $default = $this->getDefault() ? ' DEFAULT \'' . $this->getDefault() . '\'' : ' DEFAULT \'\'';
         }
         $comment = $this->getComment() ? ' COMMENT \'' . $this->getComment() . '\'' : '';
         switch ($flag) {
@@ -339,7 +339,7 @@ class Field implements BuilderInterface
                     $nullable = $this->to_change->isNullable() ? '' : ' NOT NULL';
                     $default = '';
                     if (!$this->to_change->isNullable()) {
-                        $default = $this->to_change->getDefault() ? ' DEFAULT \'' . $this->to_change->getDefault() . '\'' : '';
+                        $default = $this->to_change->getDefault() ? ' DEFAULT \'' . $this->to_change->getDefault() . '\'' : ' DEFAULT \'\'';
                     }
                     $comment = $this->to_change->getComment() ? ' COMMENT \'' . $this->to_change->getComment() . '\'' : '';
                     return "CHANGE `{$this->getName()}` `{$this->to_change->getName()}` {$this->to_change->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";

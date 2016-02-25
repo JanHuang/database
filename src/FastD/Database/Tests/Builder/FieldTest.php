@@ -41,7 +41,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
     {
         $name = new Field('name', 'varchar', 20);
 
-        $this->assertEquals('`name` varchar(20) NOT NULL', $name->toSql());
+        $this->assertEquals('`name` varchar(20) NOT NULL DEFAULT \'\'', $name->toSql());
 
         $name = new Field('name', 'varchar', 20, '', true);
 
@@ -62,16 +62,16 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 
         $name->changeTo(new Field('name2', 'char', 30));
 
-        $this->assertEquals('CHANGE `name` `name2` char(30) NOT NULL', $name->toSql(Field::FIELD_CHANGE));
+        $this->assertEquals('CHANGE `name` `name2` char(30) NOT NULL DEFAULT \'\'', $name->toSql(Field::FIELD_CHANGE));
     }
 
     public function testSql()
     {
         $name = new Field('name', 'varchar', 20);
 
-        $this->assertEquals('ADD `name` varchar(20) NOT NULL', $name->toSql(Field::FIELD_ADD));
+        $this->assertEquals('ADD `name` varchar(20) NOT NULL DEFAULT \'\'', $name->toSql(Field::FIELD_ADD));
 
-        $this->assertEquals('CHANGE `name` `name` varchar(20) NOT NULL', $name->toSql(Field::FIELD_CHANGE));
+        $this->assertEquals('CHANGE `name` `name` varchar(20) NOT NULL DEFAULT \'\'', $name->toSql(Field::FIELD_CHANGE));
 
         $this->assertEquals('DROP `name`', $name->toSql(Field::FIELD_DROP));
     }
