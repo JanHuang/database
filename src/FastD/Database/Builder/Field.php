@@ -25,7 +25,6 @@ class Field implements BuilderInterface
     const FIELD_CHANGE = 2;
     const FIELD_DROP = 3;
     const FIELD_CREATE = 4;
-    const FIELD_INDEX = 5;
 
     /**
      * @var string
@@ -73,7 +72,7 @@ class Field implements BuilderInterface
     protected $comment;
 
     /**
-     * @var string
+     * @var Key
      */
     protected $key;
 
@@ -81,21 +80,6 @@ class Field implements BuilderInterface
      * @var Field
      */
     protected $to_change;
-
-    /**
-     * @var bool
-     */
-    protected $primary = false;
-
-    /**
-     * @var bool
-     */
-    protected $index = false;
-
-    /**
-     * @var bool
-     */
-    protected $unique = false;
 
     /**
      * Field constructor.
@@ -270,7 +254,7 @@ class Field implements BuilderInterface
     }
 
     /**
-     * @return string
+     * @return Key
      */
     public function getKey()
     {
@@ -278,24 +262,14 @@ class Field implements BuilderInterface
     }
 
     /**
-     * @param string $key
+     * @param Key $key
      * @return $this
      */
-    public function setKey($key)
+    public function setKey(Key $key)
     {
         $this->key = $key;
 
-        switch ($key) {
-            case 'PRI':
-                $this->setPrimary(true);
-                break;
-            case 'UNI':
-                $this->setUnique(true);
-                break;
-            case 'MUL':
-                $this->setIndex(true);
-                break;
-        }
+        $key->setField($this->getName());
 
         return $this;
     }
@@ -343,16 +317,15 @@ class Field implements BuilderInterface
      */
     public function isPrimary()
     {
-        return $this->primary;
+        return $this->key->isPrimary();
     }
 
     /**
-     * @param boolean $primary
      * @return $this
      */
-    public function setPrimary($primary)
+    public function setPrimary()
     {
-        $this->primary = $primary;
+        $this->key->setType(Key::KEY_PRIMARY);
 
         return $this;
     }
@@ -362,16 +335,15 @@ class Field implements BuilderInterface
      */
     public function isUnique()
     {
-        return $this->unique;
+        return $this->key->isUnique();
     }
 
     /**
-     * @param boolean $unique
      * @return $this
      */
-    public function setUnique($unique)
+    public function setUnique()
     {
-        $this->unique = $unique;
+        $this->key->setType(Key::KEY_UNIQUE);
 
         return $this;
     }
@@ -381,16 +353,15 @@ class Field implements BuilderInterface
      */
     public function isIndex()
     {
-        return $this->index;
+        return $this->key->isIndex();
     }
 
     /**
-     * @param boolean $index
      * @return $this
      */
-    public function setIndex($index)
+    public function setIndex()
     {
-        $this->index = $index;
+        $this->key->setType(Key::KEY_INDEX);
 
         return $this;
     }

@@ -15,6 +15,7 @@
 namespace FastD\Database\Tests\Builder;
 
 use FastD\Database\Builder\Field;
+use FastD\Database\Builder\Key;
 
 class FieldTest extends \PHPUnit_Framework_TestCase
 {
@@ -74,5 +75,14 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('CHANGE `name` `name` varchar(20) NOT NULL DEFAULT \'\'', $name->toSql(Field::FIELD_CHANGE));
 
         $this->assertEquals('DROP `name`', $name->toSql(Field::FIELD_DROP));
+    }
+
+    public function testKey()
+    {
+        $name = new Field('name', 'varchar', 20);
+
+        $name->setKey(new Key());
+
+        $this->assertTrue($name->isIndex());
     }
 }

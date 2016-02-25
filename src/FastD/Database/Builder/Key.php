@@ -14,6 +14,11 @@
 
 namespace FastD\Database\Builder;
 
+/**
+ * Class Key
+ *
+ * @package FastD\Database\Builder
+ */
 class Key implements BuilderInterface
 {
     const KEY_PRIMARY = 1;
@@ -21,58 +26,112 @@ class Key implements BuilderInterface
     const KEY_INDEX = 3;
     const KEY_FULLTEXT = 4;
 
+    /**
+     * @var string
+     */
     protected $field;
 
+    /**
+     * @var int
+     */
     protected $type;
 
-    public function __construct($field, $type = self::KEY_INDEX)
+    /**
+     * Key constructor.
+     * @param null $field
+     * @param int $type
+     */
+    public function __construct($field = null, $type = self::KEY_INDEX)
     {
         $this->field = $field;
 
         $this->type = $type;
     }
 
+    /**
+     * @param $field
+     * @return $this
+     */
+    public function setField($field)
+    {
+        $this->field = $field;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
     public function getField()
     {
         return $this->field;
     }
 
+    /**
+     * @param int $type
+     * @return $this
+     */
+    public function setType($type = self::KEY_INDEX)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * @return string
+     */
     public function getKey()
     {
         switch ($this->type) {
             case self::KEY_PRIMARY:
-                return 'primary';
+                return 'PRIMARY';
             case self::KEY_INDEX:
-                return 'index';
+                return 'INDEX';
             case self::KEY_UNIQUE;
-                return 'unique';
+                return 'UNIQUE';
             case self::KEY_FULLTEXT:
-                return 'fulltext';
+                return 'FULLTEXT';
         }
 
         throw new \InvalidArgumentException(sprintf('Key ["%s"] is undefined.', $this->type));
     }
 
+    /**
+     * @return bool
+     */
     public function isPrimary()
     {
         return $this->type === self::KEY_PRIMARY;
     }
 
+    /**
+     * @return bool
+     */
     public function isUnique()
     {
         return $this->type === self::KEY_UNIQUE;
     }
 
+    /**
+     * @return bool
+     */
     public function isIndex()
     {
         return $this->type === self::KEY_INDEX;
     }
 
+    /**
+     * @return bool
+     */
     public function isFullText()
     {
         return $this->type === self::KEY_FULLTEXT;
@@ -84,16 +143,40 @@ class Key implements BuilderInterface
      */
     public function toSql($flag = null)
     {
-        $key = strtolower($this->getKey() . $this->getField());
-        switch ($this->type) {
+        $key = strtolower($this->getKey() . '_' . $this->getField());
+
+        /*switch ($this->type) {
             case self::KEY_PRIMARY:
-                return "PRIMARY KEY (`{$this->getField()}`)";
+                $key = "PRIMARY KEY (`{$this->getField()}`)";
+                break;
             case self::KEY_INDEX:
-                return "KEY `{$key}` (`{$this->getField()}`)";
+                $key = "KEY `{$key}` (`{$this->getField()}`)";
+                break;
             case self::KEY_UNIQUE;
-                return "UNIQUE KEY `{$key}` (`{$this->getField()}`)";
+                $key = "UNIQUE KEY `{$key}` (`{$this->getField()}`)";
+                break;
             case self::KEY_FULLTEXT:
-                return 'fulltext';
+                $key = 'fulltext';
+                break;
+        }*/
+
+        switch ($flag) {
+            case Field::FIELD_CREATE:
+                if ($this->isPrimary()) {
+                    return "{$this->getKey()} KEY (`{$this->getField()}`)";
+                } else if ($this->isUnique()) {
+                    return "{$this->getKey()} KEY `{$key}` (`{$this->getField()}`)";
+                } else {
+                    return "KEY `{$key}` (`{$this->getField()}`)";
+                }
+            case Field::FIELD_CHANGE:
+            case Field::FIELD_ADD:
+                if ($this->isPrimary()) {
+                    return "ADD {$this->getKey()} KEY (`{$this->getField()}`)";
+                }
+                return "ADD {$this->getKey()} `{$key}` (`{$this->getField()}`);";
+            case Field::FIELD_DROP:
+                return "DROP INDEX `{$key}` (`{$this->getField()}`);";
         }
 
         throw new \InvalidArgumentException(sprintf('Key ["%s"] is undefined.', $this->type));

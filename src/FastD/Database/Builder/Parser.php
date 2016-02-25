@@ -105,7 +105,7 @@ WHERE
                     );
                     $field
                         ->setExtra($value['extra'])
-                        ->setKey($value['key'])
+//                        ->setKey(new Key($value['field']))
                     ;
 
                     $fields[] = $field;

@@ -261,17 +261,22 @@ class Table implements BuilderInterface
      */
     protected function getFieldsToSql($flag)
     {
-        $sql = [];
+        $fields = [];
+        $keys = [];
 
         foreach ($this->fields as $name => $field) {
             if (isset($this->new_fields[$name])) {
                 $field->changeTo($this->new_fields[$name]);
             }
 
-            $sql[] = $field->toSql($flag);
+            if (null !== ($key = $field->getKey())) {
+                $keys[] = $key->toSql($flag);
+            }
+
+            $fields[] = $field->toSql($flag);
         }
 
-        return implode(', ' . PHP_EOL, $sql);
+        return implode(', ' . PHP_EOL, array_merge($fields, $keys));
     }
 
     /**
@@ -282,7 +287,7 @@ class Table implements BuilderInterface
     {
         switch ($flag) {
             case self::TABLE_CREATE:
-                return "CREATE TABLE `{$this->getTable()}`(" . PHP_EOL . "{$this->getFieldsToSql(Field::FIELD_CREATE)} " . PHP_EOL . ") ENGINE={$this->getEngine()} CHARSET={$this->getCharset()};";
+                return "CREATE TABLE `{$this->getTable()}`(" . PHP_EOL . "{$this->getFieldsToSql(Field::FIELD_CREATE)}" . PHP_EOL . ") ENGINE={$this->getEngine()} CHARSET={$this->getCharset()};";
             case self::TABLE_CHANGE:
                 return "ALTER TABLE `{$this->getTable()}` {$this->getFieldsToSql(Field::FIELD_CHANGE)};";
             case self::TABLE_DROP:

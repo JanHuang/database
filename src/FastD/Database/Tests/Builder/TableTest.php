@@ -15,6 +15,7 @@
 namespace FastD\Database\Tests\Builder;
 
 use FastD\Database\Builder\Field;
+use FastD\Database\Builder\Key;
 use FastD\Database\Builder\Table;
 
 class TableTest extends \PHPUnit_Framework_TestCase
@@ -53,5 +54,17 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $table = new Table('demo');
 
         $this->assertEquals($table->toSql(Table::TABLE_DROP), 'DROP TABLE `demo`;');
+    }
+
+    public function testKey()
+    {
+        $name = new Field('name', 'varchar');
+
+        $name->setKey(new Key());
+
+        $table = new Table('demo', [$name,]);
+
+//        echo $table->toSql();
+        echo $table->toSql(Table::TABLE_CHANGE);
     }
 }
