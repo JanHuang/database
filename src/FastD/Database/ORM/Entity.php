@@ -16,6 +16,7 @@ namespace FastD\Database\ORM;
 
 use FastD\Database\DriverInterface;
 use FastD\Database\Query\Mysql;
+use FastD\Database\Params\HttpRequestHandle;
 
 /**
  * Class Entity

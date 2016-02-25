@@ -12,14 +12,14 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\ORM;
+namespace FastD\Database\Params;
 
 use FastD\Http\Request;
 
 /**
  * Class RequestHandle
  *
- * @package FastD\Database\ORM
+ * @package FastD\Database\Params
  */
 class HttpRequestHandle
 {

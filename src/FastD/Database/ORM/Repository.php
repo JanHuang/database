@@ -17,6 +17,7 @@ use FastD\Database\DriverInterface;
 use FastD\Database\Drivers\Query\MySQLQueryBuilder;
 use FastD\Database\Drivers\Query\Paging\Pagination;
 use FastD\Database\Drivers\Query\QueryBuilderInterface;
+use FastD\Database\Params\HttpRequestHandle;
 
 /**
  * Class Repository
