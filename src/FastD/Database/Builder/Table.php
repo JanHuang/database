@@ -181,16 +181,25 @@ class Table implements BuilderInterface
         return $this;
     }
 
+    protected function getFieldsToSql($flag)
+    {
+        $sql = [];
+        foreach ($this->fields as $field) {
+            $sql[] = $field->toSql($flag);
+        }
+
+        return implode(', ' . PHP_EOL, $sql);
+    }
+
     public function toSql($flag = null)
     {
         switch ($flag) {
             case self::TABLE_CREATE:
-
-                return '';
+                return "CREATE TABLE `{$this->getTable()}`({$this->getFieldsToSql(Field::FIELD_CREATE)}) ENGINE={$this->getEngine()} CHARSET={$this->getCharset()};";
             case self::TABLE_CHANGE:
-                return '';
+                return "ALTER TABLE `{$this->getTable()}` {$this->getFieldsToSql(Field::FIELD_CHANGE)};";
             case self::TABLE_DROP:
-                return '';
+                return "DROP TABLE `{$this->getTable()}`;";
         }
 
         throw new \InvalidArgumentException(sprintf('Operation ["%s"] is undefined.', $flag));

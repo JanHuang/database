@@ -86,7 +86,7 @@ class Field implements BuilderInterface
      * @param string $default
      * @param string $comment
      */
-    public function __construct($name, $type, $length = 255, $alias = '', $nullable = false, $default = '', $comment = '')
+    public function __construct($name, $type = 'varchar', $length = 255, $alias = '', $nullable = false, $default = '', $comment = '')
     {
         $this->name = $name;
 
@@ -299,16 +299,23 @@ class Field implements BuilderInterface
 
     public function toSql($flag = self::FIELD_CREATE)
     {
+        $length = $this->getLength() ? '(' . $this->getLength() . ')' : '';
+        $unsigned = $this->isUnsigned() ? ' unsigned ' : '';
+        $nullable = $this->isNullable() ? '' : ' NOT NULL';
+        $default = '';
+        if (!$this->isNullable()) {
+            $default = $this->getDefault() ? ' DEFAULT \'' . $this->getDefault() . '\'' : '';
+        }
+        $comment = $this->getComment() ? ' COMMENT \'' . $this->getComment() . '\'' : '';
         switch ($flag) {
             case self::FIELD_CREATE:
-
-                return '';
+                return "`{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";
             case self::FIELD_ADD:
-                return '';
+                return "ADD `{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";
             case self::FIELD_CHANGE:
-                return '';
+                return "CHANGE `{$this->getName()}` `{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";
             case self::FIELD_DROP:
-                return '';
+                return "DROP `{$this->getName()}`";
         }
 
         throw new \InvalidArgumentException(sprintf('Operation ["%s"] is undefined.', $flag));

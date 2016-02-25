@@ -36,4 +36,30 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(20, $name->getLength());
     }
+
+    public function testCreateSql()
+    {
+        $name = new Field('name', 'varchar', 20);
+
+        $this->assertEquals('`name` varchar(20) NOT NULL', $name->toSql());
+
+        $name = new Field('name', 'varchar', 20, '', true);
+
+        $this->assertEquals('`name` varchar(20)', $name->toSql());
+
+        $name = new Field('name', 'varchar', 20, '', true, 'janhuang', '姓名');
+
+        $this->assertEquals('`name` varchar(20) COMMENT \'姓名\'', $name->toSql());
+
+        $name = new Field('name', 'varchar', 20, '', false, 'janhuang', '姓名');
+
+        $this->assertEquals('`name` varchar(20) NOT NULL DEFAULT \'janhuang\' COMMENT \'姓名\'', $name->toSql());
+    }
+
+    public function testAddSql()
+    {
+        $name = new Field('name', 'varchar', 20);
+
+        $this->assertEquals('ADD `name` varchar(20) NOT NULL', $name->toSql(Field::FIELD_ADD));
+    }
 }
