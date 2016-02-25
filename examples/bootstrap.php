@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 16/2/19
- * Time: 上午12:25
+ * Date: 16/2/25
+ * Time: 上午11:30
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,15 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Tests\Orm\Entity;
+$loader = include __DIR__.'/../vendor/autoload.php';
 
-use FastD\Database\ORM\Entity;
-
-class Dbunit extends Entity
-{
-    /**
-     * @const string
-     */
-    const PRIMARY = 'id';
-
-}
+$loader->setPsr4('Examples\\', __DIR__ . '/../../examples');
+ 

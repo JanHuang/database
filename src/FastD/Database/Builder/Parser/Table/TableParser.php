@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 16/2/19
- * Time: 上午12:25
+ * Date: 16/2/25
+ * Time: 下午4:34
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,15 +12,9 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Tests\Orm\Entity;
+namespace FastD\Database\ORM\Generator\Parser\Table;
 
-use FastD\Database\ORM\Entity;
-
-class Dbunit extends Entity
+class TableParser
 {
-    /**
-     * @const string
-     */
-    const PRIMARY = 'id';
 
 }

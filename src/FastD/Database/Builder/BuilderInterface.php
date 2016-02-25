@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: janhuang
- * Date: 16/2/19
- * Time: 上午12:25
+ * Date: 16/2/25
+ * Time: 下午5:33
  * Github: https://www.github.com/janhuang
  * Coding: https://www.coding.net/janhuang
  * SegmentFault: http://segmentfault.com/u/janhuang
@@ -12,15 +12,11 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Tests\Orm\Entity;
+namespace FastD\Database\Builder;
 
-use FastD\Database\ORM\Entity;
-
-class Dbunit extends Entity
+interface BuilderInterface
 {
-    /**
-     * @const string
-     */
-    const PRIMARY = 'id';
+    public function toSql($flag = null);
 
+    public function toYml($flag = null);
 }

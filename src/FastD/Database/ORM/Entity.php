@@ -112,7 +112,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
             ->query(
                 Mysql::singleton()
                     ->table($this->getTable())
-                    ->where($this->condition)
+                    ->where($this->condition ?? [])
                     ->fields($fields ?? $this->getAlias())
                     ->select()
             )

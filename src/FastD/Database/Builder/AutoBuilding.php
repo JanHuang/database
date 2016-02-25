@@ -14,16 +14,18 @@
 
 namespace FastD\Database\ORM\Generator;
 
-use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\DriverInterface;
 use FastD\Database\ORM\Parser\DBParser;
 use FastD\Database\ORM\Parser\TableParser;
 
 /**
- * Class Builder
+ * 自动生成器
  *
- * @package FastD\Database\ORM\Mapper
+ * Class AutoBuilding
+ *
+ * @package FastD\Database\ORM\AutoBuilding
  */
-class Mapping
+class AutoBuilding
 {
     /**
      * @var DriverInterface

@@ -1,0 +1,16 @@
+table: demo
+prefix: fd_
+suffix:
+cache: 保留
+engine: innodb # 默认引擎
+charset: utf8 # 默认字符编码
+fields:
+  id: # 别名
+    name: id # 字段名
+    type: int
+    length: 10
+    default:
+    comment:
+    unsigned:
+    key:
+    notnull: true

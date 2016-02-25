@@ -13,7 +13,8 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.0",
-        "symfony/yaml": "~3.0"
+        "symfony/yaml": "~3.0",
+        "fastd/generator": "1.0.x-dev"
     },
     "require-dev": {
         "phpunit/phpunit": "5.0",

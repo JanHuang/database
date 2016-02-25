@@ -1,0 +1,321 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: janhuang
+ * Date: 16/2/25
+ * Time: 下午5:32
+ * Github: https://www.github.com/janhuang
+ * Coding: https://www.coding.net/janhuang
+ * SegmentFault: http://segmentfault.com/u/janhuang
+ * Blog: http://segmentfault.com/blog/janhuang
+ * Gmail: bboyjanhuang@gmail.com
+ * WebSite: http://www.janhuang.me
+ */
+
+namespace FastD\Database\Builder;
+
+/**
+ * Class Field
+ *
+ * @package FastD\Database\Builder
+ */
+class Field implements BuilderInterface
+{
+    const FIELD_ADD = 1;
+    const FIELD_CHANGE = 2;
+    const FIELD_DROP = 3;
+    const FIELD_CREATE = 4;
+
+    /**
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * @var string
+     */
+    protected $alias;
+
+    /**
+     * @var int
+     */
+    protected $length;
+
+    /**
+     * @var string
+     */
+    protected $type;
+
+    /**
+     * @var bool
+     */
+    protected $unsigned = false;
+
+    /**
+     * @var bool
+     */
+    protected $nullable = false;
+
+    /**
+     * @var string
+     */
+    protected $default;
+
+    /**
+     * @var string
+     */
+    protected $extra;
+
+    /**
+     * @var string
+     */
+    protected $comment;
+
+    /**
+     * @var string
+     */
+    protected $key;
+
+    /**
+     * Field constructor.
+     * @param $name
+     * @param $type
+     * @param $length
+     * @param $alias
+     * @param bool $nullable
+     * @param string $default
+     * @param string $comment
+     */
+    public function __construct($name, $type, $length = 255, $alias = '', $nullable = false, $default = '', $comment = '')
+    {
+        $this->name = $name;
+
+        if (in_array($type, ['array'])) {
+            $type = 'varchar';
+        }
+
+        $this->type = $type;
+
+        $this->length = $length;
+
+        $this->alias = $alias;
+
+        $this->nullable = $nullable;
+
+        $this->default = $default;
+
+        $this->comment = $comment;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLength()
+    {
+        return $this->length;
+    }
+
+    /**
+     * @param int $length
+     * @return $this
+     */
+    public function setLength($length)
+    {
+        $this->length = $length;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return $this
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isUnsigned()
+    {
+        return $this->unsigned;
+    }
+
+    /**
+     * @param boolean $unsigned
+     * @return $this
+     */
+    public function setUnsigned($unsigned)
+    {
+        $this->unsigned = $unsigned;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isNullable()
+    {
+        return $this->nullable;
+    }
+
+    /**
+     * @param boolean $nullable
+     * @return $this
+     */
+    public function setNullable($nullable)
+    {
+        $this->nullable = $nullable;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefault()
+    {
+        return $this->default;
+    }
+
+    /**
+     * @param string $default
+     * @return $this
+     */
+    public function setDefault($default)
+    {
+        $this->default = $default;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtra()
+    {
+        return $this->extra;
+    }
+
+    /**
+     * @param string $extra
+     * @return $this
+     */
+    public function setExtra($extra)
+    {
+        $this->extra = $extra;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
+
+    /**
+     * @param string $comment
+     * @return $this
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param string $key
+     * @return $this
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @param string $alias
+     * @return $this
+     */
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function toSql($flag = self::FIELD_CREATE)
+    {
+        switch ($flag) {
+            case self::FIELD_CREATE:
+
+                return '';
+            case self::FIELD_ADD:
+                return '';
+            case self::FIELD_CHANGE:
+                return '';
+            case self::FIELD_DROP:
+                return '';
+        }
+
+        throw new \InvalidArgumentException(sprintf('Operation ["%s"] is undefined.', $flag));
+    }
+
+    public function toYml($flag = null)
+    {
+        return '';
+    }
+}
