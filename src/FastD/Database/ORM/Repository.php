@@ -11,7 +11,7 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace FastD\Database\ORM;
+namespace FastD\Database\Orm;
 
 use FastD\Database\DriverInterface;
 use FastD\Database\Drivers\Query\MySQLQueryBuilder;

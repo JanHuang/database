@@ -12,7 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\ORM;
+namespace FastD\Database\Orm;
 
 use FastD\Database\DriverInterface;
 use FastD\Database\Query\Mysql;
