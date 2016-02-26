@@ -91,16 +91,18 @@ M
 
         $table = new Table('demo', [$name, $age]);
 
-        $this->assertEquals(<<<M
-CREATE TABLE `demo` (
-`name` varchar(20) NOT NULL DEFAULT '',
-`age` smallint(2) NOT NULL DEFAULT 0',
-KEY `index_name` (`name`)
-) ENGINE=InnoDB CHARSET=utf8;
-M
-            , $table->toSql(Table::TABLE_CREATE));
+        echo  $table->toSql();
 
-        echo $table->toSql();
-//        echo $table->toSql(Table::TABLE_CHANGE);
+        $this->assertEquals([
+            'ALTER TABLE `demo` CHANGE `name` `name` varchar(20) NOT NULL DEFAULT \'\';',
+            'ALTER TABLE `demo` CHANGE `age` `age` smallint(2) NOT NULL DEFAULT 0;',
+            'ALTER TABLE `demo` ADD INDEX `index_name` (`name`);',
+        ], explode(PHP_EOL, $table->toSql(Table::TABLE_CHANGE)));
+
+        $this->assertEquals([
+            'ALTER TABLE `demo` ADD `name` varchar(20) NOT NULL DEFAULT \'\';',
+            'ALTER TABLE `demo` ADD `age` smallint(2) NOT NULL DEFAULT 0;',
+            'ALTER TABLE `demo` ADD INDEX `index_name` (`name`);',
+        ], explode(PHP_EOL, $table->toSql(Table::TABLE_ADD)));
     }
 }

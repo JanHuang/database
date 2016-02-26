@@ -276,6 +276,8 @@ class Table implements BuilderInterface
                 $field->changeTo($this->new_fields[$name]);
             }
 
+            $sql = $field->toSql($flag);
+
             if (null !== ($key = $field->getKey())) {
                 if (Field::FIELD_CREATE === $flag) {
                     $keys[] = $key->toSql($flag);
@@ -284,7 +286,11 @@ class Table implements BuilderInterface
                 }
             }
 
-            $fields[] = $field->toSql($flag);
+            if (in_array($flag, [Field::FIELD_ADD, Field::FIELD_CHANGE])) {
+                $sql = "ALTER TABLE `{$this->getTable()}` " . $sql;
+            }
+
+            $fields[] = trim($sql);
         }
 
         return implode($concat . PHP_EOL, array_merge($fields, $keys));
@@ -300,9 +306,9 @@ class Table implements BuilderInterface
             case self::TABLE_CREATE:
                 return "CREATE TABLE `{$this->getTable()}` (" . PHP_EOL . "{$this->getFieldsToSql(Field::FIELD_CREATE)}" . PHP_EOL . ") ENGINE={$this->getEngine()} CHARSET={$this->getCharset()};";
             case self::TABLE_CHANGE:
-                return "ALTER TABLE `{$this->getTable()}` {$this->getFieldsToSql(Field::FIELD_CHANGE)};";
+                return "{$this->getFieldsToSql(Field::FIELD_CHANGE)};";
             case self::TABLE_ADD:
-                return "ALTER TABLE `{$this->getTable()}` {$this->getFieldsToSql(Field::FIELD_ADD)};";
+                return "{$this->getFieldsToSql(Field::FIELD_ADD)};";
             case self::TABLE_DROP:
                 return "DROP TABLE `{$this->getTable()}`;";
         }
