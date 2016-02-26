@@ -46,21 +46,6 @@ class DriverTest extends Fixture_Database_TestCast
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testRepositoryUndefined()
-    {
-        $this->driver->getRepository('abc');
-    }
-
-    public function testRepositoryDefined()
-    {
-        $repository = $this->driver->getRepository('FastD:Database:Tests:Orm:Repository:Dbunit');
-
-        $this->assertInstanceOf(Repository::class, $repository);
-    }
-
-    /**
      * id: 1
      * content: "Hello buddy!"
      * name: "joe"

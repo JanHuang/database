@@ -34,7 +34,7 @@ class AutoBuildingTest extends Fixture_Database_TestCast
     {
         $driver = $this->createDriver();
 
-        $auto = new AutoBuilding($driver, true);
+        $auto = new AutoBuilding($driver);
 
         $auto->saveTo(__DIR__ . '/Orm', 'FastD\Database\Tests\Builder\\Orm', true);
     }

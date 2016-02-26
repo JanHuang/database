@@ -48,13 +48,13 @@ class AutoBuilding
      * Builder constructor.
      *
      * @param DriverInterface|null $driverInterface
-     * @param bool $debug
+     * @param $originDir
      */
-    public function __construct(DriverInterface $driverInterface = null, $debug = true)
+    public function __construct(DriverInterface $driverInterface = null, $originDir = null)
     {
         $this->driver = $driverInterface;
 
-        $this->parser = new Parser($driverInterface);
+        $this->parser = new Parser($driverInterface, $originDir);
 
         $this->tables = $this->parser->getTables();
     }
@@ -97,6 +97,10 @@ class AutoBuilding
         return $this;
     }
 
+    /**
+     * @param $value
+     * @return array
+     */
     protected function getConstants($value)
     {
         $fields = new Property('FIELDS', Property::PROPERTY_CONST);
@@ -321,11 +325,43 @@ class AutoBuilding
     {
         $result = [];
 
-        $result['yml_to'] = $this->saveYmlTo($dir, $force);
         $result['entity_to'] = $this->saveEntityTo($dir, $namespace, $force);
         $result['repository_to'] = $this->saveRepositoryTo($dir, $namespace, $force);
         $result['field_to'] = $this->saveFieldTo($dir, $namespace, $force);
 
         return $result;
+    }
+
+    /**
+     * 通过 Yml 配置文件建立数据库
+     *
+     * @param $dir
+     * @param null $namespace
+     * @param bool $force
+     * @param int  $flag
+     * @return array
+     */
+    public function ymlToTable($dir, $namespace = null, $force = false, $flag = Table::TABLE_CHANGE)
+    {
+        foreach ($this->getTables() as $table) {
+            $this->driver->query($table->toSql($flag))->execute()->getAll();
+        }
+
+        return $this->saveTo($dir, $namespace, $force);
+    }
+
+    /**
+     * 通过已有数据表建立 Yml 配置文件
+     *
+     * @param $dir
+     * @param null $namespace
+     * @param bool $force
+     * @return array
+     */
+    public function tableToYml($dir, $namespace = null, $force = false)
+    {
+        $this->saveYmlTo($dir, $force);
+
+        return $this->saveTo($dir, $namespace, $force);
     }
 }

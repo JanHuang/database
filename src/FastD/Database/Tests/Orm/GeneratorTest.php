@@ -21,23 +21,11 @@ namespace FastD\Database\Tests\Orm;
  */
 class GeneratorTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * $generator = new Generator($driver);
-     * $generator->fromYml($dir);
-     * $generator->saveTo();
-     * $generator->update($force = false);
-     */
     public function testUpdate()
     {
-        
+
     }
 
-    /**
-     * $generator = new Generator($driver);
-     * $generator->fromTable($table);
-     * $generator->saveTo($dir);
-     * $generator->revert();
-     */
     public function testRevert()
     {
 
