@@ -312,12 +312,12 @@ class Table extends Builder
                 if (Field::FIELD_CREATE === $flag) {
                     $keys[] = $key->toSql($flag);
                 } else if (in_array($flag, [Field::FIELD_ADD, Field::FIELD_CHANGE])) {
-                    $keys[] = "ALTER TABLE `{$this->getTable()}` " . $key->toSql($flag);
+                    $keys[] = "ALTER TABLE `{$this->getFullTable()}` " . $key->toSql($flag);
                 }
             }
 
             if (in_array($flag, [Field::FIELD_ADD, Field::FIELD_CHANGE])) {
-                $sql = "ALTER TABLE `{$this->getTable()}` " . $sql;
+                $sql = "ALTER TABLE `{$this->getFullTable()}` " . $sql;
             }
 
             $fields[] = trim($sql);
@@ -334,13 +334,13 @@ class Table extends Builder
     {
         switch ($flag) {
             case self::TABLE_CREATE:
-                return "CREATE TABLE `{$this->getTable()}` (" . PHP_EOL . "{$this->getFieldsToSql(Field::FIELD_CREATE)}" . PHP_EOL . ") ENGINE={$this->getEngine()} CHARSET={$this->getCharset()};";
+                return "CREATE TABLE `{$this->getFullTable()}` (" . PHP_EOL . "{$this->getFieldsToSql(Field::FIELD_CREATE)}" . PHP_EOL . ") ENGINE={$this->getEngine()} CHARSET={$this->getCharset()};";
             case self::TABLE_CHANGE:
                 return "{$this->getFieldsToSql(Field::FIELD_CHANGE)};";
             case self::TABLE_ADD:
                 return "{$this->getFieldsToSql(Field::FIELD_ADD)};";
             case self::TABLE_DROP:
-                return "DROP TABLE `{$this->getTable()}`;";
+                return "DROP TABLE `{$this->getFullTable()}`;";
         }
 
         throw new \InvalidArgumentException(sprintf('Operation ["%s"] is undefined.', $flag));

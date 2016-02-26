@@ -45,14 +45,22 @@ class AutoBuilding
     protected $tables;
 
     /**
+     * @var bool
+     */
+    protected $debug;
+
+    /**
      * Builder constructor.
      *
      * @param DriverInterface|null $driverInterface
      * @param $originDir
+     * @param bool $debug
      */
-    public function __construct(DriverInterface $driverInterface = null, $originDir = null)
+    public function __construct(DriverInterface $driverInterface = null, $originDir = null, $debug = true)
     {
         $this->driver = $driverInterface;
+
+        $this->debug = $debug;
 
         $this->parser = new Parser($driverInterface, $originDir);
 
@@ -72,7 +80,7 @@ class AutoBuilding
      */
     public function getTables()
     {
-        return $this->parser->getTablesByDb();
+        return $this->parser->getTables();
     }
 
     /**
@@ -112,7 +120,10 @@ class AutoBuilding
         $primary = new Property('PRIMARY', Property::PROPERTY_CONST);
         $primary->setValue('\\' . $value . '::PRIMARY');
 
-        return [$fields, $alias, $primary];
+        $table = new Property('TABLE', Property::PROPERTY_CONST);
+        $table->setValue('\\' . $value . '::TABLE');
+
+        return [$fields, $alias, $primary, $table];
     }
 
     /**
@@ -124,7 +135,7 @@ class AutoBuilding
     {
         $dir = str_replace('//', '/', $dir . '/yml');
 
-        foreach ($this->tables as $table) {
+        foreach ($this->getParser()->getTables() as $table) {
             $file = $dir . '/' . strtolower($table->getTable()) . '.yml';
             if (!is_dir($dir)) {
                 if (true === $force) {
@@ -157,7 +168,7 @@ class AutoBuilding
         $dir = str_replace('//', '/', $dir . '/Entity');
 
         foreach ($this->tables as $table) {
-            $name = ucfirst($table->getTable());
+            $name = ucfirst($table->rename($table->getTable()));
             $file = $dir . '/' . $name . '.php';
             if (!is_dir($dir)) {
                 if (true === $force) {
@@ -209,7 +220,7 @@ class AutoBuilding
         $dir = str_replace('//', '/', $dir . '/Repository');
 
         foreach ($this->tables as $table) {
-            $name = ucfirst($table->getTable());
+            $name = ucfirst($table->rename($table->getTable()));
             $file = $dir . '/' . $name . 'Repository.php';
             if (!is_dir($dir)) {
                 if (true === $force) {
@@ -252,7 +263,7 @@ class AutoBuilding
         $dir = str_replace('//', '/', $dir . '/Field');
 
         foreach ($this->tables as $table) {
-            $name = ucfirst($table->getTable());
+            $name = ucfirst($table->rename($table->getTable()));
             $file = $dir . '/' . $name . '.php';
             if (!is_dir($dir)) {
                 if (true === $force) {
@@ -292,6 +303,9 @@ class AutoBuilding
 
             $aliasConst = new Property('ALIAS', Property::PROPERTY_CONST);
             $aliasConst->setValue($alias);
+
+            $aliasConst = new Property('TABLE', Property::PROPERTY_CONST);
+            $aliasConst->setValue($table->getFullTable());
 
             $constants = [
                 $fieldsConst,
@@ -343,8 +357,16 @@ class AutoBuilding
      */
     public function ymlToTable($dir, $namespace = null, $force = false, $flag = Table::TABLE_CHANGE)
     {
-        foreach ($this->getTables() as $table) {
-            $this->driver->query($table->toSql($flag))->execute()->getAll();
+        $this->tables = $this->parser->getTablesByYml();
+
+        foreach ($this->getParser()->getTablesByYml() as $table) {
+            $sql = $table->toSql($flag);
+            $this->driver->query($sql)->execute()->getAll();
+            if ($this->debug) {
+                echo PHP_EOL;
+                echo $sql;
+                echo PHP_EOL;
+            }
         }
 
         return $this->saveTo($dir, $namespace, $force);
@@ -360,6 +382,8 @@ class AutoBuilding
      */
     public function tableToYml($dir, $namespace = null, $force = false)
     {
+        $this->tables = $this->parser->getTablesByDb();
+
         $this->saveYmlTo($dir, $force);
 
         return $this->saveTo($dir, $namespace, $force);

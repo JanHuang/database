@@ -1,6 +1,6 @@
 <?php
 
-namespace FastD\Database\Tests\Builder\Orm\Field;
+namespace Examples\Orm\Field;
 
 class Base
 {

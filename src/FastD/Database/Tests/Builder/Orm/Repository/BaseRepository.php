@@ -16,5 +16,9 @@ class Base extends \FastD\Database\Orm\Repository
      * @const mixed
      */
     const PRIMARY = \FastD\Database\Tests\Builder\Orm\Field\Base::PRIMARY;
+    /**
+     * @const mixed
+     */
+    const TABLE = \FastD\Database\Tests\Builder\Orm\Field\Base::TABLE;
 
 }
