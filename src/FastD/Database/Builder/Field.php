@@ -19,7 +19,7 @@ namespace FastD\Database\Builder;
  *
  * @package FastD\Database\Builder
  */
-class Field implements BuilderInterface
+class Field extends Builder
 {
     const FIELD_ADD = 1;
     const FIELD_CHANGE = 2;
@@ -283,7 +283,7 @@ class Field implements BuilderInterface
      */
     public function getAlias()
     {
-        return $this->alias;
+        return empty($this->alias) ? $this->rename($this->name) : $this->alias;
     }
 
     /**

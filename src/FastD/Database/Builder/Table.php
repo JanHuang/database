@@ -20,7 +20,7 @@ use Symfony\Component\Yaml\Yaml;
  *
  * @package FastD\Database\Builder
  */
-class Table implements BuilderInterface
+class Table extends Builder
 {
     const TABLE_CREATE = 1;
     const TABLE_CHANGE = 2;
@@ -268,6 +268,14 @@ class Table implements BuilderInterface
     }
 
     /**
+     * @return string
+     */
+    public function getFullTable()
+    {
+        return $this->getPrefix() . $this->getTable() . $this->getSuffix();
+    }
+
+    /**
      * @param string $table
      * @return $this
      */
@@ -350,7 +358,7 @@ class Table implements BuilderInterface
             $alias = $field->getAlias();
 
             if (empty($alias)) {
-                $alias = $field->getName();
+                $alias = $this->rename($field->getName());
             }
 
             $fields[$alias] = [

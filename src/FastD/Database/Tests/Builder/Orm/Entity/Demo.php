@@ -4,6 +4,18 @@ namespace FastD\Database\Tests\Builder\Orm\Entity;
 
 class Demo extends \FastD\Database\Orm\Entity
 {
+    /**
+     * @const mixed
+     */
+    const FIELDS = \FastD\Database\Tests\Builder\Orm\Field\Demo::FIELDS;
+    /**
+     * @const mixed
+     */
+    const ALIAS = \FastD\Database\Tests\Builder\Orm\Field\Demo::ALIAS;
+    /**
+     * @const mixed
+     */
+    const PRIMARY = \FastD\Database\Tests\Builder\Orm\Field\Demo::PRIMARY;
     /*
      * @var mixed
      */

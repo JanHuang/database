@@ -19,7 +19,7 @@ namespace FastD\Database\Builder;
  *
  * @package FastD\Database\Builder
  */
-class Key implements BuilderInterface
+class Key extends Builder
 {
     const KEY_PRIMARY = 1;
     const KEY_UNIQUE = 2;

@@ -15,20 +15,37 @@
 namespace FastD\Database\Builder;
 
 /**
- * Interface BuilderInterface
+ * Class Builder
+ *
  * @package FastD\Database\Builder
  */
-interface BuilderInterface
+abstract class Builder
 {
     /**
      * @param null|int $flag
      * @return string
      */
-    public function toSql($flag = null);
+    abstract public function toSql($flag = null);
 
     /**
      * @param null|int $flag
      * @return string
      */
-    public function toYml($flag = null);
+    abstract public function toYml($flag = null);
+
+    /**
+     * @param $name
+     * @return mixed|string
+     */
+    public function rename($name)
+    {
+        if (strpos($name, '_')) {
+            $arr = explode('_', $name);
+            $name = array_shift($arr);
+            foreach ($arr as $value) {
+                $name .= ucfirst($value);
+            }
+        }
+        return $name;
+    }
 }

@@ -4,6 +4,18 @@ namespace FastD\Database\Tests\Builder\Orm\Entity;
 
 class Base extends \FastD\Database\Orm\Entity
 {
+    /**
+     * @const mixed
+     */
+    const FIELDS = \FastD\Database\Tests\Builder\Orm\Field\Base::FIELDS;
+    /**
+     * @const mixed
+     */
+    const ALIAS = \FastD\Database\Tests\Builder\Orm\Field\Base::ALIAS;
+    /**
+     * @const mixed
+     */
+    const PRIMARY = \FastD\Database\Tests\Builder\Orm\Field\Base::PRIMARY;
     /*
      * @var mixed
      */
@@ -19,7 +31,7 @@ class Base extends \FastD\Database\Orm\Entity
     /*
      * @var mixed
      */
-    protected $create_at;
+    protected $createAt;
 
     /**
      * @return mixed
@@ -78,18 +90,18 @@ class Base extends \FastD\Database\Orm\Entity
     /**
      * @return mixed
      */
-    public function getCreate_at()
+    public function getCreateAt()
     {
-        return $this->create_at;
+        return $this->createAt;
     }
 
     /**
-     * @param mixed $create_at
+     * @param mixed $createAt
      * @return $this
      */
-    public function setCreate_at($create_at)
+    public function setCreateAt($createAt)
     {
-        $this->create_at = $create_at;
+        $this->createAt = $createAt;
 
         return $this;
     }

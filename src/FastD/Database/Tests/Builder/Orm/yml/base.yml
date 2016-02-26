@@ -32,7 +32,7 @@ fields:
         unsigned: false
         key: ''
         nullable: true
-    create_at:
+    createAt:
         name: create_at
         type: varchar
         length: '40'

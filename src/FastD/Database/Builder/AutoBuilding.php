@@ -45,11 +45,6 @@ class AutoBuilding
     protected $tables;
 
     /**
-     * @var string
-     */
-    protected $namespace;
-
-    /**
      * Builder constructor.
      *
      * @param DriverInterface|null $driverInterface
@@ -102,6 +97,20 @@ class AutoBuilding
         return $this;
     }
 
+    protected function getConstants($value)
+    {
+        $fields = new Property('FIELDS', Property::PROPERTY_CONST);
+        $fields->setValue('\\' . $value . '::FIELDS');
+
+        $alias = new Property('ALIAS', Property::PROPERTY_CONST);
+        $alias->setValue('\\' . $value . '::ALIAS');
+
+        $primary = new Property('PRIMARY', Property::PROPERTY_CONST);
+        $primary->setValue('\\' . $value . '::PRIMARY');
+
+        return [$fields, $alias, $primary];
+    }
+
     /**
      * @param $dir
      * @param bool $force
@@ -112,7 +121,7 @@ class AutoBuilding
         $dir = str_replace('//', '/', $dir . '/yml');
 
         foreach ($this->tables as $table) {
-            $file = $dir . '/' . ucfirst($table->getTable()) . '.yml';
+            $file = $dir . '/' . strtolower($table->getTable()) . '.yml';
             if (!is_dir($dir)) {
                 if (true === $force) {
                     mkdir($dir, 0755, true);
@@ -133,7 +142,13 @@ class AutoBuilding
         return 0;
     }
 
-    public function saveEntityTo($dir, $force = false)
+    /**
+     * @param $dir
+     * @param string $namespace
+     * @param bool $force
+     * @return int
+     */
+    public function saveEntityTo($dir, $namespace = '', $force = false)
     {
         $dir = str_replace('//', '/', $dir . '/Entity');
 
@@ -150,7 +165,7 @@ class AutoBuilding
 
             $object = new Object('Entity', 'FastD\Database\Orm');
 
-            $entity = new Generator($name, $this->namespace . '\\Entity', Object::OBJECT_CLASS);
+            $entity = new Generator($name, $namespace . '\\Entity', Object::OBJECT_CLASS);
 
             $entity->setExtends($object);
 
@@ -158,11 +173,11 @@ class AutoBuilding
             $methods = [];
 
             foreach ($table->getFields() as $field) {
-                $properties[] = new Property($field->getName());
-                $methods[] = new GetSetter($field->getName());
+                $properties[] = new Property($field->getAlias());
+                $methods[] = new GetSetter($field->getAlias());
             }
 
-            $entity->setProperties($properties);
+            $entity->setProperties(array_merge($this->getConstants($namespace . '\\Field\\' . $name), $properties));
             $entity->setMethods($methods);
 
             $content = '<?php' . PHP_EOL . $entity->generate();
@@ -179,7 +194,13 @@ class AutoBuilding
         return 0;
     }
 
-    public function saveRepositoryTo($dir, $force = false)
+    /**
+     * @param $dir
+     * @param string $namespace
+     * @param bool $force
+     * @return int
+     */
+    public function saveRepositoryTo($dir, $namespace = '', $force = false)
     {
         $dir = str_replace('//', '/', $dir . '/Repository');
 
@@ -196,11 +217,13 @@ class AutoBuilding
 
             $object = new Object('Repository', 'FastD\Database\Orm');
 
-            $entity = new Generator($name, $this->namespace . '\\Repository', Object::OBJECT_CLASS);
+            $repository = new Generator($name, $namespace . '\\Repository', Object::OBJECT_CLASS);
 
-            $entity->setExtends($object);
+            $repository->setExtends($object);
 
-            $content = '<?php' . PHP_EOL . $entity->generate();
+            $repository->setProperties($this->getConstants($namespace . '\\Field\\' . $name));
+
+            $content = '<?php' . PHP_EOL . $repository->generate();
 
             if (file_exists($file)) {
                 if (true === $force) {
@@ -214,15 +237,94 @@ class AutoBuilding
         return 0;
     }
 
+    /**
+     * @param $dir
+     * @param null $namespace
+     * @param bool $force
+     * @return int
+     */
+    public function saveFieldTo($dir, $namespace = null, $force = false)
+    {
+        $dir = str_replace('//', '/', $dir . '/Field');
+
+        foreach ($this->tables as $table) {
+            $name = ucfirst($table->getTable());
+            $file = $dir . '/' . $name . '.php';
+            if (!is_dir($dir)) {
+                if (true === $force) {
+                    mkdir($dir, 0755, true);
+                } else {
+                    throw new \RuntimeException(sprintf('Directory ["%s"] is not such. Please execute force or create it.', $dir));
+                }
+            }
+
+            $fields = [];
+            $alias = [];
+
+            $primaryConst = new Property('PRIMARY', Property::PROPERTY_CONST);
+
+            foreach ($table->getFields() as $value) {
+                $fields[$value->getAlias()] = [
+                    'alias' => $value->getAlias(),
+                    'name' => $value->getName(),
+                    'length' => $value->getLength(),
+                    'type' => $value->getType(),
+                    'notnull' => $value->isNullable(),
+                    'unsigned' => $value->isUnsigned(),
+                    'default' => $value->getDefault(),
+                ];
+
+                $alias[$value->getName()] = $value->getAlias();
+
+                if ($value->isPrimary()) {
+                    $primaryConst->setValue($value->getName());
+                }
+            }
+
+            $field = new Generator($name, $namespace . '\\Field', Object::OBJECT_CLASS);
+
+            $fieldsConst = new Property('FIELDS', Property::PROPERTY_CONST);
+            $fieldsConst->setValue($fields);
+
+            $aliasConst = new Property('ALIAS', Property::PROPERTY_CONST);
+            $aliasConst->setValue($alias);
+
+            $constants = [
+                $fieldsConst,
+                $aliasConst,
+                $primaryConst
+            ];
+
+            $field->setProperties($constants);
+
+            $content = '<?php' . PHP_EOL . $field->generate();;
+
+            if (file_exists($file)) {
+                if (true === $force) {
+                    file_put_contents($file, $content);
+                }
+            } else {
+                file_put_contents($file, $content);
+            }
+        }
+
+        return 0;
+    }
+
+    /**
+     * @param $dir
+     * @param null $namespace
+     * @param bool $force
+     * @return array
+     */
     public function saveTo($dir, $namespace = null, $force = false)
     {
         $result = [];
 
-        $this->namespace = $namespace;
-
         $result['yml_to'] = $this->saveYmlTo($dir, $force);
-        $result['entity_to'] = $this->saveEntityTo($dir, $force);
-        $result['repository_to'] = $this->saveRepositoryTo($dir, $force);
+        $result['entity_to'] = $this->saveEntityTo($dir, $namespace, $force);
+        $result['repository_to'] = $this->saveRepositoryTo($dir, $namespace, $force);
+        $result['field_to'] = $this->saveFieldTo($dir, $namespace, $force);
 
         return $result;
     }
