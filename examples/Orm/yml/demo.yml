@@ -12,7 +12,7 @@ fields:
         default: ''
         comment: ''
         unsigned: false
-        key: INDEX
+        key: ''
         nullable: false
     age:
         name: age
@@ -21,7 +21,7 @@ fields:
         default: 0
         comment: ''
         unsigned: false
-        key: PRIMARY
+        key: ''
         nullable: false
     aa:
         name: aa
@@ -30,7 +30,7 @@ fields:
         default: 0
         comment: ''
         unsigned: false
-        key: UNIQUE
+        key: ''
         nullable: true
     fff:
         name: fff
@@ -41,3 +41,12 @@ fields:
         unsigned: false
         key: ''
         nullable: true
+    id:
+        name: id
+        type: int
+        length: '11'
+        default: 0
+        comment: ''
+        unsigned: false
+        key: PRIMARY
+        nullable: false

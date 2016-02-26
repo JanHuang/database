@@ -25,7 +25,9 @@ class AutoBuildingTest extends Fixture_Database_TestCast
         'port' => '3306',
         'dbname' => 'dbunit',
         'user' => 'root',
-        'pwd' => '123456'
+        'pwd' => '123456',
+        'prefix' => 'fd_',
+        'suffix' => '_fd2',
     ];
 
     /**

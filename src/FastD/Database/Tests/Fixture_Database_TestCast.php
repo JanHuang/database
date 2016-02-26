@@ -117,6 +117,6 @@ abstract class Fixture_Database_TestCast extends \PHPUnit_Extensions_Database_Te
      */
     public function createDriver($config = null)
     {
-        return new Driver($this->createPdo($config));
+        return new Driver($this->createPdo($config), $config ?? static::CONNECTION);
     }
 }

@@ -47,13 +47,29 @@ class Driver implements DriverInterface
     protected $parameters = [];
 
     /**
+     * @var array
+     */
+    protected $config = [];
+
+    /**
      * Driver constructor.
      *
      * @param \PDO $PDO
+     * @param array $config
      */
-    public function __construct(\PDO $PDO = null)
+    public function __construct(\PDO $PDO = null, array $config = null)
     {
         $this->pdo = $PDO;
+
+        $this->config = $config;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**

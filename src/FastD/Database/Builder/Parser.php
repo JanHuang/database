@@ -81,6 +81,9 @@ class Parser
     {
         if (false === $this->parse_in_db) {
             $db = $this->driver->query('SELECT database() as db;')->execute()->getOne('db');
+            $config = $this->driver->getConfig();
+            $prefix = isset($config['prefix']) ? $config['prefix'] : '';
+            $suffix = isset($config['suffix']) ? $config['suffix'] : '';
 
             $tables = $this->driver
                 ->query('SHOW TABLES;')
@@ -130,7 +133,7 @@ WHERE
                         $value['comment']
                     );
                     $field
-                        ->setExtra($value['extra'])//                        ->setKey(new Key($value['field']))
+                        ->setExtra($value['extra'])
                     ;
 
                     switch ($value['key']) {
@@ -148,7 +151,22 @@ WHERE
                     $fields[] = $field;
                 }
 
-                $this->tables_in_db[$name] = new Table($name, $fields);
+                $table = new Table($name, $fields);
+
+                if (!empty($prefix) && false !== ($index = strpos($name, $prefix))) {
+                    $len = strlen($prefix);
+                    $name = substr($name, $len);
+                    $table->setPrefix($prefix);
+                }
+
+                if (!empty($suffix) && false !== ($index = strpos($name, $suffix))) {
+                    $name = substr($name, 0, $index);
+                    $table->setSuffix($suffix);
+                }
+
+                $table->setTable($name);
+
+                $this->tables_in_db[$name] = $table;
             }
 
             $this->parse_in_db = true;

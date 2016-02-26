@@ -52,10 +52,19 @@ class Base
     /**
      * @const mixed
      */
-    const TABLE = 'base';
+    const ALIAS = array (
+  'id' => 'id',
+  'name' => 'name',
+  'content' => 'content',
+  'create_at' => 'createAt',
+);
     /**
      * @const mixed
      */
     const PRIMARY = 'id';
+    /**
+     * @const mixed
+     */
+    const TABLE = 'base';
 
 }

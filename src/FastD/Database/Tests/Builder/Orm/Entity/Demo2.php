@@ -1,25 +1,25 @@
 <?php
 
-namespace Examples\Orm\Entity;
+namespace FastD\Database\Tests\Builder\Orm\Entity;
 
-class FdDemo2 extends \FastD\Database\Orm\Entity
+class Demo2 extends \FastD\Database\Orm\Entity
 {
     /**
      * @const mixed
      */
-    const FIELDS = \Examples\Orm\Field\FdDemo2::FIELDS;
+    const FIELDS = \FastD\Database\Tests\Builder\Orm\Field\Demo2::FIELDS;
     /**
      * @const mixed
      */
-    const ALIAS = \Examples\Orm\Field\FdDemo2::ALIAS;
+    const ALIAS = \FastD\Database\Tests\Builder\Orm\Field\Demo2::ALIAS;
     /**
      * @const mixed
      */
-    const PRIMARY = \Examples\Orm\Field\FdDemo2::PRIMARY;
+    const PRIMARY = \FastD\Database\Tests\Builder\Orm\Field\Demo2::PRIMARY;
     /**
      * @const mixed
      */
-    const TABLE = \Examples\Orm\Field\FdDemo2::TABLE;
+    const TABLE = \FastD\Database\Tests\Builder\Orm\Field\Demo2::TABLE;
     /*
      * @var mixed
      */

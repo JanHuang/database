@@ -36,6 +36,10 @@ class Demo extends \FastD\Database\Orm\Entity
      * @var mixed
      */
     protected $fff;
+    /*
+     * @var mixed
+     */
+    protected $id;
 
     /**
      * @return mixed
@@ -106,6 +110,24 @@ class Demo extends \FastD\Database\Orm\Entity
     public function setFff($fff)
     {
         $this->fff = $fff;
+
+        return $this;
+    }
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
 
         return $this;
     }

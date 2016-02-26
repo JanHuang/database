@@ -1,8 +1,8 @@
 <?php
 
-namespace Examples\Orm\Field;
+namespace FastD\Database\Tests\Builder\Orm\Field;
 
-class FdDemo2
+class Demo2
 {
     /**
      * @const mixed
@@ -22,10 +22,16 @@ class FdDemo2
     /**
      * @const mixed
      */
-    const TABLE = 'fd_demo2';
+    const ALIAS = array (
+  'id' => 'id',
+);
     /**
      * @const mixed
      */
-    const PRIMARY = 'null';
+    const PRIMARY = 'id';
+    /**
+     * @const mixed
+     */
+    const TABLE = 'fd_demo2_fd2';
 
 }

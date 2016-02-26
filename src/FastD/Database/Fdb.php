@@ -85,7 +85,9 @@ class Fdb implements \Iterator, \Countable
          * Anonymous function.
          * Return \PDO.
          */
-        $this->setDriver($name, new Driver($this->createPdo($this->config[$name])));
+        $config = $this->config[$name];
+
+        $this->setDriver($name, new Driver($this->createPdo($config), $config));
 
         return $this->drivers[$name];
     }

@@ -48,14 +48,34 @@ class Demo
     'unsigned' => false,
     'default' => 0,
   ),
+  'id' => 
+  array (
+    'alias' => 'id',
+    'name' => 'id',
+    'length' => '11',
+    'type' => 'int',
+    'notnull' => false,
+    'unsigned' => false,
+    'default' => 0,
+  ),
 );
     /**
      * @const mixed
      */
-    const TABLE = 'demo';
+    const ALIAS = array (
+  'name' => 'name',
+  'age' => 'age',
+  'aa' => 'aa',
+  'fff' => 'fff',
+  'id' => 'id',
+);
     /**
      * @const mixed
      */
-    const PRIMARY = 'age';
+    const PRIMARY = 'id';
+    /**
+     * @const mixed
+     */
+    const TABLE = 'demo';
 
 }

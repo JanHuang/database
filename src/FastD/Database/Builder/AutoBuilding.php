@@ -304,13 +304,14 @@ class AutoBuilding
             $aliasConst = new Property('ALIAS', Property::PROPERTY_CONST);
             $aliasConst->setValue($alias);
 
-            $aliasConst = new Property('TABLE', Property::PROPERTY_CONST);
-            $aliasConst->setValue($table->getFullTable());
+            $tableConst = new Property('TABLE', Property::PROPERTY_CONST);
+            $tableConst->setValue($table->getFullTable());
 
             $constants = [
                 $fieldsConst,
                 $aliasConst,
-                $primaryConst
+                $primaryConst,
+                $tableConst
             ];
 
             $field->setProperties($constants);
