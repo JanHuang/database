@@ -21,7 +21,7 @@ use FastD\Http\Request;
  *
  * @package FastD\Database\Params
  */
-class HttpRequestHandle
+abstract class HttpRequestHandle
 {
     const FIELDS    = [];
     const ALIAS     = [];

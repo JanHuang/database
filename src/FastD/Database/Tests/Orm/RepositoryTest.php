@@ -37,6 +37,30 @@ class RepositoryTest extends Fixture_Database_TestCast
 
         $list = $baseRepository->findAll();
 
-        print_r($list);
+        $this->assertEquals(1, $list[0]['id']);
+
+        $list = $baseRepository->orderBy(['id' => 'DESC'])->findAll();
+
+        $this->assertEquals(2, $list[0]['id']);
+    }
+
+    public function testSave()
+    {
+        $baseRepository = new BaseRepository($this->createDriver());
+
+        $this->assertEquals(3, $baseRepository->save([
+            'content' => 'hello',
+            'name' => 'test'
+        ]));
+
+        $this->assertEquals(4, $baseRepository->save([
+            'content' => ':content',
+            'name' => 'test'
+        ], [], ['content' => 'hello']));
+
+        $this->assertEquals(1, $baseRepository->save([
+            'content' => 'hello',
+            'name' => 'test'
+        ], ['id' => 1]));
     }
 }
