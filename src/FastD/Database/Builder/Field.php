@@ -94,7 +94,7 @@ class Field implements BuilderInterface
     public function __construct(
         $name,
         $type = 'varchar',
-        $length = 255,
+        $length,
         $alias = '',
         $nullable = false,
         $default = '',
@@ -105,6 +105,10 @@ class Field implements BuilderInterface
 
         if (in_array($type, ['array'])) {
             $type = 'varchar';
+        }
+
+        if (in_array($type, ['int', 'smallint', 'tinyint', 'mediumint', 'integer', 'bigint', 'float', 'double'])) {
+            $default = 0;
         }
 
         $this->type = $type;
@@ -388,7 +392,11 @@ class Field implements BuilderInterface
         $nullable = $this->isNullable() ? '' : ' NOT NULL';
         $default = '';
         if (!$this->isNullable()) {
-            $default = $this->getDefault() ? ' DEFAULT \'' . $this->getDefault() . '\'' : ' DEFAULT \'\'';
+            if (is_integer($this->getDefault())) {
+                $default = ' DEFAULT ' . $this->getDefault();
+            } else {
+                $default = $this->getDefault() ? ' DEFAULT \'' . $this->getDefault() . '\'' : ' DEFAULT \'\'';
+            }
         }
         $comment = $this->getComment() ? ' COMMENT \'' . $this->getComment() . '\'' : '';
         $extra = $this->getExtra() ? ' ' . $this->getExtra() : '';
@@ -404,7 +412,11 @@ class Field implements BuilderInterface
                     $nullable = $this->to_change->isNullable() ? '' : ' NOT NULL';
                     $default = '';
                     if (!$this->to_change->isNullable()) {
-                        $default = $this->to_change->getDefault() ? ' DEFAULT \'' . $this->to_change->getDefault() . '\'' : ' DEFAULT \'\'';
+                        if (is_integer($this->to_change->getDefault())) {
+                            $default = ' DEFAULT ' . $this->to_change->getDefault();
+                        } else {
+                            $default = $this->to_change->getDefault() ? ' DEFAULT \'' . $this->to_change->getDefault() . '\'' : ' DEFAULT \'\'';
+                        }
                     }
                     $comment = $this->to_change->getComment() ? ' COMMENT \'' . $this->to_change->getComment() . '\'' : '';
                     return "CHANGE `{$this->getName()}` `{$this->to_change->getName()}` {$this->to_change->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";

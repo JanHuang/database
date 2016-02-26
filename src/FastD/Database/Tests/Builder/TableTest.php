@@ -23,7 +23,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
     public function testBase()
     {
         $table = new Table('demo', [
-            new Field('name', 'varchar')
+            new Field('name', 'varchar', 20)
         ]);
 
         $this->assertEquals($table->getTable(), 'demo');
@@ -32,21 +32,47 @@ class TableTest extends \PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $table = new Table('demo', [
-            new Field('name', 'varchar')
+            new Field('name', 'varchar', 20)
         ]);
 
-//        echo $table->toSql(Table::TABLE_CREATE);
+        $this->assertEquals(<<<M
+CREATE TABLE `demo` (
+`name` varchar(20) NOT NULL DEFAULT ''
+) ENGINE=InnoDB CHARSET=utf8;
+M
+            , $table->toSql());
+    }
+
+    public function testAdd()
+    {
+        $primary = new Field('id', 'int', 10);
+
+        $primary->setKey(new Key());
+
+        $primary->setPrimary();
+
+        $table = new Table('demo', [
+            $primary
+        ]);
+
+        $this->assertEquals([
+            'ALTER TABLE `demo` ADD `id` int(10) NOT NULL DEFAULT 0;',
+            'ALTER TABLE `demo` ADD PRIMARY KEY (`id`);'
+        ], explode(PHP_EOL, $table->toSql(Table::TABLE_ADD)));
     }
 
     public function testChange()
     {
         $table = new Table('demo', [
-            new Field('name', 'varchar')
+            new Field('name', 'varchar', 20)
         ]);
 
-        $table->addField('name', new Field('nickname', 'char'));
+        $table->addField('name', new Field('nickname', 'char', 255));
 
-//        echo $table->toSql(Table::TABLE_CHANGE);
+        $this->assertEquals(<<<M
+ALTER TABLE `demo` CHANGE `name` `nickname` char(255) NOT NULL DEFAULT '';
+M
+            , $table->toSql(Table::TABLE_CHANGE));
     }
 
     public function testDrop()
@@ -58,13 +84,23 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
     public function testKey()
     {
-        $name = new Field('name', 'varchar');
-
+        $name = new Field('name', 'varchar', 20);
         $name->setKey(new Key());
 
-        $table = new Table('demo', [$name,]);
+        $age = new Field('age', 'smallint', 2);
 
-//        echo $table->toSql();
-        echo $table->toSql(Table::TABLE_CHANGE);
+        $table = new Table('demo', [$name, $age]);
+
+        $this->assertEquals(<<<M
+CREATE TABLE `demo` (
+`name` varchar(20) NOT NULL DEFAULT '',
+`age` smallint(2) NOT NULL DEFAULT 0',
+KEY `index_name` (`name`)
+) ENGINE=InnoDB CHARSET=utf8;
+M
+            , $table->toSql(Table::TABLE_CREATE));
+
+        echo $table->toSql();
+//        echo $table->toSql(Table::TABLE_CHANGE);
     }
 }

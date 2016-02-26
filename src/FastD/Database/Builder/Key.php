@@ -141,7 +141,7 @@ class Key implements BuilderInterface
      * @param null|int $flag
      * @return string
      */
-    public function toSql($flag = null)
+    public function toSql($flag = Field::FIELD_CREATE)
     {
         $key = strtolower($this->getKey() . '_' . $this->getField());
 
@@ -161,7 +161,10 @@ class Key implements BuilderInterface
                 }
                 return "ADD {$this->getKey()} `{$key}` (`{$this->getField()}`)";
             case Field::FIELD_DROP:
-                return "DROP INDEX `{$key}` (`{$this->getField()}`)";
+                if ($this->isPrimary()) {
+                    return "DROP PRIMARY KEY";
+                }
+                return "DROP INDEX `{$key}`";
         }
 
         throw new \InvalidArgumentException(sprintf('Key ["%s"] is undefined.', $this->type));

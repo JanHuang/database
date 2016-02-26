@@ -23,7 +23,8 @@ class Table implements BuilderInterface
 {
     const TABLE_CREATE = 1;
     const TABLE_CHANGE = 2;
-    const TABLE_DROP = 3;
+    const TABLE_ADD = 3;
+    const TABLE_DROP = 4;
 
     /**
      * @var string
@@ -266,7 +267,7 @@ class Table implements BuilderInterface
 
         $concat = ', ';
 
-        if (Field::FIELD_CHANGE === $flag) {
+        if (in_array($flag, [Field::FIELD_ADD, Field::FIELD_CHANGE])) {
             $concat = ';';
         }
 
@@ -278,7 +279,7 @@ class Table implements BuilderInterface
             if (null !== ($key = $field->getKey())) {
                 if (Field::FIELD_CREATE === $flag) {
                     $keys[] = $key->toSql($flag);
-                } else if (Field::FIELD_CHANGE === $flag) {
+                } else if (in_array($flag, [Field::FIELD_ADD, Field::FIELD_CHANGE])) {
                     $keys[] = "ALTER TABLE `{$this->getTable()}` " . $key->toSql($flag);
                 }
             }
@@ -297,9 +298,11 @@ class Table implements BuilderInterface
     {
         switch ($flag) {
             case self::TABLE_CREATE:
-                return "CREATE TABLE `{$this->getTable()}`(" . PHP_EOL . "{$this->getFieldsToSql(Field::FIELD_CREATE)}" . PHP_EOL . ") ENGINE={$this->getEngine()} CHARSET={$this->getCharset()};";
+                return "CREATE TABLE `{$this->getTable()}` (" . PHP_EOL . "{$this->getFieldsToSql(Field::FIELD_CREATE)}" . PHP_EOL . ") ENGINE={$this->getEngine()} CHARSET={$this->getCharset()};";
             case self::TABLE_CHANGE:
                 return "ALTER TABLE `{$this->getTable()}` {$this->getFieldsToSql(Field::FIELD_CHANGE)};";
+            case self::TABLE_ADD:
+                return "ALTER TABLE `{$this->getTable()}` {$this->getFieldsToSql(Field::FIELD_ADD)};";
             case self::TABLE_DROP:
                 return "DROP TABLE `{$this->getTable()}`;";
         }

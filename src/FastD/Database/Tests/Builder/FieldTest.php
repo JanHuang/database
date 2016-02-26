@@ -21,7 +21,7 @@ class FieldTest extends \PHPUnit_Framework_TestCase
 {
     public function testBase()
     {
-        $name = new Field('name', 'varchar');
+        $name = new Field('name', 'varchar', 20);
 
         $this->assertEquals('name', $name->getName());
 
@@ -84,5 +84,9 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $name->setKey(new Key());
 
         $this->assertTrue($name->isIndex());
+
+        $this->assertEquals('KEY `index_name` (`name`)', $name->getKey()->toSql());
+
+        $this->assertEquals('`name` varchar(20) NOT NULL DEFAULT \'\'', $name->toSql());
     }
 }
