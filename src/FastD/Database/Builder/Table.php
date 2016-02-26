@@ -347,7 +347,13 @@ class Table implements BuilderInterface
         $fields = [];
 
         foreach ($this->fields as $field) {
-            $fields[$field->getAlias() ?? $field->getName()] = [
+            $alias = $field->getAlias();
+
+            if (empty($alias)) {
+                $alias = $field->getName();
+            }
+
+            $fields[$alias] = [
                 'name'      => $field->getName(),
                 'type'      => $field->getType(),
                 'length'    => $field->getLength(),

@@ -27,10 +27,15 @@ class AutoBuildingTest extends Fixture_Database_TestCast
         'pwd'       => '123456'
     ];
 
+    /**
+     * $builder->saveTo();
+     */
     public function testMapping()
     {
         $driver = $this->createDriver();
 
         $auto = new AutoBuilding($driver, true);
+
+        $auto->saveTo(__DIR__ . '/Orm', 'FastD\Database\Tests\Builder\\Orm', true);
     }
 }
