@@ -91,8 +91,6 @@ M
 
         $table = new Table('demo', [$name, $age]);
 
-        echo  $table->toSql();
-
         $this->assertEquals([
             'ALTER TABLE `demo` CHANGE `name` `name` varchar(20) NOT NULL DEFAULT \'\';',
             'ALTER TABLE `demo` CHANGE `age` `age` smallint(2) NOT NULL DEFAULT 0;',
