@@ -113,6 +113,6 @@ M
 
         $table = new Table('demo', [$name, $age]);
 
-        print_r($table);
+//        print_r($table);
     }
 }

@@ -13,6 +13,7 @@
  */
 
 namespace FastD\Database\Builder;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class Table
@@ -66,6 +67,8 @@ class Table implements BuilderInterface
      */
     protected $prefix;
 
+    protected $cache = '';
+
     /**
      * Table constructor.
      * @param $table
@@ -78,6 +81,25 @@ class Table implements BuilderInterface
         foreach ($fields as $field) {
             $this->fields[$field->getName()] = $field;
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     * @param string $cache
+     * @return $this
+     */
+    public function setCache($cache)
+    {
+        $this->cache = $cache;
+
+        return $this;
     }
 
     /**
@@ -322,6 +344,29 @@ class Table implements BuilderInterface
      */
     public function toYml($flag = null)
     {
-        return '';
+        $fields = [];
+
+        foreach ($this->fields as $field) {
+            $fields[$field->getAlias() ?? $field->getName()] = [
+                'name'      => $field->getName(),
+                'type'      => $field->getType(),
+                'length'    => $field->getLength(),
+                'default'   => $field->getDefault(),
+                'comment'   => $field->getComment(),
+                'unsigned'  => $field->isUnsigned(),
+                'key'       => null !== $field->getKey() ? $field->getKey()->getKey() : '',
+                'nullable'  => $field->isNullable()
+            ];
+        }
+
+        return Yaml::dump([
+            'table'     => $this->getTable(),
+            'prefix'    => $this->getPrefix(),
+            'suffix'    => $this->getSuffix(),
+            'cache'     => $this->getCache(),
+            'engine'    => $this->getEngine(),
+            'charset'   => $this->getCharset(),
+            'fields'    => $fields
+        ], 4);
     }
 }

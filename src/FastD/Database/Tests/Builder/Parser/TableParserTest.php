@@ -69,6 +69,8 @@ class TableParserTest extends Fixture_Database_TestCast
     {
         $parser = new Parser(null, __DIR__ . '/../Yml');
 
-//        print_r($parser->getTablesByYml());
+        foreach ($parser->getTablesByYml() as $table) {
+            
+        }
     }
 }
