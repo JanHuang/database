@@ -1,11 +1,17 @@
-#FastD Simple Database
+#FastD Database
 
-##Install 
+好嗨复杂...
+
+## 依赖
+
+* PHP >= 7
+* fastd/generator >= 1.0
+* symfony/yaml >= 3.0
+
+## Install 
 
 ```
 composer require fastd/database [version]"
 ```
-
-// 调整中
 
 ## License MIT

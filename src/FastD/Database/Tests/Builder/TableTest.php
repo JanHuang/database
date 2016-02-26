@@ -103,4 +103,16 @@ M
             'ALTER TABLE `demo` ADD INDEX `index_name` (`name`);',
         ], explode(PHP_EOL, $table->toSql(Table::TABLE_ADD)));
     }
+
+    public function testTableToYml()
+    {
+        $name = new Field('name', 'varchar', 20);
+        $name->setKey(new Key());
+
+        $age = new Field('age', 'smallint', 2);
+
+        $table = new Table('demo', [$name, $age]);
+
+        print_r($table);
+    }
 }

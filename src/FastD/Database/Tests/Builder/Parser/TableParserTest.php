@@ -54,7 +54,7 @@ class TableParserTest extends Fixture_Database_TestCast
         $parser = new Parser($driver);
 
         foreach ($parser->getTablesByDb() as $table) {
-            echo $table->toSql(Table::TABLE_CREATE);
+//            echo $table->toSql(Table::TABLE_CREATE);
         }
     }
 
