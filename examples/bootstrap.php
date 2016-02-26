@@ -14,5 +14,7 @@
 
 $loader = include __DIR__.'/../vendor/autoload.php';
 
-$loader->setPsr4('Examples\\', __DIR__ . '/../../examples');
+$loader->addPsr4('Examples\\', __DIR__ . '/../examples');
+
+return $loader;
  

@@ -66,7 +66,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
             $this->row = $this->find();
             foreach ($this->getAlias() as $field => $alias) {
                 $method = 'set' . ucfirst($alias);
-                $this->$method(isset($data[$alias]) ? $data[$alias] : null);
+                $this->$method(isset($this->row[$alias]) ? $this->row[$alias] : null);
             }
         }
     }
@@ -112,7 +112,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
         return $this->driver
             ->query(
                 Mysql::singleton()
-                    ->table($this->getTable())
+                    ->from($this->getTable())
                     ->where($this->condition ?? [])
                     ->fields($fields ?? $this->getAlias())
                     ->select()
@@ -146,7 +146,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
             return $this->driver
                 ->query(
                     Mysql::singleton()
-                        ->table($this->getTable())
+                        ->from($this->getTable())
                         ->update($data, $this->condition)
                 )
                 ->setParameter($values)
@@ -158,7 +158,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
         return $this->driver
             ->query(
                 Mysql::singleton()
-                    ->table($this->getTable())
+                    ->from($this->getTable())
                     ->insert($data)
             )
             ->setParameter($values)

@@ -164,7 +164,7 @@ abstract class QueryBuilder
      * @param $alias
      * @return $this
      */
-    abstract public function table($table, $alias = null);
+    abstract public function from($table, $alias = null);
 
     /**
      * @param $limit

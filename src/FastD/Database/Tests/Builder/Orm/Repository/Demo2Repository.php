@@ -2,7 +2,7 @@
 
 namespace FastD\Database\Tests\Builder\Orm\Repository;
 
-class Demo2 extends \FastD\Database\Orm\Repository
+class Demo2Repository extends \FastD\Database\Orm\Repository
 {
     /**
      * @const mixed

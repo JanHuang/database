@@ -99,7 +99,7 @@ class Mysql extends QueryBuilder
      * @param null $alias
      * @return $this
      */
-    public function table($table, $alias = null)
+    public function from($table, $alias = null)
     {
         $this->table = '`' . $table . '`';
 

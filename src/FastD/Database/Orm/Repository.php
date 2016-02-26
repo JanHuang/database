@@ -14,10 +14,10 @@
 namespace FastD\Database\Orm;
 
 use FastD\Database\DriverInterface;
-use FastD\Database\Drivers\Query\MySQLQueryBuilder;
 use FastD\Database\Drivers\Query\Paging\Pagination;
-use FastD\Database\Drivers\Query\QueryBuilderInterface;
 use FastD\Database\Params\HttpRequestHandle;
+use FastD\Database\Query\Mysql;
+use FastD\Database\Query\QueryBuilder;
 
 /**
  * Class Repository
@@ -29,11 +29,7 @@ abstract class Repository extends HttpRequestHandle
     const FIELDS = [];
     const ALIAS = [];
     const PRIMARY = '';
-
-    /**
-     * @var string
-     */
-    protected $table;
+    const TABLE = '';
 
     /**
      * @var string
@@ -46,11 +42,18 @@ abstract class Repository extends HttpRequestHandle
     protected $driver;
 
     /**
+     * @var QueryBuilder
+     */
+    protected $query_builder;
+
+    /**
      * @param DriverInterface $driverInterface
      */
     public function __construct(DriverInterface $driverInterface = null)
     {
         $this->setDriver($driverInterface);
+
+        $this->createQueryBuilder();
     }
 
     /**
@@ -79,7 +82,7 @@ abstract class Repository extends HttpRequestHandle
      */
     public function getTable()
     {
-        return $this->table;
+        return static::TABLE;
     }
 
     /**
@@ -109,21 +112,18 @@ abstract class Repository extends HttpRequestHandle
     /**
      * Fetch one row.
      *
-     * @param array $where
      * @param array $field
      * @return array The found object.
      */
-    public function find(array $where = [], array $field = [])
+    public function find(array $field = [])
     {
         return $this
             ->createQuery(
-                $this
-                    ->createQueryBuilder()
-                    ->where($where)
+                $this->query_builder
                     ->fields(array() === $field ? $this->getAlias() : $field)
                     ->select()
             )
-            ->getQuery()
+            ->execute()
             ->getOne()
             ;
     }
@@ -131,21 +131,18 @@ abstract class Repository extends HttpRequestHandle
     /**
      * Fetch all rows.
      *
-     * @param array        $where
      * @param array|string $field
      * @return array The found object.
      */
-    public function findAll(array $where = [], array $field = [])
+    public function findAll(array $field = [])
     {
         return $this
             ->createQuery(
-                $this
-                    ->createQueryBuilder()
-                    ->where($where)
+                $this->query_builder
                     ->fields(array() === $field ? $this->getAlias() : $field)
                     ->select()
             )
-            ->getQuery()
+            ->execute()
             ->getAll()
             ;
     }
@@ -163,22 +160,22 @@ abstract class Repository extends HttpRequestHandle
         if (empty($where)) {
             return $this
                 ->createQuery(
-                    $this->createQueryBuilder()
+                    $this->query_builder
                         ->insert(array() === $data ? $this->data : $data)
                 )
                 ->setParameter([] === $params ? $this->params : $params)
-                ->getQuery()
+                ->execute()
                 ->getId();
         }
 
         return $this
             ->createQuery(
                 $this
-                    ->createQueryBuilder()
+                    ->query_builder
                     ->update(array() === $data ? $this->data : $data, $where)
             )
             ->setParameter([] === $params ? $this->params : $params)
-            ->getQuery()
+            ->execute()
             ->getAffected()
             ;
     }
@@ -189,7 +186,53 @@ abstract class Repository extends HttpRequestHandle
      */
     public function count(array $where = [])
     {
-        return (int)$this->find($where, ['count(id) as total'])['total'];
+        return (int)$this->where($where)->find(['count(id) as total'])['total'];
+    }
+
+    /**
+     * @param array $orderBy
+     * @return $this
+     */
+    public function orderBy(array $orderBy)
+    {
+        $this->query_builder->orderBy($orderBy);
+
+        return $this;
+    }
+
+    /**
+     * @param array $where
+     * @return $this
+     */
+    public function where(array $where = [])
+    {
+        $this->query_builder->where($where);
+
+        return $this;
+    }
+
+    /**
+     * @param $table
+     * @param null $alias
+     * @return $this
+     */
+    public function from($table, $alias = null)
+    {
+        $this->query_builder->from($table, $alias);
+
+        return $this;
+    }
+
+    /**
+     * @param null $limit
+     * @param null $offset
+     * @return $this
+     */
+    public function limit($limit = null, $offset = null)
+    {
+        $this->query_builder->limit($limit, $offset);
+
+        return $this;
     }
 
     /**
@@ -208,16 +251,19 @@ abstract class Repository extends HttpRequestHandle
      */
     public function getErrors()
     {
-        return $this->driver->getErrors();
+        return $this->driver->getError();
     }
 
     /**
-     * @param string $table
-     * @return QueryBuilderInterface
+     * @return $this
      */
-    public function createQueryBuilder($table = null)
+    public function createQueryBuilder()
     {
-        return MySQLQueryBuilder::factory()->table($table ?? $this->getTable());
+        if (null === $this->query_builder) {
+            $this->query_builder = Mysql::singleton()->from($this->getTable());
+        }
+
+        return $this->query_builder;
     }
 
     /**

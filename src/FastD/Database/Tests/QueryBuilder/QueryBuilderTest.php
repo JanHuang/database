@@ -33,12 +33,12 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('SELECT * FROM `base`;', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->select());
 
         $this->assertEquals('SELECT * FROM `base` AS `b`;', $this
             ->builder
-            ->table('base', 'b')
+            ->from('base', 'b')
             ->select());
     }
 
@@ -47,13 +47,13 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('SELECT `name` FROM `base` AS `b`;', $this
             ->builder
             ->fields(['name'])
-            ->table('base', 'b')
+            ->from('base', 'b')
             ->select());
 
         $this->assertEquals('SELECT `name` AS `true_name` FROM `base` AS `b`;', $this
             ->builder
             ->fields(['name' => 'true_name'])
-            ->table('base', 'b')
+            ->from('base', 'b')
             ->select());
 
         $this->assertEquals('SELECT `name` AS `true_name`,`nickname` AS `nick_name` FROM `base` AS `b`;', $this
@@ -62,7 +62,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
                 'name' => 'true_name',
                 'nickname' => 'nick_name'
             ])
-            ->table('base', 'b')
+            ->from('base', 'b')
             ->select());
 
         // select count(1),`nickname` AS `nick_name` FROM `base` AS `b`;
@@ -71,7 +71,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
             ->fields([
                 'nickname' => 'nick_name'
             ])
-            ->table('base', 'b')
+            ->from('base', 'b')
             ->select());
     }
 
@@ -79,13 +79,13 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('SELECT * FROM `base` WHERE `id`=\'1\';', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->where(['id' => 1])
             ->select());
 
         $this->assertEquals('SELECT * FROM `base` WHERE `id`=\'1\' and `name`=\'jan\';', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->where([
                 'and' => [
                     'id' => 1,
@@ -96,7 +96,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('SELECT * FROM `base` WHERE `id`=\'1\' or `name`=\'jan\';', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->where([
                 'or' => [
                     'id' => 1,
@@ -107,7 +107,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('SELECT * FROM `base` WHERE `id`>\'10\';', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->where([
                 '[>]id' => 10
             ])
@@ -115,7 +115,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('SELECT * FROM `base` WHERE `id`>\'10\' or `age`>\'20\';', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->where([
                 'or' => [
                     '[>]id' => 10,
@@ -129,17 +129,17 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('INSERT INTO `base`(`name`) VALUES (\'jan\');', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->insert(['name' => 'jan']));
 
         $this->assertEquals('UPDATE `base` SET `name`=\'jan\';', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->update(['name' => 'jan']));
 
         $this->assertEquals('UPDATE `base` SET `name`=\'jan\' WHERE `id`=\'1\';', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->update(['name' => 'jan'], ['id' => 1]));
     }
 
@@ -147,20 +147,20 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('UPDATE `base` SET `name`=\'jan\' WHERE `id`=\'1\' LIMIT 1;', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->limit(1)
             ->update(['name' => 'jan'], ['id' => 1]));
 
         $this->assertEquals('SELECT * FROM `base` LIMIT 1;', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->limit(1)
             ->select()
         );
 
         $this->assertEquals('SELECT * FROM `base` LIMIT 5,1;', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->limit(1, 5)
             ->select()
         );
@@ -170,14 +170,14 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('SELECT * FROM `base` GROUP BY `name`;', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->groupBy(['name'])
             ->select()
         );
 
         $this->assertEquals('SELECT * FROM `base` GROUP BY `name`,`age`;', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->groupBy(['name', 'age'])
             ->select()
         );
@@ -187,7 +187,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('SELECT * FROM `base` ORDER BY `name` DESC,`age` DESC;', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->orderBy([
                 'name' => 'DESC',
                 'age' => 'DESC'
@@ -197,7 +197,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('SELECT * FROM `base` ORDER BY `name` DESC,`age` ASC;', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->orderBy([
                 'name' => 'DESC',
                 'age' => 'ASC'
@@ -210,7 +210,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('SELECT * FROM `base` WHERE `name` LIKE \'%jan%\';', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->like([
                 'name' => '%jan%'
             ])
@@ -219,7 +219,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('SELECT * FROM `base` WHERE `name` NOT LIKE \'%jan%\';', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->notLike([
                 'name' => '%jan%'
             ])
@@ -231,7 +231,7 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('SELECT * FROM `base` HAVING `age`>\'10\';', $this
             ->builder
-            ->table('base')
+            ->from('base')
             ->having(['[>]age' => 10])
             ->select());
     }

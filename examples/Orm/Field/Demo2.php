@@ -28,10 +28,10 @@ class Demo2
     /**
      * @const mixed
      */
-    const PRIMARY = 'id';
+    const PRIMARY = 'null';
     /**
      * @const mixed
      */
-    const TABLE = 'fd_demo2_fd2';
+    const TABLE = 'fd_demo2';
 
 }

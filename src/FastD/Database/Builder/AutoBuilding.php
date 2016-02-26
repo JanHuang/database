@@ -232,7 +232,7 @@ class AutoBuilding
 
             $object = new Object('Repository', 'FastD\Database\Orm');
 
-            $repository = new Generator($name, $namespace . '\\Repository', Object::OBJECT_CLASS);
+            $repository = new Generator($name . 'Repository', $namespace . '\\Repository', Object::OBJECT_CLASS);
 
             $repository->setExtends($object);
 

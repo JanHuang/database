@@ -2,7 +2,7 @@
 
 namespace Examples\Orm\Repository;
 
-class Base extends \FastD\Database\Orm\Repository
+class BaseRepository extends \FastD\Database\Orm\Repository
 {
     /**
      * @const mixed
