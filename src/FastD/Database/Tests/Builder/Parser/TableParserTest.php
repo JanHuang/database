@@ -45,4 +45,11 @@ class TableParserTest extends Fixture_Database_TestCast
 
 //        echo $table->toSql();
     }
+
+    public function testYml()
+    {
+        $parser = new Parser();
+
+        $table = $parser->getTableByYml(__DIR__ . '/../Yml/demo.yml');
+    }
 }

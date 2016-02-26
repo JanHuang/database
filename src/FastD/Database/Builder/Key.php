@@ -159,9 +159,9 @@ class Key implements BuilderInterface
                 if ($this->isPrimary()) {
                     return "ADD {$this->getKey()} KEY (`{$this->getField()}`)";
                 }
-                return "ADD {$this->getKey()} `{$key}` (`{$this->getField()}`);";
+                return "ADD {$this->getKey()} `{$key}` (`{$this->getField()}`)";
             case Field::FIELD_DROP:
-                return "DROP INDEX `{$key}` (`{$this->getField()}`);";
+                return "DROP INDEX `{$key}` (`{$this->getField()}`)";
         }
 
         throw new \InvalidArgumentException(sprintf('Key ["%s"] is undefined.', $this->type));

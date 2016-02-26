@@ -64,7 +64,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         $table = new Table('demo', [$name,]);
 
-        echo $table->toSql();
+//        echo $table->toSql();
         echo $table->toSql(Table::TABLE_CHANGE);
     }
 }
