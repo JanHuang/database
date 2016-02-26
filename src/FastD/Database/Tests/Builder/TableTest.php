@@ -56,7 +56,7 @@ M
         ]);
 
         $this->assertEquals([
-            'ALTER TABLE `demo` ADD `id` int(10) NOT NULL DEFAULT 0;',
+            'ALTER TABLE `demo` ADD `id` int(10) NOT NULL;',
             'ALTER TABLE `demo` ADD PRIMARY KEY (`id`);'
         ], explode(PHP_EOL, $table->toSql(Table::TABLE_ADD)));
     }

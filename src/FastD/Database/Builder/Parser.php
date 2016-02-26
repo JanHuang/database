@@ -25,6 +25,16 @@ use Symfony\Component\Yaml\Yaml;
 class Parser
 {
     /**
+     * @var bool
+     */
+    private $parse_in_db = false;
+
+    /**
+     * @var bool
+     */
+    private $parse_in_dir = false;
+
+    /**
      * @var DriverInterface
      */
     protected $driver;
@@ -32,28 +42,44 @@ class Parser
     /**
      * @var Table[]
      */
-    protected $tables = [];
+    protected $tables_in_db = [];
+
+    /**
+     * @var Table[]
+     */
+    protected $table_in_yml = [];
+
+    /**
+     * @var null|string
+     */
+    protected $dir;
 
     /**
      * Parser constructor.
      * @param DriverInterface|null $driverInterface
+     * @param string $dir Yml configuration directory path.
      */
-    public function __construct(DriverInterface $driverInterface = null)
+    public function __construct(DriverInterface $driverInterface = null, $dir = null)
     {
         $this->driver = $driverInterface;
 
+        $this->dir = $dir;
+
         if (null !== $driverInterface) {
-            $this->getTablesByDb();
+            $this->parseTablesInDB();
+        }
+
+        if (null !== $dir) {
+            $this->parseTablesInDir();
         }
     }
 
     /**
-     * @return \FastD\Database\Builder\Table[]
+     * @return void
      */
-    public function getTablesByDb()
+    protected function parseTablesInDB()
     {
-        if (empty($this->tables)) {
-
+        if (false === $this->parse_in_db) {
             $db = $this->driver->query('SELECT database() as db;')->execute()->getOne('db');
 
             $tables = $this->driver
@@ -66,7 +92,7 @@ class Parser
 
                 $schemes = $this->driver
                     ->query(
-'SELECT
+                        'SELECT
   TABLE_SCHEMA AS `db_name`,
   TABLE_NAME AS `table_name`,
   COLUMN_NAME AS `field`,
@@ -104,18 +130,73 @@ WHERE
                         $value['comment']
                     );
                     $field
-                        ->setExtra($value['extra'])
-//                        ->setKey(new Key($value['field']))
+                        ->setExtra($value['extra'])//                        ->setKey(new Key($value['field']))
                     ;
+
+                    switch ($value['key']) {
+                        case 'PRI':
+                            $field->setKey(new Key($value['field'], Key::KEY_PRIMARY));
+                            break;
+                        case 'MUL':
+                            $field->setKey(new Key($value['field'], Key::KEY_INDEX));
+                            break;
+                        case 'UNI':
+                            $field->setKey(new Key($value['field'], Key::KEY_UNIQUE));
+                            break;
+                    }
 
                     $fields[] = $field;
                 }
 
-                $this->tables[$name] = new Table($name, $fields);
+                $this->tables_in_db[$name] = new Table($name, $fields);
             }
+
+            $this->parse_in_db = true;
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function parseTablesInDir()
+    {
+        if (!is_dir($this->dir)) {
+            throw new \InvalidArgumentException(sprintf('Directory ["%s"] is no such.', $this->dir));
         }
 
-        return $this->tables;
+        if (false === $this->parse_in_dir) {
+            if ($dh = opendir($this->dir)) {
+                while (($file = readdir($dh)) !== false) {
+                    if ('yml' != pathinfo($file, PATHINFO_EXTENSION)) {
+                        continue;
+                    }
+
+                    $table = $this->getTableByYml($this->dir . '/' . $file);
+
+                    $this->table_in_yml[$table->getTable()] = $table;
+                }
+
+                closedir($dh);
+
+                $this->parse_in_dir = true;
+            }
+        }
+    }
+
+    /**
+     * @return Table[]
+     */
+    public function getTables()
+    {
+        return array_merge($this->tables_in_db, $this->table_in_yml);
+    }
+
+    /**
+     * @return Table[]
+     */
+    public function getTablesByDb()
+    {
+        return $this->tables_in_db;
     }
 
     /**
@@ -124,7 +205,15 @@ WHERE
      */
     public function getTableByDb($name)
     {
-        return $this->tables[$name] ?? null;
+        return $this->tables_in_db[$name] ?? null;
+    }
+
+    /**
+     * @return Table[]
+     */
+    public function getTablesByYml()
+    {
+        return $this->table_in_yml;
     }
 
     /**

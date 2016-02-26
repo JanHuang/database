@@ -321,6 +321,10 @@ class Field implements BuilderInterface
      */
     public function isPrimary()
     {
+        if (null === $this->key) {
+            return false;
+        }
+
         return $this->key->isPrimary();
     }
 
@@ -339,6 +343,10 @@ class Field implements BuilderInterface
      */
     public function isUnique()
     {
+        if (null === $this->key) {
+            return false;
+        }
+
         return $this->key->isUnique();
     }
 
@@ -357,6 +365,10 @@ class Field implements BuilderInterface
      */
     public function isIndex()
     {
+        if (null === $this->key) {
+            return false;
+        }
+
         return $this->key->isIndex();
     }
 
@@ -391,7 +403,7 @@ class Field implements BuilderInterface
         $unsigned = $this->isUnsigned() ? ' unsigned ' : '';
         $nullable = $this->isNullable() ? '' : ' NOT NULL';
         $default = '';
-        if (!$this->isNullable()) {
+        if (!$this->isNullable() && !$this->isPrimary()) {
             if (is_integer($this->getDefault())) {
                 $default = ' DEFAULT ' . $this->getDefault();
             } else {
@@ -411,7 +423,7 @@ class Field implements BuilderInterface
                     $unsigned = $this->to_change->isUnsigned() ? ' unsigned ' : '';
                     $nullable = $this->to_change->isNullable() ? '' : ' NOT NULL';
                     $default = '';
-                    if (!$this->to_change->isNullable()) {
+                    if (!$this->to_change->isNullable() && !$this->isPrimary()) {
                         if (is_integer($this->to_change->getDefault())) {
                             $default = ' DEFAULT ' . $this->to_change->getDefault();
                         } else {

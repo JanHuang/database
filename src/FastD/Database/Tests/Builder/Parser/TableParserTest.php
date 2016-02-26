@@ -15,6 +15,7 @@
 namespace FastD\Database\Tests\Builder\Parser;
 
 use FastD\Database\Builder\Parser;
+use FastD\Database\Builder\Table;
 use FastD\Database\Tests\Fixture_Database_TestCast;
 
 class TableParserTest extends Fixture_Database_TestCast
@@ -46,10 +47,28 @@ class TableParserTest extends Fixture_Database_TestCast
 //        echo $table->toSql();
     }
 
+    public function testInDB()
+    {
+        $driver = $this->createDriver();
+
+        $parser = new Parser($driver);
+
+        foreach ($parser->getTablesByDb() as $table) {
+            echo $table->toSql(Table::TABLE_CREATE);
+        }
+    }
+
     public function testYml()
     {
         $parser = new Parser();
 
         $table = $parser->getTableByYml(__DIR__ . '/../Yml/demo.yml');
+    }
+
+    public function testDir()
+    {
+        $parser = new Parser(null, __DIR__ . '/../Yml');
+
+//        print_r($parser->getTablesByYml());
     }
 }
