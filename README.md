@@ -11,7 +11,8 @@
 ## Install 
 
 ```
-composer require fastd/database [version]"
+composer require "fastd/database:2.0.x.dev"
+phpunit
 ```
 
 ## License MIT
