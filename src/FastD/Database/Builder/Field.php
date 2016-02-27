@@ -93,7 +93,7 @@ class Field extends Builder
      */
     public function __construct(
         $name,
-        $type = 'varchar',
+        $type,
         $length,
         $alias = '',
         $nullable = false,
