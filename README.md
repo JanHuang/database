@@ -24,18 +24,18 @@ phpunit
 ```php
 $fdb = new Fdb([
     "read" => [
-        'host'      => '{host}',
-        'port'      => '{port}',
-        'dbname'    => '{dbname}',
-        'user'      => '{user}',
-        'pwd'       => '{pwd}'
+        'database_host'      => '{host}',
+        'database_port'      => '{port}',
+        'database_name'      => '{dbname}',
+        'database_user'      => '{user}',
+        'database_pwd'       => '{pwd}'
     ],
     "write" => [
-        'host'      => '{host}',
-        'port'      => '{port}',
-        'dbname'    => '{dbname}',
-        'user'      => '{user}',
-        'pwd'       => '{pwd}'
+        'database_host'      => '{host}',
+        'database_port'      => '{port}',
+        'database_name'      => '{dbname}',
+        'database_user'      => '{user}',
+        'database_pwd'       => '{pwd}'
     ],
 ]);
 
@@ -57,18 +57,18 @@ $all = $read->query('show tables')->execute()->getAll();
 ```php
 $fdb = new Fdb([
     "read" => [
-        'host'      => '{host}',
-        'port'      => '{port}',
-        'dbname'    => '{dbname}',
-        'user'      => '{user}',
-        'pwd'       => '{pwd}'
+        'database_host'      => '{host}',
+        'database_port'      => '{port}',
+        'database_name'      => '{dbname}',
+        'database_user'      => '{user}',
+        'database_pwd'       => '{pwd}'
     ],
     "write" => [
-        'host'      => '{host}',
-        'port'      => '{port}',
-        'dbname'    => '{dbname}',
-        'user'      => '{user}',
-        'pwd'       => '{pwd}'
+        'database_host'      => '{host}',
+        'database_port'      => '{port}',
+        'database_name'      => '{dbname}',
+        'database_user'      => '{user}',
+        'database_pwd'       => '{pwd}'
     ],
 ]);
 
@@ -98,18 +98,18 @@ $root/Orm
 ```php
 $fdb = new Fdb([
     "read" => [
-        'host'      => '{host}',
-        'port'      => '{port}',
-        'dbname'    => '{dbname}',
-        'user'      => '{user}',
-        'pwd'       => '{pwd}'
+        'database_host'      => '{host}',
+        'database_port'      => '{port}',
+        'database_name'      => '{dbname}',
+        'database_user'      => '{user}',
+        'database_pwd'       => '{pwd}'
     ],
     "write" => [
-        'host'      => '{host}',
-        'port'      => '{port}',
-        'dbname'    => '{dbname}',
-        'user'      => '{user}',
-        'pwd'       => '{pwd}'
+        'database_host'      => '{host}',
+        'database_port'      => '{port}',
+        'database_name'      => '{dbname}',
+        'database_user'      => '{user}',
+        'database_pwd'       => '{pwd}'
     ],
 ]);
 

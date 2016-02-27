@@ -19,11 +19,11 @@ use PHPUnit_Extensions_Database_DataSet_IDataSet;
 class BaseTest extends Fixture_Database_TestCast
 {
     const CONNECTION = [
-        'host'      => '127.0.0.1',
-        'port'      => '3306',
-        'dbname'    => 'dbunit',
-        'user'      => 'root',
-        'pwd'       => '123456'
+        'database_host'      => '127.0.0.1',
+        'database_port'      => '3306',
+        'database_name'      => 'dbunit',
+        'database_user'      => 'root',
+        'database_pwd'       => '123456'
     ];
 
     public function testEcho()

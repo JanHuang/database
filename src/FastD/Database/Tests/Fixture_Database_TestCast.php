@@ -55,11 +55,11 @@ abstract class Fixture_Database_TestCast extends \PHPUnit_Extensions_Database_Te
 
             public function __construct($connection)
             {
-                $this->dsn = sprintf('mysql:host=%s;dbname=%s', $connection['host'], $connection['dbname']);
-                $this->user = $connection['user'];
-                $this->pwd = $connection['pwd'];
-                $this->charset = isset($connection['charset']) ? $connection['charset'] : 'utf8';
-                $this->name = $connection['dbname'];
+                $this->dsn = sprintf('mysql:host=%s;dbname=%s', $connection['database_host'], $connection['database_name']);
+                $this->user = $connection['database_user'];
+                $this->pwd = $connection['database_pwd'];
+                $this->charset = isset($connection['database_charset']) ? $connection['database_charset'] : 'utf8';
+                $this->name = $connection['database_name'];
             }
 
             public function getDSN()

@@ -26,11 +26,11 @@ use FastD\Database\Tests\Fixture_Database_TestCast;
 class DriverTest extends Fixture_Database_TestCast
 {
     const CONNECTION = [
-        'host' => '127.0.0.1',
-        'port' => '3306',
-        'dbname' => 'dbunit',
-        'user' => 'root',
-        'pwd' => '123456'
+        'database_host' => '127.0.0.1',
+        'database_port' => '3306',
+        'database_name' => 'dbunit',
+        'database_user' => 'root',
+        'database_pwd' => '123456'
     ];
 
     const NAME = 'dbunit';

@@ -65,13 +65,13 @@ class Fdb implements \Iterator, \Countable
         return new \PDO(
             sprintf(
                 'mysql:host=%s;port=%s;dbname=%s;charset=%s',
-                $config['host'],
-                $config['port'],
-                $config['dbname'],
-                $config['charset'] ?? 'utf8'
+                $config['database_host'],
+                $config['database_port'],
+                $config['database_name'],
+                $config['database_charset'] ?? 'utf8'
             ),
-            $config['user'],
-            $config['pwd']
+            $config['database_user'],
+            $config['database_pwd']
         );
     }
 

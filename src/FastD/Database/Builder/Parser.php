@@ -82,8 +82,8 @@ class Parser
         if (false === $this->parse_in_db) {
             $db = $this->driver->query('SELECT database() as db;')->execute()->getOne('db');
             $config = $this->driver->getConfig();
-            $prefix = isset($config['prefix']) ? $config['prefix'] : '';
-            $suffix = isset($config['suffix']) ? $config['suffix'] : '';
+            $prefix = isset($config['database_prefix']) ? $config['database_prefix'] : '';
+            $suffix = isset($config['database_suffix']) ? $config['database_suffix'] : '';
 
             $tables = $this->driver
                 ->query('SHOW TABLES;')
