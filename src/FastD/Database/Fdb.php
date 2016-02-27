@@ -56,6 +56,10 @@ class Fdb implements \Iterator, \Countable
         return $this;
     }
 
+    /**
+     * @param array $config
+     * @return \PDO
+     */
     public function createPdo(array $config)
     {
         return new \PDO(
