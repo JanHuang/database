@@ -85,10 +85,10 @@ $auto->ymlToTable($root . '/Orm', 'Examples\Orm', true, Table::TABLE_CREATE);
 最终生成目录结构: 
 
 ```
-    $root/Orm
-             \ Entity
-             \ Repository
-             \ Field
+$root/Orm
+         \ Entity
+         \ Repository
+         \ Field
 ```
 
 #### 2.2 通过已有数据表生成 yml 配置文件
@@ -125,11 +125,11 @@ $auto->tableToYml($root . '/Orm', 'Examples\Orm', true);
 最终生成目录结构: 最后会多一个 `yml` 目录, 用于存储映射出来的 `yml` 配置文件.
 
 ```
-    $root/Orm
-             \ Entity
-             \ Repository
-             \ Field
-             \ yml
+$root/Orm
+         \ Entity
+         \ Repository
+         \ Field
+         \ yml
 ```
 
 其他测试我就不说明了, `Entity`, `Repository` 操作就自行使用, 和其他数据库操作雷同, 相信大家这么聪明不是什么问题, 具体可看测试用例.
