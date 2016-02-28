@@ -133,9 +133,9 @@ class AutoBuilding
      */
     public function saveYmlTo($dir, $force = false)
     {
-        $dir = str_replace('//', '/', $dir . '/yml');
+        $dir = str_replace('//', '/', $dir);
 
-        foreach ($this->getParser()->getTables() as $table) {
+        foreach ($this->getParser()->getTablesByDb() as $table) {
             $file = $dir . '/' . strtolower($table->getTable()) . '.yml';
             if (!is_dir($dir)) {
                 if (true === $force) {
@@ -251,7 +251,7 @@ class AutoBuilding
 
         return 0;
     }
-
+    
     /**
      * @param $dir
      * @param null $namespace
