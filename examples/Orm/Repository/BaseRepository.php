@@ -26,14 +26,8 @@ class BaseRepository extends \FastD\Database\Orm\Repository
 
     public function test()
     {
-        
-        
-        
-        
+        $a = 'janhuang';
+
         return 'hello world';
-    
-    
-    
-    
     }
 }
