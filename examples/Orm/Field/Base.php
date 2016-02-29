@@ -49,6 +49,7 @@ class Base
     'default' => '',
   ),
 );
+
     /**
      * @const mixed
      */
@@ -58,10 +59,12 @@ class Base
   'content' => 'content',
   'create_at' => 'createAt',
 );
+
     /**
      * @const mixed
      */
     const PRIMARY = 'id';
+
     /**
      * @const mixed
      */

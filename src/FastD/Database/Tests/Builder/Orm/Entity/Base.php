@@ -2,37 +2,44 @@
 
 namespace FastD\Database\Tests\Builder\Orm\Entity;
 
-class Base extends \FastD\Database\Orm\Entity
+class Base extends \FastD\Database\Orm\Entity implements \ArrayAccess
 {
     /**
      * @const mixed
      */
     const FIELDS = \FastD\Database\Tests\Builder\Orm\Field\Base::FIELDS;
+
     /**
      * @const mixed
      */
     const ALIAS = \FastD\Database\Tests\Builder\Orm\Field\Base::ALIAS;
+
     /**
      * @const mixed
      */
     const PRIMARY = \FastD\Database\Tests\Builder\Orm\Field\Base::PRIMARY;
+
     /**
      * @const mixed
      */
     const TABLE = \FastD\Database\Tests\Builder\Orm\Field\Base::TABLE;
-    /*
+
+    /**
      * @var mixed
      */
     protected $id;
-    /*
+
+    /**
      * @var mixed
      */
     protected $name;
-    /*
+
+    /**
      * @var mixed
      */
     protected $content;
-    /*
+
+    /**
      * @var mixed
      */
     protected $createAt;
@@ -55,6 +62,7 @@ class Base extends \FastD\Database\Orm\Entity
 
         return $this;
     }
+
     /**
      * @return mixed
      */
@@ -73,6 +81,7 @@ class Base extends \FastD\Database\Orm\Entity
 
         return $this;
     }
+
     /**
      * @return mixed
      */
@@ -91,6 +100,7 @@ class Base extends \FastD\Database\Orm\Entity
 
         return $this;
     }
+
     /**
      * @return mixed
      */
@@ -109,5 +119,4 @@ class Base extends \FastD\Database\Orm\Entity
 
         return $this;
     }
-
 }

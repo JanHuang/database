@@ -29,14 +29,6 @@ class ParamsTest extends Fixture_Database_TestCast
 
     public function testParams()
     {
-        $baseRepository = new BaseRepository($this->createDriver());
 
-        $baseRepository->bindParams([
-            'name' => 'asdf',
-            'content' => 'hello',
-            'createAt' => 123123
-        ]);
-
-        $this->assertEquals(3, $baseRepository->save());
     }
 }

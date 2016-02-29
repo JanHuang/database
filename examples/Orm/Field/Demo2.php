@@ -19,16 +19,19 @@ class Demo2
     'default' => 0,
   ),
 );
+
     /**
      * @const mixed
      */
     const ALIAS = array (
   'id' => 'id',
 );
+
     /**
      * @const mixed
      */
-    const PRIMARY = 'null';
+    const PRIMARY = null;
+
     /**
      * @const mixed
      */

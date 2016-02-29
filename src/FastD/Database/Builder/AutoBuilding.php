@@ -123,7 +123,12 @@ class AutoBuilding
         $table = new Property('TABLE', Property::PROPERTY_CONST);
         $table->setValue('\\' . $value . '::TABLE');
 
-        return [$fields, $alias, $primary, $table];
+        return [
+            'FIELDS' => $fields,
+            'ALIAS' => $alias,
+            'PRIMARY' => $primary,
+            'TABLE' => $table
+        ];
     }
 
     /**
@@ -188,21 +193,19 @@ class AutoBuilding
             $methods = [];
 
             foreach ($table->getFields() as $field) {
-                $properties[] = new Property($field->getAlias());
+                $properties[$field->getAlias()] = new Property($field->getAlias());
                 $methods[] = new GetSetter($field->getAlias());
             }
 
-            $entity->setProperties(array_merge($this->getConstants($namespace . '\\Field\\' . $name), $properties));
-            $entity->setMethods($methods);
-
-            $content = '<?php' . PHP_EOL . $entity->generate();
+            $entity->setProperties(array_merge($properties, $this->getConstants($namespace . '\\Field\\' . $name)));
+            $entity->setMethods($methods, true);
 
             if (file_exists($file)) {
                 if (true === $force) {
-                    file_put_contents($file, $content);
+                    $entity->save($file);
                 }
             } else {
-                file_put_contents($file, $content);
+                $entity->save($file);
             }
         }
 
@@ -235,17 +238,13 @@ class AutoBuilding
             $repository = new Generator($name . 'Repository', $namespace . '\\Repository', Object::OBJECT_CLASS);
 
             $repository->setExtends($object);
-
-            $repository->setProperties($this->getConstants($namespace . '\\Field\\' . $name));
-
-            $content = '<?php' . PHP_EOL . $repository->generate();
-
+            $repository->setProperties($this->getConstants($namespace . '\\Field\\' . $name), true);
             if (file_exists($file)) {
                 if (true === $force) {
-                    file_put_contents($file, $content);
+                    $repository->save($file);
                 }
             } else {
-                file_put_contents($file, $content);
+                $repository->save($file);
             }
         }
 
@@ -314,16 +313,14 @@ class AutoBuilding
                 $tableConst
             ];
 
-            $field->setProperties($constants);
-
-            $content = '<?php' . PHP_EOL . $field->generate();;
+            $field->setProperties($constants, true);
 
             if (file_exists($file)) {
                 if (true === $force) {
-                    file_put_contents($file, $content);
+                    $field->save($file);
                 }
             } else {
-                file_put_contents($file, $content);
+                $field->save($file);
             }
         }
 
