@@ -14,7 +14,7 @@
 
 namespace FastD\Database\Tests\Orm;
 
-use Examples\Orm\Entity\Base;
+use Examples\Orm\Dbunit\Entity\Base;
 use FastD\Database\Tests\Fixture_Database_TestCast;
 
 class EntityTest extends Fixture_Database_TestCast

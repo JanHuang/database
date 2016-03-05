@@ -46,7 +46,9 @@ class AutoBuildingTest extends Fixture_Database_TestCast
     {
         $root = __DIR__ . '/../../../../../examples';
 
-        $auto = new AutoBuilding(null, $root . '/yml');
+        $driver = $this->createDriver();
+
+        $auto = new AutoBuilding($driver, $root . '/yml');
 
         $auto->saveYmlTo($root . '/Orm', true);
 

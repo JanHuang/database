@@ -256,7 +256,7 @@ WHERE
         $fields = [];
 
         foreach ($content['fields'] as $alias => $field) {
-            $fields[$alias] = new Field(
+            $f = new Field(
                 $field['name'],
                 $field['type'] ?? 'varchar',
                 $field['length'] ?? 255,
@@ -265,6 +265,27 @@ WHERE
                 $field['default'] ?? '',
                 $field['comment'] ?? ''
             );
+
+            if (isset($field['key'])) {
+                switch (strtoupper($field['key'])) {
+                    case 'PRIMARY':
+                        $key = new Key($field['name'], Key::KEY_PRIMARY);
+                        break;
+                    case 'UNIQUE':
+                        $key = new Key($field['name'], Key::KEY_UNIQUE);
+                        break;
+                    case 'FULLTEXT':
+                        $key = new Key($field['name'], Key::KEY_FULLTEXT);
+                        break;
+                    case 'INDEX':
+                    default:
+                        $key = new Key($field['name'], Key::KEY_INDEX);
+                }
+
+                $f->setKey($key);
+            }
+
+            $fields[$alias] = $f;
         }
 
         $table->setFields($fields);

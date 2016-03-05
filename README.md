@@ -124,8 +124,10 @@ $auto->tableToYml($root . '/Orm', 'Examples\Orm', true);
 
 最终生成目录结构: 最后会多一个 `yml` 目录, 用于存储映射出来的 `yml` 配置文件.
 
+每个生成的目录按照不同的数据库名进行归类
+
 ```
-$root/Orm
+$root/Orm/{dbname}
          \ Entity
          \ Repository
          \ Field

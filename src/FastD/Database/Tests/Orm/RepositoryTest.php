@@ -14,7 +14,7 @@
 
 namespace FastD\Database\Tests\Orm;
 
-use Examples\Orm\Repository\BaseRepository;
+use Examples\Orm\Dbunit\Repository\BaseRepository;
 use FastD\Database\Tests\Fixture_Database_TestCast;
 
 class RepositoryTest extends Fixture_Database_TestCast

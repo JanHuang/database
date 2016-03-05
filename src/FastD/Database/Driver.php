@@ -73,6 +73,14 @@ class Driver implements DriverInterface
     }
 
     /**
+     * @return string
+     */
+    public function getDatabaseName()
+    {
+        return $this->config['database_name'] ?? '';
+    }
+
+    /**
      * @return \PDO
      */
     public function getPdo()

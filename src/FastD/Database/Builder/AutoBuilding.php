@@ -29,6 +29,10 @@ use FastD\Generator\Factory\Object;
  */
 class AutoBuilding
 {
+    const TYPE_ENTITY = 'Entity';
+    const TYPE_REPOSITORY = 'Repository';
+    const TYPE_FIELD = 'Field';
+
     /**
      * @var DriverInterface
      */
@@ -52,11 +56,11 @@ class AutoBuilding
     /**
      * Builder constructor.
      *
-     * @param DriverInterface|null $driverInterface
+     * @param DriverInterface $driverInterface
      * @param $originDir
      * @param bool $debug
      */
-    public function __construct(DriverInterface $driverInterface = null, $originDir = null, $debug = true)
+    public function __construct(DriverInterface $driverInterface, $originDir = null, $debug = true)
     {
         $this->driver = $driverInterface;
 
@@ -106,6 +110,26 @@ class AutoBuilding
     }
 
     /**
+     * @param $dir
+     * @param $type
+     * @return string
+     */
+    protected function buildDir($dir, $type)
+    {
+        return str_replace('//', '/', $dir . '/' . ucfirst($this->driver->getDatabaseName()) . '/') . $type;
+    }
+
+    /**
+     * @param $namespace
+     * @param $type
+     * @return string
+     */
+    protected function buildNamespace($namespace, $type)
+    {
+        return $namespace . '\\' . ucfirst($this->driver->getDatabaseName()) . '\\' . $type;
+    }
+
+    /**
      * @param $value
      * @return array
      */
@@ -124,10 +148,10 @@ class AutoBuilding
         $table->setValue('\\' . $value . '::TABLE');
 
         return [
-            'FIELDS' => $fields,
-            'ALIAS' => $alias,
-            'PRIMARY' => $primary,
-            'TABLE' => $table
+            'PRIMARY'   => $primary,
+            'FIELDS'    => $fields,
+            'ALIAS'     => $alias,
+            'TABLE'     => $table,
         ];
     }
 
@@ -138,7 +162,7 @@ class AutoBuilding
      */
     public function saveYmlTo($dir, $force = false)
     {
-        $dir = str_replace('//', '/', $dir);
+        $dir = $this->buildDir($dir, '');
 
         foreach ($this->getParser()->getTablesByDb() as $table) {
             $file = $dir . '/' . strtolower($table->getTable()) . '.yml';
@@ -170,7 +194,7 @@ class AutoBuilding
      */
     public function saveEntityTo($dir, $namespace = '', $force = false)
     {
-        $dir = str_replace('//', '/', $dir . '/Entity');
+        $dir = $this->buildDir($dir, self::TYPE_ENTITY);
 
         foreach ($this->tables as $table) {
             $name = ucfirst($table->rename($table->getTable()));
@@ -185,7 +209,7 @@ class AutoBuilding
 
             $object = new Object('Entity', 'FastD\Database\Orm');
 
-            $entity = new Generator($name, $namespace . '\\Entity', Object::OBJECT_CLASS);
+            $entity = new Generator($name, $this->buildNamespace($namespace, self::TYPE_ENTITY), Object::OBJECT_CLASS);
 
             $entity->setExtends($object);
 
@@ -197,7 +221,7 @@ class AutoBuilding
                 $methods[] = new GetSetter($field->getAlias());
             }
 
-            $entity->setProperties(array_merge($properties, $this->getConstants($namespace . '\\Field\\' . $name)));
+            $entity->setProperties(array_merge($properties, $this->getConstants($this->buildNamespace($namespace, self::TYPE_FIELD) . '\\' . $name)));
             $entity->setMethods($methods, true);
 
             if (file_exists($file)) {
@@ -220,7 +244,7 @@ class AutoBuilding
      */
     public function saveRepositoryTo($dir, $namespace = '', $force = false)
     {
-        $dir = str_replace('//', '/', $dir . '/Repository');
+        $dir = $this->buildDir($dir, self::TYPE_REPOSITORY);
 
         foreach ($this->tables as $table) {
             $name = ucfirst($table->rename($table->getTable()));
@@ -235,10 +259,10 @@ class AutoBuilding
 
             $object = new Object('Repository', 'FastD\Database\Orm');
 
-            $repository = new Generator($name . 'Repository', $namespace . '\\Repository', Object::OBJECT_CLASS);
+            $repository = new Generator($name . 'Repository', $this->buildNamespace($namespace, self::TYPE_REPOSITORY), Object::OBJECT_CLASS);
 
             $repository->setExtends($object);
-            $repository->setProperties($this->getConstants($namespace . '\\Field\\' . $name), true);
+            $repository->setProperties($this->getConstants($this->buildNamespace($namespace, self::TYPE_FIELD) . '\\' . $name), true);
             if (file_exists($file)) {
                 if (true === $force) {
                     $repository->save($file);
@@ -259,7 +283,7 @@ class AutoBuilding
      */
     public function saveFieldTo($dir, $namespace = null, $force = false)
     {
-        $dir = str_replace('//', '/', $dir . '/Field');
+        $dir = $this->buildDir($dir, self::TYPE_FIELD);
 
         foreach ($this->tables as $table) {
             $name = ucfirst($table->rename($table->getTable()));
@@ -295,7 +319,7 @@ class AutoBuilding
                 }
             }
 
-            $field = new Generator($name, $namespace . '\\Field', Object::OBJECT_CLASS);
+            $field = new Generator($name, $this->buildNamespace($namespace, self::TYPE_FIELD), Object::OBJECT_CLASS);
 
             $fieldsConst = new Property('FIELDS', Property::PROPERTY_CONST);
             $fieldsConst->setValue($fields);
