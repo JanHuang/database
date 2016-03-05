@@ -116,7 +116,7 @@ class AutoBuilding extends Builder
      */
     protected function buildDir($dir, $type)
     {
-        $name = $this->rename($this->driver->getDatabaseName());
+        $name = ucfirst($this->rename($this->driver->getDatabaseName()));
 
         return str_replace('//', '/', $dir . '/' . $name . '/') . $type;
     }
@@ -128,7 +128,7 @@ class AutoBuilding extends Builder
      */
     protected function buildNamespace($namespace, $type)
     {
-        $name = $this->rename($this->driver->getDatabaseName());
+        $name = ucfirst($this->rename($this->driver->getDatabaseName()));
 
         return $namespace . '\\' . $name . '\\' . $type;
     }
