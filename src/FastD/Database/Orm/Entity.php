@@ -201,4 +201,20 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     {
         unset($this->row[$offset]);
     }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->row;
+    }
+
+    /**
+     * @return string
+     */
+    public function toJson()
+    {
+        return json_encode($this->row, JSON_UNESCAPED_UNICODE);
+    }
 }
