@@ -27,7 +27,7 @@ use FastD\Generator\Factory\Object;
  *
  * @package FastD\Database\ORM\AutoBuilding
  */
-class AutoBuilding
+class AutoBuilding extends Builder
 {
     const TYPE_ENTITY = 'Entity';
     const TYPE_REPOSITORY = 'Repository';
@@ -116,7 +116,9 @@ class AutoBuilding
      */
     protected function buildDir($dir, $type)
     {
-        return str_replace('//', '/', $dir . '/' . ucfirst($this->driver->getDatabaseName()) . '/') . $type;
+        $name = $this->rename($this->driver->getDatabaseName());
+
+        return str_replace('//', '/', $dir . '/' . $name . '/') . $type;
     }
 
     /**
@@ -126,7 +128,9 @@ class AutoBuilding
      */
     protected function buildNamespace($namespace, $type)
     {
-        return $namespace . '\\' . ucfirst($this->driver->getDatabaseName()) . '\\' . $type;
+        $name = $this->rename($this->driver->getDatabaseName());
+
+        return $namespace . '\\' . $name . '\\' . $type;
     }
 
     /**
@@ -409,5 +413,23 @@ class AutoBuilding
         $this->saveYmlTo($dir, $force);
 
         return $this->saveTo($dir, $namespace, $force);
+    }
+
+    /**
+     * @param null|int $flag
+     * @return string
+     */
+    public function toSql($flag = null)
+    {
+        return '';
+    }
+
+    /**
+     * @param null|int $flag
+     * @return string
+     */
+    public function toYml($flag = null)
+    {
+        return '';
     }
 }

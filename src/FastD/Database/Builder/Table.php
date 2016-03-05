@@ -13,6 +13,7 @@
  */
 
 namespace FastD\Database\Builder;
+
 use Symfony\Component\Yaml\Yaml;
 
 /**
