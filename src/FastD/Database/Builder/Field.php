@@ -107,7 +107,15 @@ class Field extends Builder
             $type = 'varchar';
         }
 
-        if (in_array($type, ['int', 'smallint', 'tinyint', 'mediumint', 'integer', 'bigint', 'float', 'double'])) {
+        if (in_array($type, [
+            'int',
+            'smallint',
+            'tinyint',
+            'mediumint',
+            'integer',
+            'bigint',
+            'float',
+            'double'])) {
             $default = 0;
         }
 

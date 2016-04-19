@@ -23,6 +23,7 @@ class Mysql extends QueryBuilder
 {
     /**
      * @param array $where
+     * @param string $assign
      * @return string
      */
     protected function parseWhere(array $where, $assign = '=')
