@@ -444,8 +444,6 @@ class Field extends Builder
                 return "CHANGE `{$this->getName()}` `{$this->getName()}` {$this->getType()}{$length}{$unsigned}{$nullable}{$default}{$comment}";
             case self::FIELD_DROP:
                 return "DROP `{$this->getName()}`";
-            case self::FIELD_INDEX:
-                return "";
         }
 
         throw new \InvalidArgumentException(sprintf('Operation ["%s"] is undefined.', $flag));
