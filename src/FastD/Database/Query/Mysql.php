@@ -134,7 +134,21 @@ class Mysql extends QueryBuilder
         $this->fields = '';
 
         foreach ($fields as $name => $alias) {
-            $this->fields .= is_integer($name) ? ('`' . $alias . '`,') : '`'. $name . '` AS `' . $alias . '`,';
+            if (is_integer($name)) {
+                if (false === strpos($alias, '(')) {
+                    $alias = '`' . $alias . '`,';
+                }
+                $str = $alias;
+            } else {
+                if (false === strpos($name, '(')) {
+                    $alias = '`'. $name . '` AS `' . $alias . '`,';
+                } else {
+                    $alias = $name . ' AS `' . $alias . '`,';
+                }
+                $str = $alias;
+            }
+
+            $this->fields .= $str;
         }
 
         $this->fields = trim($this->fields, ',');

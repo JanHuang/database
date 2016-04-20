@@ -73,6 +73,16 @@ class QueryBuilderTest extends \PHPUnit_Framework_TestCase
             ])
             ->from('base', 'b')
             ->select());
+
+        $this->assertEquals('SELECT count(1) AS `total` FROM `base` AS `b`;', $this
+            ->builder
+            ->fields(['count(1)' => 'total'])
+            ->select());
+
+        $this->assertEquals('SELECT count(1) FROM `base` AS `b`;', $this
+            ->builder
+            ->fields(['count(1)'])
+            ->select());
     }
 
     public function testWhere()

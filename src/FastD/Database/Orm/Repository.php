@@ -16,6 +16,7 @@ namespace FastD\Database\Orm;
 use FastD\Database\DriverInterface;
 use FastD\Database\Params\HttpRequestHandle;
 use FastD\Database\Query\Mysql;
+use FastD\Database\Query\Paging\QueryPagination;
 use FastD\Database\Query\QueryBuilder;
 
 /**
@@ -185,7 +186,7 @@ abstract class Repository extends HttpRequestHandle
      */
     public function count(array $where = [])
     {
-        return (int)$this->where($where)->find(['count(id) as total'])['total'];
+        return (int)$this->where($where)->find(['count(1)' => 'total'])['total'];
     }
 
     /**
@@ -254,6 +255,14 @@ abstract class Repository extends HttpRequestHandle
     }
 
     /**
+     * @return array
+     */
+    public function getLogs()
+    {
+        return $this->query_builder->getLogs();
+    }
+
+    /**
      * @return $this
      */
     public function createQueryBuilder()
@@ -270,12 +279,10 @@ abstract class Repository extends HttpRequestHandle
      * @param int  $showList
      * @param int  $showPage
      * @param null $lastId
-     * @return Pagination
+     * @return QueryPagination
      */
     public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
     {
-        $pagination = new Pagination($this->getDriver(), $page, $showList, $showPage, $lastId);
-
-        return $pagination->table($this->getTable())->fields($this->getAlias());
+        return new QueryPagination($this, $page, $showList, $showPage, $lastId);
     }
 }

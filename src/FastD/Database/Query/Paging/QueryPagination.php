@@ -14,8 +14,7 @@
 
 namespace FastD\Database\Query\Paging;
 
-use FastD\Database\DriverInterface;
-use FastD\Database\Query\Mysql;
+use FastD\Database\Orm\Repository;
 
 /**
  * Class QueryPagination
@@ -24,11 +23,6 @@ use FastD\Database\Query\Mysql;
  */
 class QueryPagination extends Pagination
 {
-    /**
-     * @var DriverInterface
-     */
-    private $driver;
-
     /**
      * @var array
      */
@@ -59,9 +53,18 @@ class QueryPagination extends Pagination
      */
     protected $result;
 
-    public function __construct($total, $currentPage, $showList, $showPage)
+    /**
+     * QueryPagination constructor.
+     * @param Repository $repository
+     * @param int $currentPage
+     * @param int $showList
+     * @param int $showPage
+     */
+    public function __construct(Repository $repository, $currentPage = 1, $showList = 25, $showPage = 5)
     {
-        parent::__construct($total, $currentPage, $showList, $showPage);
+        parent::__construct($repository->count(), $currentPage, $showList, $showPage);
+
+        $this->setResult($repository->limit($this->getShowList(), $this->getOffset())->findAll());
     }
 
     /**
@@ -131,41 +134,12 @@ class QueryPagination extends Pagination
     }
 
     /**
+     * @param array $result
      * @return $this
      */
-    public function getPagination()
+    public function setResult(array $result)
     {
-        if ($this->driver instanceof DriverInterface) {
-            $this->totalRows = $this
-                ->driver
-                ->query(
-                    Mysql::singleton()
-                        ->from($this->table)
-                        ->where($this->where)
-                        ->fields(['count(1) as total'])->select()
-                )
-                ->execute()
-                ->getOne('total')
-            ;
-            $this->result = $this
-                ->driver
-                ->query(
-                    Mysql::singleton()
-                        ->from($this->table)
-                        ->fields($this->fields)
-                        ->where($this->where)
-                        ->orderBy($this->orderBy)
-                        ->limit($this->getShowList(), $this->offset)
-                        ->select()
-                )
-                ->execute()
-                ->getAll()
-            ;
-            $end = end($this->result);
-            $this->lastId = isset($end['id']) ? $end['id'] : null;
-        }
-
-        $this->totalPages = ceil($this->totalRows / $this->showList);
+        $this->result = $result;
 
         return $this;
     }

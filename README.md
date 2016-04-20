@@ -1,14 +1,14 @@
-#FastD Database
+# FastD Database
 
 好复杂...
 
-## 依赖
+## 环境要求
 
 * PHP >= 7
 * fastd/generator >= 1.0
 * symfony/yaml >= 3.0
 
-## Install 
+## Composer
 
 ```
 composer require "fastd/database:2.0.x.dev"
@@ -82,7 +82,7 @@ $auto = new AutoBuilding($fdb->getDriver('read'), {path});
 $auto->ymlToTable($root . '/Orm', 'Examples\Orm', true, Table::TABLE_CREATE);
 ```
 
-最终生成目录结构: 
+最终生成目录结构:
 
 ```
 $root/Orm
@@ -136,8 +136,29 @@ $root/Orm/{dbname}
 
 其他测试我就不说明了, `Entity`, `Repository` 操作就自行使用, 和其他数据库操作雷同, 相信大家这么聪明不是什么问题, 具体可看测试用例.
 
-望大家多多指点啦. 
+### 3. 分页
 
+数据分页对象
 
+#### 3.1 通用分页
+
+```php
+$page = new Pagination(100, 1, [$showList = 25], [$showPage = 5])
+$page->getFirstPage();
+```
+
+通用分页只需要注入总数量，当前页码，每页显示数量，每次显示多少页即刻获得分页数据。
+
+#### 3.2 查询分页
+
+```php
+$repository = new BaseRepository($this->createDriver());
+$page = new QueryPagination($repository, 1);
+$page->getResult();
+```
+
+继承通用分页特性，需要注入一个数据操作仓库，具体数据查询和分页由内部实现。分别会调用 `Repository::count` 和 `Repository::findAll` 两个方法，通过 `QueryPagination::getResult` 方法获取分页数据
+
+望大家多多指点啦.
 
 ## License MIT
