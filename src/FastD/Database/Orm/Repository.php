@@ -14,7 +14,6 @@
 namespace FastD\Database\Orm;
 
 use FastD\Database\DriverInterface;
-use FastD\Database\Drivers\Query\Paging\Pagination;
 use FastD\Database\Params\HttpRequestHandle;
 use FastD\Database\Query\Mysql;
 use FastD\Database\Query\QueryBuilder;

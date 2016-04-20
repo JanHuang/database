@@ -55,8 +55,6 @@ class Pagination
      */
     protected $currentPage = 1;
 
-
-
     /**
      * @param int  $total
      * @param int  $currentPage

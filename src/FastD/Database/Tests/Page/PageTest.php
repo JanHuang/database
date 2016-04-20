@@ -15,6 +15,7 @@
 namespace FastD\Database\Tests\Page;
 
 use FastD\Database\Query\Paging\Pagination;
+use FastD\Database\Query\Paging\QueryPagination;
 use FastD\Database\Tests\Fixture_Database_TestCast;
 
 class PageTest extends Fixture_Database_TestCast
@@ -27,7 +28,7 @@ class PageTest extends Fixture_Database_TestCast
         'database_pwd'       => '123456'
     ];
 
-    public function testTotal()
+    public function testPage()
     {
         $page = new Pagination(10, 1, 4);
 
@@ -44,5 +45,10 @@ class PageTest extends Fixture_Database_TestCast
         $this->assertEquals(75, $page->getOffset());
         $this->assertEquals(4, $page->getNextPage());
         $this->assertEquals(3, $page->getPrevPage());
+    }
+
+    public function testQueryPage()
+    {
+
     }
 }

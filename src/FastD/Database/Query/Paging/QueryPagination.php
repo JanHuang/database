@@ -17,6 +17,11 @@ namespace FastD\Database\Query\Paging;
 use FastD\Database\DriverInterface;
 use FastD\Database\Query\Mysql;
 
+/**
+ * Class QueryPagination
+ *
+ * @package FastD\Database\Query\Paging
+ */
 class QueryPagination extends Pagination
 {
     /**
@@ -54,6 +59,10 @@ class QueryPagination extends Pagination
      */
     protected $result;
 
+    public function __construct($total, $currentPage, $showList, $showPage)
+    {
+        parent::__construct($total, $currentPage, $showList, $showPage);
+    }
 
     /**
      * @return int|null
@@ -168,10 +177,4 @@ class QueryPagination extends Pagination
     {
         return $this->result;
     }
-
-    /*
-     *
-     * if (null !== $lastId) {
-            $this->where = ['id[>]' => $this->lastId];
-        }*/
 }
