@@ -1,5 +1,7 @@
 # FastD Database
 
+[![Latest Stable Version](https://poser.pugx.org/fastd/database/v/stable)](https://packagist.org/packages/fastd/database) [![Total Downloads](https://poser.pugx.org/fastd/database/downloads)](https://packagist.org/packages/fastd/database) [![Latest Unstable Version](https://poser.pugx.org/fastd/database/v/unstable)](https://packagist.org/packages/fastd/database) [![License](https://poser.pugx.org/fastd/database/license)](https://packagist.org/packages/fastd/database)
+
 好复杂...
 
 ## 环境要求
