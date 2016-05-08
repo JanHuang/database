@@ -15,6 +15,7 @@
 namespace FastD\Database;
 
 use FastD\Database\ORM\Repository;
+use FastD\Database\Query\QueryBuilder;
 
 /**
  * Interface DriverInterface
@@ -91,6 +92,11 @@ interface DriverInterface
      * @return Repository
      */
     public function getRepository($repository);
+
+    /**
+     * @return QueryBuilder
+     */
+    public function createQueryBuilder();
 
     /**
      * @return DriverError
