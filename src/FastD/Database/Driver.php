@@ -190,7 +190,7 @@ class Driver implements DriverInterface
      */
     public function getRepository($repository)
     {
-        $repository = str_replace(':', '\\', $repository) . 'Repository';
+        $repository = str_replace(':', '\\', $repository);
 
         if (!class_exists($repository)) {
             throw new \InvalidArgumentException(sprintf('Repository class ["%s"] is not found.', $repository));
