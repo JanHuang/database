@@ -15,6 +15,7 @@
 namespace FastD\Database;
 
 use FastD\Database\ORM\Repository;
+use FastD\Database\Query\Mysql;
 
 /**
  * 主要在PDO之上简单封装一层,用于DAO层访问,隔离DAO操作.可在驱动上进行操作.
@@ -86,6 +87,14 @@ class Driver implements DriverInterface
     public function getPdo()
     {
         return $this->pdo;
+    }
+
+    /**
+     * @return Query\QueryBuilder
+     */
+    public function getQueryBuilder()
+    {
+        return Mysql::singleton();
     }
 
     /**

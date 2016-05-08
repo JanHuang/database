@@ -52,6 +52,11 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     protected $condition = null;
 
     /**
+     * @var Mysql
+     */
+    protected $query_builder;
+
+    /**
      * Entity constructor.
      * @param array|null $condition
      * @param DriverInterface|null $driverInterface
@@ -69,6 +74,8 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
                 $this->$method(isset($this->row[$alias]) ? $this->row[$alias] : null);
             }
         }
+
+
     }
 
     /**
@@ -104,6 +111,18 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     }
 
     /**
+     * @return \FastD\Database\Query\QueryBuilder
+     */
+    public function createQueryBuilder()
+    {
+        if (null === $this->query_builder) {
+            $this->query_builder = Mysql::singleton()->from($this->getTable());
+        }
+
+        return $this->query_builder;
+    }
+
+    /**
      * @param array $fields
      * @return array|bool
      */
@@ -111,8 +130,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
     {
         return $this->driver
             ->query(
-                Mysql::singleton()
-                    ->from($this->getTable())
+                $this->createQueryBuilder()
                     ->where($this->condition ?? [])
                     ->fields($fields ?? $this->getAlias())
                     ->select()
@@ -144,11 +162,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
         // update
         if (null !== $this->condition) {
             return $this->driver
-                ->query(
-                    Mysql::singleton()
-                        ->from($this->getTable())
-                        ->update($data, $this->condition)
-                )
+                ->query($this->createQueryBuilder()->update($data, $this->condition))
                 ->setParameter($values)
                 ->execute()
                 ->getAffected()
@@ -156,11 +170,7 @@ abstract class Entity extends HttpRequestHandle implements \ArrayAccess
         }
 
         return $this->driver
-            ->query(
-                Mysql::singleton()
-                    ->from($this->getTable())
-                    ->insert($data)
-            )
+            ->query($this->createQueryBuilder()->insert($data))
             ->setParameter($values)
             ->execute()
             ->getId()
