@@ -92,7 +92,7 @@ class Driver implements DriverInterface
     /**
      * @return Query\QueryBuilder
      */
-    public function getQueryBuilder()
+    public function createQueryBuilder()
     {
         return Mysql::singleton();
     }
