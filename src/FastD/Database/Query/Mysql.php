@@ -263,10 +263,15 @@ class Mysql extends QueryBuilder
     }
 
     /**
+     * @param array $fields
      * @return string
      */
-    public function select()
+    public function select(array $fields = [])
     {
+        if (!empty($fields)) {
+            $this->fields($fields);
+        }
+
         $this->sql = 'SELECT ' . $this->fields . ' FROM ' . $this->table . $this->where . $this->like . $this->group . $this->having . $this->order . $this->limit . ';';
 
         return $this->getSql();
