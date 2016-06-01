@@ -112,14 +112,16 @@ abstract class Repository extends HttpRequestHandle
     /**
      * Fetch one row.
      *
+     * @param array $where
      * @param array $field
      * @return array The found object.
      */
-    public function find(array $field = [])
+    public function find(array $where = [], array $field = [])
     {
         return $this
             ->createQuery(
                 $this->query_builder
+                    ->where($where)
                     ->fields(array() === $field ? $this->getAlias() : $field)
                     ->select()
             )
@@ -131,14 +133,16 @@ abstract class Repository extends HttpRequestHandle
     /**
      * Fetch all rows.
      *
+     * @param array $where
      * @param array|string $field
      * @return array The found object.
      */
-    public function findAll(array $field = [])
+    public function findAll(array $where = [], array $field = [])
     {
         return $this
             ->createQuery(
                 $this->query_builder
+                    ->where($where)
                     ->fields(array() === $field ? $this->getAlias() : $field)
                     ->select()
             )

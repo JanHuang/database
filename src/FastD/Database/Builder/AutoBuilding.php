@@ -32,6 +32,7 @@ class AutoBuilding extends Builder
     const TYPE_ENTITY = 'Entity';
     const TYPE_REPOSITORY = 'Repository';
     const TYPE_FIELD = 'Field';
+    const TYPE_YML = 'yml';
 
     /**
      * @var DriverInterface
@@ -166,7 +167,7 @@ class AutoBuilding extends Builder
      */
     public function saveYmlTo($dir, $force = false)
     {
-        $dir = $this->buildDir($dir, '');
+        $dir = $this->buildDir($dir, static::TYPE_YML);
 
         foreach ($this->getParser()->getTablesByDb() as $table) {
             $file = $dir . '/' . strtolower($table->getTable()) . '.yml';
@@ -365,9 +366,9 @@ class AutoBuilding extends Builder
     {
         $result = [];
 
+        $result['field_to'] = $this->saveFieldTo($dir, $namespace, $force);
         $result['entity_to'] = $this->saveEntityTo($dir, $namespace, $force);
         $result['repository_to'] = $this->saveRepositoryTo($dir, $namespace, $force);
-        $result['field_to'] = $this->saveFieldTo($dir, $namespace, $force);
 
         return $result;
     }
