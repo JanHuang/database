@@ -117,21 +117,21 @@ WHERE
 
                 foreach ($schemes as $item => $value) {
                     $type = $value['type'];
-                    $length = 0;
-                    if (false !== strpos($type, '(')) {
-                        $length = substr($type, strpos($type, '(') + 1, -1);
-                        $type = substr($type, 0, strpos($type, '('));
-                    }
+                    $pattern = '/(?<type>\w+)\(?(?<length>\d*)\)?\s?(?<unsigned>\w*)?/';
+                    preg_match($pattern, $type, $match);
 
                     $field = new Field(
                         $value['field'],
-                        $type,
-                        $length,
+                        $match['type'],
+                        (int) $match['length'],
                         '',
                         $value['nullable'] == 'NO' ? false : true,
                         $value['default'],
                         $value['comment']
                     );
+
+                    $field->setUnsigned($match['unsigned']);
+
                     $field
                         ->setExtra($value['extra'])
                     ;
