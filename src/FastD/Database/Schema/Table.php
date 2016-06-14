@@ -1,19 +1,20 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: janhuang
- * Date: 16/2/25
- * Time: 下午5:32
- * Github: https://www.github.com/janhuang
- * Coding: https://www.coding.net/janhuang
- * SegmentFault: http://segmentfault.com/u/janhuang
- * Blog: http://segmentfault.com/blog/janhuang
- * Gmail: bboyjanhuang@gmail.com
- * WebSite: http://www.janhuang.me
+ *
+ * @author    jan huang <bboyjanhuang@gmail.com>
+ * @copyright 2016
+ *
+ * @link      https://www.github.com/janhuang
+ * @link      http://www.fast-d.cn/
  */
 
 namespace FastD\Database\Schema;
 
+/**
+ * Class Table
+ *
+ * @package FastD\Database\Schema
+ */
 class Table
 {
     /**
@@ -119,6 +120,25 @@ class Table
         $this->fields[$field->getName()] = $field;
 
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function dropField($name)
+    {
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @param Field $field
+     * @param Key|null $key
+     * @return Table
+     */
+    public function alterField($name, Field $field, Key $key = null)
+    {
+        return $this->addField($field, $key);
     }
 
     /**
