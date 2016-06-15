@@ -380,4 +380,29 @@ class Field
 
         return $name;
     }
+
+    /**
+     * @param Field $field
+     * @return bool
+     */
+    public function equal(Field $field)
+    {
+        return
+            (
+                $field->getName()
+                . $field->getType()
+                . $field->getLength()
+                . $field->getComment()
+                . $field->getDefault()
+                . (null !== $field->getKey() ? $field->getKey()->getKey() : '')
+            ) ===
+            (
+                $this->getName()
+                . $this->getType()
+                . $this->getLength()
+                . $this->getComment()
+                . $this->getDefault()
+                . (null !== $this->getKey() ? $this->getKey()->getKey() : '')
+            );
+    }
 }
