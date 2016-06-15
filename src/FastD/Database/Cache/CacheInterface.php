@@ -12,5 +12,9 @@ namespace FastD\Database\Cache;
 
 interface CacheInterface
 {
+    public function saveCache();
 
+    public function getCache();
+
+    public function clearCache();
 }

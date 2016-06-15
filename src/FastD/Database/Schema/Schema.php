@@ -17,23 +17,8 @@ namespace FastD\Database\Schema;
  *
  * @package FastD\Database\Schema
  */
-class Schema
+class Schema extends SchemaCache
 {
-    /**
-     * @var Table
-     */
-    protected $table;
-
-    /**
-     * @var Field[]
-     */
-    protected $fieldsCache = [];
-
-    /**
-     * @var string
-     */
-    protected $fieldsCacheFile;
-
     /**
      * @var bool
      */
@@ -47,30 +32,9 @@ class Schema
      */
     public function __construct(Table $table, $force = false)
     {
-        $this->table = $table;
-
         $this->force = $force;
 
-        $fieldsCacheDir = __DIR__ . '/fieldsCache';
-
-        $fieldsCacheFile = $fieldsCacheDir . DIRECTORY_SEPARATOR . '.table.' . $this->getTable()->getFullTableName() . '.cache';
-
-        if (!file_exists($fieldsCacheDir)) {
-            mkdir($fieldsCacheDir, 0755, true);
-        }
-
-        if (file_exists($fieldsCacheFile)) {
-            try {
-                $this->fieldsCache = include $fieldsCacheFile;
-                $this->fieldsCache = unserialize($this->fieldsCache);
-            } catch (\Exception $e) {
-                $this->fieldsCache = [];
-            }
-        }
-
-        $this->fieldsCacheFile = $fieldsCacheFile;
-
-        unset($fieldsCacheDir, $fieldsCacheFile);
+        parent::__construct($table);
     }
 
     /**
@@ -79,105 +43,6 @@ class Schema
     public function isForce()
     {
         return $this->force;
-    }
-
-    /**
-     * @return Table
-     */
-    public function getTable()
-    {
-        return $this->table;
-    }
-
-    /**
-     * @return void
-     */
-    protected function clearFieldsCache()
-    {
-        if (file_exists($this->fieldsCacheFile)) {
-            unlink($this->fieldsCacheFile);
-        }
-    }
-
-    /**
-     * @return int
-     */
-    protected function saveFieldsCache()
-    {
-        return file_put_contents($this->fieldsCacheFile, '<?php return ' . var_export(serialize($this->getTable()->getFields()), true) . ';');
-    }
-
-    /**
-     * @return Field[]
-     */
-    protected function getFieldsCache()
-    {
-        return $this->fieldsCache;
-    }
-
-    /**
-     * @param Field[] $fields
-     * @return \stdClass
-     */
-    protected function diff(array $fields)
-    {
-        $cache = $this->getFieldsCache();
-
-        $add = [];
-        $alter = [];
-        $drop = [];
-
-        foreach ($fields as $name => $field) {
-            // Not in cache.
-            if (!array_key_exists($name, $cache)) {
-                $add[$name] = $field;
-            } else {
-                if (!$cache[$name]->equal($field)) {
-                    $alter[$name] = $field;
-                }
-            }
-        }
-
-        foreach ($cache as $name => $field) {
-            if (!array_key_exists($name, $fields)) {
-                $drop[$name] = $field;
-            }
-        }
-
-        print_r($add);
-        print_r($alter);
-        print_r($drop);
-        die;
-
-        // Return anonymous fields class.
-        return new class ($add, $alter, $drop) {
-            protected $add;
-            protected $alter;
-            protected $drop;
-            public function __construct($add, $alter, $drop)
-            {
-                $this->add = $add;
-
-                $this->alter = $alter;
-
-                $this->drop = $drop;
-            }
-
-            public function getAddFields()
-            {
-                return $this->add;
-            }
-
-            public function getAlterFields()
-            {
-                return $this->alter;
-            }
-
-            public function getDropFields()
-            {
-                return $this->drop;
-            }
-        };
     }
 
     /**
@@ -225,7 +90,7 @@ class Schema
         $schema .= PHP_EOL . implode(', ' . PHP_EOL, $fields) . (empty($keys) ? PHP_EOL : (',' . PHP_EOL . implode(', ' . PHP_EOL, $keys) . PHP_EOL));
         $schema .= ') ENGINE ' . $this->getEngine() . ' CHARSET ' . $this->getCharset() . ' COMMENT "' . $this->getComment() . '";';
 
-        $this->saveFieldsCache();
+        $this->saveCache();
 
         return $schema;
     }
@@ -242,9 +107,7 @@ class Schema
         $drop = [];
         $keys = [];
 
-        $cache = $this->getFieldsCache();
-
-        $fields = $this->diff($this->getTable()->getFields());
+        $cache = $this->getCache();
 
         // Alter table add column.
         foreach ($this->getTable()->getFields() as $field) {
@@ -272,22 +135,33 @@ class Schema
 
         // Alter table change column.
         foreach ($this->getTable()->getAlterFields() as $name => $field) {
-            if (!array_key_exists($name, $cache)) {
-                continue;
+            if (array_key_exists($name, $cache)) {
+                if (!$cache[$name]->equal($field)) {
+                    $change[] = implode(' ', [
+                        'ALTER TABLE `' . $this->getTable()->getFullTableName() . '` CHANGE `' . $name . '` `' . $field->getName() . '`',
+                        $field->getType() . '(' . $field->getLength() . ')',
+                        ($field->isUnsigned()) ? 'UNSIGNED' : '',
+                        ($field->isNullable() ? '' : ('NOT NULL DEFAULT "' . $field->getDefault() . '"')),
+                        ($field->isPrimary()) ? 'AUTO_INCREMENT' : '',
+                        'COMMENT "' . $field->getComment() . '"',
+                        ';'
+                    ]);
+                    if (null !== $field->getKey()) {
+                        $keys[] = implode(' ', [
+                            'ALTER TABLE `' . $this->getTable()->getFullTableName() . '` ADD ' . ($field->getKey()->isPrimary() ? 'PRIMARY KEY' : $field->getKey()->getKey()),
+                            '`index_' . $field->getName() . '` (' . $field->getName() . ')',
+                            ';'
+                        ]);
+                    }
+                }
             }
-            $change[] = implode(' ', [
-                'ALTER TABLE `' . $this->getTable()->getFullTableName() . '` CHANGE `' . $name . '` `' . $field->getName() . '`',
-                $field->getType() . '(' . $field->getLength() . ')',
-                ($field->isUnsigned()) ? 'UNSIGNED' : '',
-                ($field->isNullable() ? '' : ('NOT NULL DEFAULT "' . $field->getDefault() . '"')),
-                ($field->isPrimary()) ? 'AUTO_INCREMENT' : '',
-                'COMMENT "' . $field->getComment() . '"',
-                ';'
-            ]);
         }
 
         // Alter table drop column and drop map key.
-        foreach ($this->getTable()->getDropFields() as $field) {
+        foreach ($this->getTable()->getDropFields() as $name => $field) {
+            if (!array_key_exists($name, $cache)) {
+                continue;
+            }
             $drop[] = implode(' ', [
                 'ALTER TABLE `' . $this->getTable()->getFullTableName() . '`',
                 'DROP `' . $field . '`',
@@ -295,7 +169,7 @@ class Schema
             ]);
         }
 
-        $this->saveFieldsCache();
+        $this->saveCache();
 
         return implode(PHP_EOL, [
             implode(PHP_EOL, $add),
@@ -312,7 +186,7 @@ class Schema
      */
     public function drop()
     {
-        $this->clearFieldsCache();
+        $this->clearCache();
 
         return 'DROP TABLE IF EXISTS `' . $this->getTable()->getFullTableName() . '`;';
     }

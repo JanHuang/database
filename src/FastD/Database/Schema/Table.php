@@ -27,6 +27,16 @@ class Table
     protected $fields = [];
 
     /**
+     * @var Field[]
+     */
+    protected $alters = [];
+
+    /**
+     * @var array
+     */
+    protected $drops = [];
+
+    /**
      * @var string
      */
     protected $charset = 'utf8';
@@ -89,11 +99,7 @@ class Table
      */
     public function dropField($name)
     {
-        if (!array_key_exists($name, $this->fields)) {
-            throw new \InvalidArgumentException(sprintf('Cannot drop "%s" field. Because field "%s" is undefined.', $name, $name));
-        }
-
-        unset($this->fields[$name]);
+        $this->drops[$name] = $name;
 
         return $this;
     }
@@ -114,7 +120,25 @@ class Table
 
         $this->fields[$name] = $field;
 
+        $this->alters[$name] = $field;
+
         return $this;
+    }
+
+    /**
+     * @return Field[]
+     */
+    public function getAlterFields()
+    {
+        return $this->alters;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDropFields()
+    {
+        return $this->drops;
     }
 
     /**

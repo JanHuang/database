@@ -10,7 +10,98 @@
 
 namespace FastD\Database\Schema;
 
-class SchemaCache
-{
+use FastD\Database\Cache\CacheInterface;
 
+/**
+ * Class SchemaCache
+ * @package FastD\Database\Schema
+ */
+class SchemaCache implements CacheInterface
+{
+    /**
+     * @var Field[]
+     */
+    protected $fieldsCache = [];
+
+    /**
+     * @var string
+     */
+    protected $fieldsCacheFile;
+
+    /**
+     * @var Table
+     */
+    protected $table;
+
+    /**
+     * SchemaCache constructor.
+     * @param Table $table
+     */
+    public function __construct(Table $table)
+    {
+        $this->table = $table;
+        
+        $fieldsCacheDir = __DIR__ . '/fieldsCache';
+
+        $fieldsCacheFile = $fieldsCacheDir . DIRECTORY_SEPARATOR . '.table.' . $this->table->getFullTableName() . '.cache';
+
+        if (!file_exists($fieldsCacheDir)) {
+            mkdir($fieldsCacheDir, 0755, true);
+        }
+
+        if (file_exists($fieldsCacheFile)) {
+            try {
+                $this->fieldsCache = include $fieldsCacheFile;
+                $this->fieldsCache = unserialize($this->fieldsCache);
+            } catch (\Exception $e) {
+                $this->fieldsCache = [];
+            }
+        }
+
+        $this->fieldsCacheFile = $fieldsCacheFile;
+
+        unset($fieldsCacheDir, $fieldsCacheFile);
+    }
+
+    /**
+     * @return Table
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    /**
+     * @return int
+     */
+    public function saveCache()
+    {
+        $fields = [];
+
+        foreach ($this->getTable()->getFields() as $name => $field) {
+            if (!array_key_exists($name, $this->getTable()->getDropFields())) {
+                $fields[$name] = $field;
+            }
+        }
+
+        return file_put_contents($this->fieldsCacheFile, '<?php return ' . var_export(serialize($field), true) . ';');
+    }
+
+    /**
+     * @return array|Field[]
+     */
+    public function getCache()
+    {
+        return $this->fieldsCache;
+    }
+
+    /**
+     *
+     */
+    public function clearCache()
+    {
+        if (file_exists($this->fieldsCacheFile)) {
+            unlink($this->fieldsCacheFile);
+        }
+    }
 }

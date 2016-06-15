@@ -48,13 +48,9 @@ class TableTest extends \PHPUnit_Framework_TestCase
 
         // 第一次会添加, 第二次操作,添加缓存后则不会添加。
         $testTable->addField(new Field('name', Field::VARCHAR, 11), new Key(Key::INDEX));
-        $testTable->addField(new Field('age', Field::INT, 11));
         $testTable->alterField('name', new Field('name', Field::CHAR, 20));
-
+        $testTable->dropField('name');
         echo PHP_EOL . 'Table Alter Field' . PHP_EOL;
-        echo Schema::table($testTable)->alter();
-
-        $testTable->alterField('bir', new Field('bir', Field::INT, 10));
         echo Schema::table($testTable)->alter();
     }
 
