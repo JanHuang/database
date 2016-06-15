@@ -21,11 +21,8 @@ use FastD\Http\Request;
  *
  * @package FastD\Database\Params
  */
-abstract class HttpRequestHandle
+trait Bind
 {
-    const FIELDS    = [];
-    const ALIAS     = [];
-
     /**
      * @var array
      */

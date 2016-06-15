@@ -12,19 +12,21 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Orm;
+namespace FastD\Database\ORM;
 
 use FastD\Database\DriverInterface;
+use FastD\Database\Params\Bind;
 use FastD\Database\Query\Mysql;
-use FastD\Database\Params\HttpRequestHandle;
 
 /**
  * Class Entity
  *
  * @package FastD\Database\ORM
  */
-abstract class Entity extends HttpRequestHandle implements \ArrayAccess
+abstract class Entity implements \ArrayAccess
 {
+    use Bind;
+    
     const FIELDS = [];
     const ALIAS = [];
     const PRIMARY = null;

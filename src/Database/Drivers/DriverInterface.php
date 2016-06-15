@@ -12,10 +12,10 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database;
+namespace FastD\Database\Drivers;
 
-use FastD\Database\ORM\Repository;
 use FastD\Database\Query\QueryBuilder;
+use FastD\Database\ORM\Model;
 
 /**
  * Interface DriverInterface
@@ -26,20 +26,31 @@ use FastD\Database\Query\QueryBuilder;
  */
 interface DriverInterface
 {
+    const DEFAULT_TIMEOUT = 3;
+    
     /**
-     * @return array
+     * DriverInterface constructor.
+     * @param array $config
      */
-    public function getConfig();
+    public function __construct(array $config);
 
     /**
      * @return string
      */
-    public function getDatabaseName();
+    public function getDbName();
 
     /**
      * @return \PDO
      */
     public function getPdo();
+
+    /**
+     * Transaction callable function.
+     *
+     * @param callable $callable
+     * @return mixed
+     */
+    public function transaction(callable $callable);
 
     /**
      * Create SQL query statement.
@@ -88,24 +99,23 @@ interface DriverInterface
     /**
      * Get table repository object.
      *
-     * @param string $repository
-     * @return Repository
+     * @param string $model
+     * @return Model
      */
-    public function getRepository($repository);
+    public function getModel($model);
 
     /**
      * @return QueryBuilder
      */
-    public function createQueryBuilder();
+    public function getQueryBuilder();
 
     /**
-     * @return DriverError
+     * @return array
      */
-    public function getError();
+    public function getErrors();
 
     /**
-     * DriverInterface constructor.
-     * @param \PDO $pdo
+     * @return array
      */
-    public function __construct(\PDO $pdo);
+    public function getLogs();
 }

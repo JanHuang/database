@@ -10,11 +10,24 @@
 
 namespace FastD\Database\Cache;
 
+/**
+ * Interface CacheInterface
+ * @package FastD\Database\Cache
+ */
 interface CacheInterface
 {
+    /**
+     * @return mixed
+     */
     public function saveCache();
 
+    /**
+     * @return mixed
+     */
     public function getCache();
 
+    /**
+     * @return mixed
+     */
     public function clearCache();
 }

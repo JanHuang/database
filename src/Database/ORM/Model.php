@@ -11,10 +11,9 @@
  * Gmail: bboyjanhuang@gmail.com
  */
 
-namespace FastD\Database\Orm;
+namespace FastD\Database\ORM;
 
-use FastD\Database\DriverInterface;
-use FastD\Database\Params\HttpRequestHandle;
+use FastD\Database\Params\Bind;
 use FastD\Database\Query\Mysql;
 use FastD\Database\Query\Paging\QueryPagination;
 use FastD\Database\Query\QueryBuilder;
@@ -24,8 +23,10 @@ use FastD\Database\Query\QueryBuilder;
  *
  * @package FastD\Database\Repository
  */
-abstract class Repository extends HttpRequestHandle
+abstract class Model
 {
+    use Bind;
+    
     const FIELDS = [];
     const ALIAS = [];
     const PRIMARY = '';

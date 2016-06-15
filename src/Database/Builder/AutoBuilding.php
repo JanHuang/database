@@ -253,7 +253,7 @@ class AutoBuilding extends Builder
 
         foreach ($this->tables as $table) {
             $name = ucfirst($table->rename($table->getTable()));
-            $file = $dir . '/' . $name . 'Repository.php';
+            $file = $dir . '/' . $name . 'Model.php';
             if (!is_dir($dir)) {
                 if (true === $force) {
                     mkdir($dir, 0755, true);

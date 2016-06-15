@@ -46,6 +46,14 @@ class SchemaReflex
     }
 
     /**
+     * @return Schema[]
+     */
+    public function getSchemas()
+    {
+        return $this->schemas;
+    }
+
+    /**
      * Rename.
      *
      * @param $name
@@ -74,27 +82,29 @@ class SchemaReflex
     }
 
     /**
-     * @return Schema[]
+     * @param $namespace
+     * @param $type
+     * @return mixed
      */
-    public function getSchemas()
+    protected function getReflexNamespace($namespace, $type)
     {
-        return $this->schemas;
+        return str_replace('\\\\', '\\', $namespace . '\\' . $type);
     }
 
     /**
-     * @param $value
+     * @param $namespace
      * @return array
      */
-    protected function getConstants($value)
+    protected function getFieldsConstants($namespace)
     {
         $fields = new Property('FIELDS', Property::PROPERTY_CONST);
-        $fields->setValue('\\' . $value . '::FIELDS');
+        $fields->setValue('\\' . $namespace . '::FIELDS');
 
         $alias = new Property('ALIAS', Property::PROPERTY_CONST);
-        $alias->setValue('\\' . $value . '::ALIAS');
+        $alias->setValue('\\' . $namespace . '::ALIAS');
 
         $table = new Property('TABLE', Property::PROPERTY_CONST);
-        $table->setValue('\\' . $value . '::TABLE');
+        $table->setValue('\\' . $namespace . '::TABLE');
 
         return [
             'FIELDS'    => $fields,
@@ -119,7 +129,7 @@ class SchemaReflex
 
             $file = $dir . '/' . $name . 'Entity.php';
 
-            $entity = new Generator($name, $namespace, Obj::OBJECT_CLASS);
+            $entity = new Generator($name, $this->getReflexNamespace($namespace, self::REFLEX_ENTITIES), Obj::OBJECT_CLASS);
 
             $entity->setExtends(new Obj('Entity', static::BASE_NAMESPACE));
 
@@ -127,7 +137,7 @@ class SchemaReflex
                 $entity->setProperties([$field->getAlias() => new Property($field->getAlias())], true);
                 $entity->setMethods([new GetSetter($field->getAlias())], true);
             }
-            $entity->setProperties($this->getConstants($namespace . '\\' . $name));
+            $entity->setProperties($this->getFieldsConstants($this->getReflexNamespace($namespace, self::REFLEX_FIELDS) . '\\' . $name));
 
             $files[$file] = $entity->save($file);
         }
@@ -151,11 +161,11 @@ class SchemaReflex
 
             $file = $dir . '/' . $name . 'Model.php';
 
-            $model = new Generator($name . 'Model', $namespace, Obj::OBJECT_CLASS);
+            $model = new Generator($name . 'Model', $this->getReflexNamespace($namespace, self::REFLEX_MODELS), Obj::OBJECT_CLASS);
 
-            $model->setExtends(new Obj('Model', 'FastD\Database\ORM'));
+            $model->setExtends(new Obj('Model', self::BASE_NAMESPACE));
 
-            $model->setProperties($this->getConstants($namespace . '\\' . $name));
+            $model->setProperties($this->getFieldsConstants($this->getReflexNamespace($namespace, self::REFLEX_FIELDS) . '\\' . $name));
 
             $files[$file] = $model->save($file);
         }
@@ -195,7 +205,7 @@ class SchemaReflex
                 $alias[$field->getName()] = $field->getAlias();
             }
 
-            $field = new Generator($name, $namespace, Obj::OBJECT_CLASS);
+            $field = new Generator($name, $this->getReflexNamespace($namespace, self::REFLEX_FIELDS), Obj::OBJECT_CLASS);
 
             $fieldsConst = new Property('FIELDS', Property::PROPERTY_CONST);
             $fieldsConst->setValue($fields);

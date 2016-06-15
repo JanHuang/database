@@ -4,7 +4,7 @@
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
          backupGlobals="false"
          colors="true"
-         bootstrap="./examples/bootstrap.php"
+         bootstrap="vendor/autoload.php"
         >
     <php>
         <!-- Silence E_USER_DEPRECATED (-16385 == -1 & ~E_USER_DEPRECATED) -->
@@ -12,9 +12,7 @@
     </php>
     <testsuites>
         <testsuite name="Fdb Tests">
-            <directory>./src/Database/Tests/Fdb</directory>
-            <directory>./src/Database/Tests/Drivers</directory>
-            <directory>./src/Database/Tests/Schema</directory>
+            <directory>./src/Database/Tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>

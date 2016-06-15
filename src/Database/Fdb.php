@@ -13,12 +13,15 @@
 
 namespace FastD\Database;
 
+use Iterator;
+use Countable;
+
 /**
- * Class Fdb
+ * Class Database
  *
  * @package FastD\Database
  */
-class Fdb implements \Iterator, \Countable
+class Fdb implements Iterator, Countable
 {
     const VERSION = '2.0.0';
 
