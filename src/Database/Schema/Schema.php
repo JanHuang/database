@@ -177,6 +177,9 @@ class Schema extends SchemaCache
 
         $this->saveCache();
 
+        // Sync table and cache field.
+        $this->getTable()->setFields($this->fieldsCache);
+        
         return implode(PHP_EOL, array_filter([
             implode(PHP_EOL, $add),
             implode(PHP_EOL, $change),

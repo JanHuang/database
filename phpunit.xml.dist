@@ -11,11 +11,10 @@
         <ini name="error_reporting" value="-16385"/>
     </php>
     <testsuites>
-        <testsuite name="FastD php simple framework Tests">
-            <directory>./src/FastD/Database/Tests</directory>
-            <directory>./src/FastD/Database/Tests/Fdb</directory>
-            <directory>./src/FastD/Database/Tests/Builder</directory>
-            <directory>./src/FastD/Database/Tests/Drivers</directory>
+        <testsuite name="Fdb Tests">
+            <directory>./src/Database/Tests/Fdb</directory>
+            <directory>./src/Database/Tests/Drivers</directory>
+            <directory>./src/Database/Tests/Schema</directory>
         </testsuite>
     </testsuites>
 </phpunit>

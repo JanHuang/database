@@ -50,9 +50,9 @@ class AutoBuildingTest extends Fixture_Database_TestCast
 
         $auto = new AutoBuilding($driver, $root . '/yml');
 
-        $auto->saveYmlTo($root . '/Orm', true);
+        $auto->saveYmlTo($root . '/ORM', true);
 
-        $auto->saveTo($root . '/Orm', 'Examples\Orm', true);
+        $auto->saveTo($root . '/ORM', 'Examples\Orm', true);
     }
 
     public function testYmlToTable()
@@ -63,7 +63,7 @@ class AutoBuildingTest extends Fixture_Database_TestCast
 
         $auto = new AutoBuilding($driver, $root . '/yml');
 
-        $auto->ymlToTable($root . '/Orm', 'Examples\Orm', true, Table::TABLE_CREATE);
+        $auto->ymlToTable($root . '/ORM', 'Examples\Orm', true, Table::TABLE_CREATE);
     }
 
     public function testTableToYml()
@@ -74,6 +74,6 @@ class AutoBuildingTest extends Fixture_Database_TestCast
 
         $auto = new AutoBuilding($driver, $root . '/yml');
 
-        $auto->tableToYml($root . '/Orm', 'Examples\Orm', true);
+        $auto->tableToYml($root . '/ORM', 'Examples\Orm', true);
     }
 }

@@ -74,6 +74,19 @@ class Table
     }
 
     /**
+     * Setting fields.
+     * 
+     * @param Field[] $fields
+     * @return $this
+     */
+    public function setFields(array $fields)
+    {
+        $this->fields = $fields;
+
+        return $this;
+    }
+
+    /**
      * Add field.
      *
      * @param Field $field

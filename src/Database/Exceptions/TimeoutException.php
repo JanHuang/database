@@ -8,12 +8,9 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace FastD\Database\Schema;
+namespace FastD\Database\Exceptions;
 
-class SchemaReflex
+class TimeoutException extends \RuntimeException
 {
-    protected function getReflex()
-    {
-        
-    }
+    
 }

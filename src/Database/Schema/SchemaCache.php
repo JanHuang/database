@@ -74,6 +74,14 @@ class SchemaCache implements CacheInterface
     }
 
     /**
+     * @return Field[]
+     */
+    public function getFields()
+    {
+        return $this->table->getFields();
+    }
+
+    /**
      * @param $name
      * @param Field $field
      * @return $this
