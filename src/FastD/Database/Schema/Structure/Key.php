@@ -8,7 +8,7 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace FastD\Database\Schema;
+namespace FastD\Database\Schema\Structure;
 
 /**
  * Class Key

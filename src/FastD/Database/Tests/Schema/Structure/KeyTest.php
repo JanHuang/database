@@ -11,8 +11,8 @@
 
 namespace FastD\Database\Tests\Schema;
 
-use FastD\Database\Schema\Field;
-use FastD\Database\Schema\Key;
+use FastD\Database\Schema\Structure\Key;
+use FastD\Database\Schema\Structure\Field;
 
 class KeyTest extends \PHPUnit_Framework_TestCase
 {

@@ -11,7 +11,7 @@
 
 namespace FastD\Database\Tests\Schema;
 
-use FastD\Database\Schema\Field;
+use FastD\Database\Schema\Structure\Field;
 
 class FieldTest extends \PHPUnit_Framework_TestCase
 {

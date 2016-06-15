@@ -11,6 +11,8 @@
 namespace FastD\Database\Schema;
 
 use FastD\Database\Cache\CacheInterface;
+use FastD\Database\Schema\Structure\Table;
+use FastD\Database\Schema\Structure\Field;
 
 /**
  * Class SchemaCache
@@ -72,19 +74,33 @@ class SchemaCache implements CacheInterface
     }
 
     /**
+     * @param $name
+     * @param Field $field
+     * @return $this
+     */
+    public function setCacheField($name, Field $field)
+    {
+        $this->fieldsCache[$name] = $field;
+
+        return $this;
+    }
+
+    /**
+     * @param $name
+     */
+    public function unsetCacheField($name)
+    {
+        if (isset($this->fieldsCache[$name])) {
+            unset($this->fieldsCache[$name]);
+        }
+    }
+
+    /**
      * @return int
      */
     public function saveCache()
     {
-        $fields = [];
-
-        foreach ($this->getTable()->getFields() as $name => $field) {
-            if (!array_key_exists($name, $this->getTable()->getDropFields())) {
-                $fields[$name] = $field;
-            }
-        }
-
-        return file_put_contents($this->fieldsCacheFile, '<?php return ' . var_export(serialize($field), true) . ';');
+        return file_put_contents($this->fieldsCacheFile, '<?php return ' . var_export(serialize($this->fieldsCache), true) . ';');
     }
 
     /**

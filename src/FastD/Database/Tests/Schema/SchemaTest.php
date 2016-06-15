@@ -11,12 +11,12 @@
 
 namespace FastD\Database\Tests\Schema;
 
-use FastD\Database\Schema\Field;
-use FastD\Database\Schema\Key;
 use FastD\Database\Schema\Schema;
-use FastD\Database\Schema\Table;
+use FastD\Database\Schema\Structure\Table;
+use FastD\Database\Schema\Structure\Field;
+use FastD\Database\Schema\Structure\Key;
 
-class TableTest extends \PHPUnit_Framework_TestCase
+class SchemaTest extends \PHPUnit_Framework_TestCase
 {
     public function testTableCreateSchema()
     {
@@ -25,6 +25,7 @@ class TableTest extends \PHPUnit_Framework_TestCase
         $testTable->addField(new Field('name', Field::VARCHAR, 11), new Key(Key::INDEX));
         $testTable->addField(new Field('age', Field::INT, 11));
 
+        $schema = Schema::table($testTable);
         $this->assertEquals(<<<EOF
 CREATE TABLE `test` (
 `name` varchar(11)  NOT NULL DEFAULT ""  COMMENT "",
@@ -33,7 +34,7 @@ KEY `index_name` (`name`)
 ) ENGINE InnoDB CHARSET utf8 COMMENT "";
 EOF
             ,
-            Schema::table($testTable)->create()
+            $schema->create()
         );
 
         $testTable = new Table('test', '测试备注', true);
@@ -125,19 +126,38 @@ EOF
     {
         $testTable = new Table('test');
 
-        // 第一次会添加, 第二次操作,添加缓存后则不会添加。
+        $testTable->addField(new Field('nickname', Field::VARCHAR, 11), new Key(Key::INDEX));
+
+        $this->assertEquals('', Schema::table($testTable)->update());
+
+        $testTable = new Table('test');
+
         $testTable->addField(new Field('name', Field::VARCHAR, 11), new Key(Key::INDEX));
-        $testTable->alterField('name', new Field('name', Field::CHAR, 20));
-        $testTable->dropField('name');
+        // Cache success
+        $this->assertEquals(array_keys(Schema::table($testTable)->getCache()), ['name', 'age', 'bir', 'id', 'code', 'nickname']);
     }
 
     public function testTableDropSchema()
     {
-//        echo 'Table Drop Schema' . PHP_EOL;
+        $demoTable = new Table('demo');
 
-        $testTable = new Table('test');
+        $this->assertEquals(Schema::table($demoTable)->drop(), <<<EOF
+DROP TABLE `demo`;
+EOF
+);
 
-//        echo Schema::table($testTable)->drop();
-//        echo $testTable->drop();
+        $this->assertEquals(Schema::table($demoTable, true)->drop(), <<<EOF
+DROP TABLE IF EXISTS `demo`;
+EOF
+);
+    }
+
+    public function testMultiTableSchema()
+    {
+        $demoTable = new Table('demo');
+
+        $demoTable->addField(new Field('id', Field::INT, 10));
+
+        Schema::table($demoTable)->create();
     }
 }
