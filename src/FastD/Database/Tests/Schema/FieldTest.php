@@ -26,6 +26,5 @@ class FieldTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($name->isNullable());
         $this->assertFalse($name->isUnsigned());
         $this->assertEquals('', $name->getDefault());
-        
     }
 }

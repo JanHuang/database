@@ -70,7 +70,7 @@ class Schema extends SchemaCache
                 $field->getType() . '(' . $field->getLength() . ')',
                 ($field->isUnsigned()) ? 'UNSIGNED' : '',
                 ($field->isNullable() ? '' : ('NOT NULL DEFAULT "' . $field->getDefault() . '"')),
-                ($field->isPrimary()) ? 'AUTO_INCREMENT' : '',
+                ($field->isIncrement()) ? 'AUTO_INCREMENT' : '',
                 'COMMENT "' . $field->getComment() . '"'
             ]);
 
@@ -85,10 +85,10 @@ class Schema extends SchemaCache
             }
         }
 
-        $schema = $this->isForce() ? ('DROP TABLE IF EXISTS `' . $this->getFullTableName() . '`;' . PHP_EOL . PHP_EOL) : '';
-        $schema .= 'CREATE TABLE `' . $this->getFullTableName() . '` (';
-        $schema .= PHP_EOL . implode(', ' . PHP_EOL, $fields) . (empty($keys) ? PHP_EOL : (',' . PHP_EOL . implode(', ' . PHP_EOL, $keys) . PHP_EOL));
-        $schema .= ') ENGINE ' . $this->getEngine() . ' CHARSET ' . $this->getCharset() . ' COMMENT "' . $this->getComment() . '";';
+        $schema = $this->isForce() ? ('DROP TABLE IF EXISTS `' . $this->getTable()->getFullTableName() . '`;' . PHP_EOL . PHP_EOL) : '';
+        $schema .= 'CREATE TABLE `' . $this->getTable()->getFullTableName() . '` (';
+        $schema .= PHP_EOL . implode(',' . PHP_EOL, $fields) . (empty($keys) ? PHP_EOL : (',' . PHP_EOL . implode(',' . PHP_EOL, $keys) . PHP_EOL));
+        $schema .= ') ENGINE ' . $this->getTable()->getEngine() . ' CHARSET ' . $this->getTable()->getCharset() . ' COMMENT "' . $this->getTable()->getComment() . '";';
 
         $this->saveCache();
 
@@ -100,7 +100,7 @@ class Schema extends SchemaCache
      *
      * @return string
      */
-    public function alter()
+    public function update()
     {
         $add = [];
         $change = [];

@@ -118,6 +118,11 @@ class Field
     protected $key;
 
     /**
+     * @var null|int
+     */
+    protected $increment = null;
+
+    /**
      * Field constructor.
      * 
      * @param $name
@@ -362,6 +367,25 @@ class Field
         }
         
         return $this->key->isUnique();
+    }
+
+    /**
+     * @param int $inc
+     * @return $this
+     */
+    public function setIncrement($inc = 1)
+    {
+        $this->increment = $inc;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIncrement()
+    {
+        return null !== $this->increment;
     }
 
     /**
