@@ -26,7 +26,7 @@ class SchemaReflexTest extends \PHPUnit_Framework_TestCase
             Schema::table($testTable),
         ]);
 
-        $reflex->reflexFields(__DIR__ . '/reflex', 'Test');
+        $reflex->reflexFields(__DIR__ . '/Reflex', 'Test');
     }
     
     public function testReflexEntities()
@@ -38,7 +38,7 @@ class SchemaReflexTest extends \PHPUnit_Framework_TestCase
             Schema::table($testTable),
         ]);
 
-        $reflex->reflexEntities(__DIR__ . '/reflex', 'Test');
+        $reflex->reflexEntities(__DIR__ . '/Reflex', 'Test');
     }
 
     public function testReflexModels()
@@ -50,6 +50,6 @@ class SchemaReflexTest extends \PHPUnit_Framework_TestCase
             Schema::table($testTable),
         ]);
 
-        $reflex->reflexModels(__DIR__ . '/reflex', 'Test');
+        $reflex->reflexModels(__DIR__ . '/Reflex', 'Test');
     }
 }

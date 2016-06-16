@@ -8,15 +8,15 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace Database\Tests\Drivers;
+namespace Database\Tests\ORM;
 
-use FastD\Database\Drivers\MySQLDriver;
 use FastD\Database\Tests\Fixture_Database_TestCast;
+use Test\Entities\TestEntity;
 
-class MySQLDriverTest extends Fixture_Database_TestCast
+class EntityTest extends Fixture_Database_TestCast
 {
-    public function testDriverConnection()
+    public function testEntityInit()
     {
-        $driver = new MySQLDriver(self::CONNECTION);
+        $entity = new TestEntity(null);
     }
 }

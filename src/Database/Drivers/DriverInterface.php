@@ -27,6 +27,7 @@ use FastD\Database\ORM\Model;
 interface DriverInterface
 {
     const DEFAULT_TIMEOUT = 3;
+    const DEFAULT_CHARSET = 'utf8';
     
     /**
      * DriverInterface constructor.

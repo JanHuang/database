@@ -14,9 +14,9 @@
 
 namespace FastD\Database\ORM;
 
-use FastD\Database\DriverInterface;
 use FastD\Database\Params\Bind;
-use FastD\Database\Query\Mysql;
+use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\Query\QueryBuilder;
 
 /**
  * Class Entity
@@ -29,7 +29,6 @@ abstract class Entity implements \ArrayAccess
     
     const FIELDS = [];
     const ALIAS = [];
-    const PRIMARY = null;
     const TABLE = null;
 
     /**
@@ -42,7 +41,7 @@ abstract class Entity implements \ArrayAccess
     /**
      * DB driver.
      *
-     * @var DriverInterface
+     * @var
      */
     protected $driver;
 
@@ -54,9 +53,9 @@ abstract class Entity implements \ArrayAccess
     protected $condition = null;
 
     /**
-     * @var Mysql
+     * @var QueryBuilder
      */
-    protected $query_builder;
+    protected $queryBuilder;
 
     /**
      * Entity constructor.
@@ -105,35 +104,24 @@ abstract class Entity implements \ArrayAccess
     }
 
     /**
-     * @return string
-     */
-    public function getPrimary()
-    {
-        return static::PRIMARY;
-    }
-
-    /**
-     * @return \FastD\Database\Query\QueryBuilder
+     * @return QueryBuilder
      */
     public function createQueryBuilder()
     {
-        if (null === $this->query_builder) {
-            $this->query_builder = Mysql::singleton()->from($this->getTable());
-        }
-
-        return $this->query_builder;
+        return $this->driver->getQueryBuilder();
     }
 
     /**
-     * @param array $fields
+     * @param array $where
+     * @param array|null $fields
      * @return array|bool
      */
-    public function find(array $fields = null)
+    public function find(array $where = [], array $fields = null)
     {
         return $this->driver
             ->query(
                 $this->createQueryBuilder()
-                    ->where($this->condition ?? [])
+                    ->where($where)
                     ->fields($fields ?? $this->getAlias())
                     ->select()
             )
@@ -212,6 +200,14 @@ abstract class Entity implements \ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->row[$offset]);
+    }
+
+    /**
+     * @return string
+     */
+    public function toSerialize()
+    {
+        return serialize($this->row);
     }
 
     /**

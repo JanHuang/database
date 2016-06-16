@@ -14,14 +14,12 @@
 
 namespace FastD\Database\Query\Paging;
 
-use FastD\Database\Orm\Repository;
-
 /**
  * Class QueryPagination
  *
- * @package FastD\Database\Query\Paging
+ * @package FastD\Database\Query\Pagination
  */
-class QueryPagination extends Pagination
+class Pagination extends \FastD\Pagination\Pagination
 {
     /**
      * @var array

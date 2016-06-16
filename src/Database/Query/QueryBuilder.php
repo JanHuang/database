@@ -12,7 +12,6 @@ namespace FastD\Database\Query;
 
 /**
  * Class QueryBuilder
- *
  * @package FastD\Database\Query
  */
 abstract class QueryBuilder
@@ -60,7 +59,7 @@ abstract class QueryBuilder
     /**
      * @var string
      */
-    protected $not_like;
+    protected $notLike;
 
     /**
      * @var string
@@ -101,24 +100,7 @@ abstract class QueryBuilder
      * @const int
      */
     const BUILDER_DELETE = 3;
-
-    /**
-     * @var QueryBuilder
-     */
-    protected static $instance;
-
-    /**
-     * @return QueryBuilder
-     */
-    public static function singleton()
-    {
-        if (null === static::$instance) {
-            static::$instance = new static();
-        }
-
-        return static::$instance;
-    }
-
+    
     /**
      * Query select where condition.
      *

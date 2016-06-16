@@ -129,7 +129,7 @@ class SchemaReflex
 
             $file = $dir . '/' . $name . 'Entity.php';
 
-            $entity = new Generator($name, $this->getReflexNamespace($namespace, self::REFLEX_ENTITIES), Obj::OBJECT_CLASS);
+            $entity = new Generator($name . 'Entity', $this->getReflexNamespace($namespace, self::REFLEX_ENTITIES), Obj::OBJECT_CLASS);
 
             $entity->setExtends(new Obj('Entity', static::BASE_NAMESPACE));
 

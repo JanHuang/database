@@ -65,7 +65,7 @@ class MySQLQueryBuilder extends QueryBuilder
      * @param int   $operation
      * @return $this
      */
-    public function data(array $data, $operation = self::BUILDER_UPDATE)
+    protected function data(array $data, $operation = self::BUILDER_UPDATE)
     {
         switch ($operation) {
             case self::BUILDER_INSERT:

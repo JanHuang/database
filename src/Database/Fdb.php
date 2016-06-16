@@ -13,6 +13,8 @@
 
 namespace FastD\Database;
 
+use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\Drivers\MySQLDriver;
 use Iterator;
 use Countable;
 
@@ -24,6 +26,10 @@ use Countable;
 class Fdb implements Iterator, Countable
 {
     const VERSION = '2.0.0';
+
+    protected $maps = [
+        'mysql' => MySQLDriver::class
+    ];
 
     /**
      * All database configuration information.
@@ -60,25 +66,6 @@ class Fdb implements Iterator, Countable
     }
 
     /**
-     * @param array $config
-     * @return \PDO
-     */
-    public function createPdo(array $config)
-    {
-        return new \PDO(
-            sprintf(
-                'mysql:host=%s;port=%s;dbname=%s;charset=%s',
-                $config['database_host'],
-                $config['database_port'],
-                $config['database_name'],
-                $config['database_charset'] ?? 'utf8'
-            ),
-            $config['database_user'],
-            $config['database_pwd']
-        );
-    }
-
-    /**
      * @param $name
      * @return DriverInterface
      */
@@ -94,7 +81,9 @@ class Fdb implements Iterator, Countable
          */
         $config = $this->config[$name];
 
-        $this->setDriver($name, new Driver($this->createPdo($config), $config));
+        $driver = $this->maps[$config['database_type'] ?? 'mysql'];
+
+        $this->setDriver($name, new $driver($config));
 
         return $this->drivers[$name];
     }

@@ -64,7 +64,7 @@ class MySQLDriver implements DriverInterface
                 $config['database_host'],
                 $config['database_port'],
                 $config['database_name'],
-                $config['database_charset'] ?? 'utf8'
+                $config['database_charset'] ?? DriverInterface::DEFAULT_CHARSET
             ),
             $config['database_user'],
             $config['database_pwd']

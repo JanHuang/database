@@ -15,6 +15,7 @@
 namespace FastD\Database\Tests;
 
 use FastD\Database\Driver;
+use FastD\Database\Drivers\MySQLDriver;
 use PHPUnit_Extensions_Database_DB_IDatabaseConnection;
 
 /**
@@ -29,7 +30,13 @@ abstract class Fixture_Database_TestCast extends \PHPUnit_Extensions_Database_Te
      *
      * @const array
      */
-    const CONNECTION = [];
+    const CONNECTION = [
+        'database_host'      => '127.0.0.1',
+        'database_port'      => '3306',
+        'database_name'      => 'dbunit',
+        'database_user'      => 'root',
+        'database_pwd'       => '123456'
+    ];
 
     /**
      * @const name.
@@ -117,6 +124,6 @@ abstract class Fixture_Database_TestCast extends \PHPUnit_Extensions_Database_Te
      */
     public function createDriver($config = null)
     {
-        return new Driver($this->createPdo($config), $config ?? static::CONNECTION);
+        return new MySQLDriver($config ?? static::CONNECTION);
     }
 }

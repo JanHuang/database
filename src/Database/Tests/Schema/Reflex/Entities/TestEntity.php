@@ -2,7 +2,7 @@
 
 namespace Test\Entities;
 
-class Test extends \FastD\Database\ORM\Entity
+class TestEntity extends \FastD\Database\ORM\Entity
 {
     /**
      * @var mixed
