@@ -88,6 +88,14 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
      * @return \PDO
      */
     public function getPdo()

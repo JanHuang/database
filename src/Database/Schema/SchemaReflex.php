@@ -10,9 +10,9 @@
 
 namespace FastD\Database\Schema;
 
+use FastD\Database\Schema\Structure\Rename;
 use FastD\Generator\Factory\GetSetter;
 use FastD\Generator\Factory\Obj;
-use FastD\Generator\Factory\Object;
 use FastD\Generator\Factory\Property;
 use FastD\Generator\Generator;
 
@@ -25,6 +25,8 @@ use FastD\Generator\Generator;
  */
 class SchemaReflex
 {
+    use Rename;
+
     const REFLEX_ENTITIES = 'Entities';
     const REFLEX_MODELS = 'Models';
     const REFLEX_FIELDS = 'Fields';
@@ -54,30 +56,16 @@ class SchemaReflex
     }
 
     /**
-     * Rename.
-     *
-     * @param $name
-     * @return mixed|string
-     */
-    protected function rename($name)
-    {
-        if (strpos($name, '_')) {
-            $arr = explode('_', $name);
-            $name = array_shift($arr);
-            foreach ($arr as $value) {
-                $name .= ucfirst($value);
-            }
-        }
-        return $name;
-    }
-
-    /**
      * @param $dir
      * @param $type
      * @return string
      */
     protected function getReflexDir($dir, $type)
     {
+        $dir = implode(DIRECTORY_SEPARATOR, array_map(function ($v) {
+            return ucfirst($v);
+        }, explode(DIRECTORY_SEPARATOR, $dir)));
+
         return str_replace('//', '/', ($dir . DIRECTORY_SEPARATOR . $type));
     }
 
@@ -88,7 +76,25 @@ class SchemaReflex
      */
     protected function getReflexNamespace($namespace, $type)
     {
+        $namespace = implode('\\', array_map(function ($v) {
+            return ucfirst($v);
+        }, explode('\\', $namespace)));
+
         return str_replace('\\\\', '\\', $namespace . '\\' . $type);
+    }
+
+    /**
+     * @param $dir
+     * @param null $namespace
+     * @return array
+     */
+    public function reflex($dir = __DIR__, $namespace = null)
+    {
+        return [
+            'fields' => $this->reflexFields($dir, $namespace),
+            'entities' => $this->reflexEntities($dir, $namespace),
+            'models' => $this->reflexModels($dir, $namespace)
+        ];
     }
 
     /**
@@ -125,7 +131,7 @@ class SchemaReflex
         $files = [];
 
         foreach ($this->getSchemas() as $schema) {
-            $name = ucfirst($schema->getTable()->getTableName());
+            $name = ucfirst($this->rename($schema->getTable()->getTableName()));
 
             $file = $dir . '/' . $name . 'Entity.php';
 
@@ -133,10 +139,17 @@ class SchemaReflex
 
             $entity->setExtends(new Obj('Entity', static::BASE_NAMESPACE));
 
+            $properties = [];
+            $methods = [];
+            
             foreach ($schema->getFields() as $field) {
-                $entity->setProperties([$field->getAlias() => new Property($field->getAlias())], true);
-                $entity->setMethods([new GetSetter($field->getAlias())], true);
+                $properties[$field->getAlias()] = new Property($field->getAlias());
+                $methods[] = new GetSetter($field->getAlias());
             }
+
+            $entity->setProperties($properties, true);
+            $entity->setMethods($methods, true);
+
             $entity->setProperties($this->getFieldsConstants($this->getReflexNamespace($namespace, self::REFLEX_FIELDS) . '\\' . $name));
 
             $files[$file] = $entity->save($file);
@@ -157,7 +170,7 @@ class SchemaReflex
         $files = [];
 
         foreach ($this->getSchemas() as $schema) {
-            $name = ucfirst($schema->getTable()->getTableName());
+            $name = ucfirst($this->rename($schema->getTable()->getTableName()));
 
             $file = $dir . '/' . $name . 'Model.php';
 
@@ -183,9 +196,9 @@ class SchemaReflex
         $dir = $this->getReflexDir($dir, self::REFLEX_FIELDS);
 
         $files = [];
-
+        
         foreach ($this->getSchemas() as $schema) {
-            $name = ucfirst($schema->getTable()->getTableName());
+            $name = ucfirst($this->rename($schema->getTable()->getTableName()));
             $file = $dir . '/' . $name . '.php';
 
             $fields = [];

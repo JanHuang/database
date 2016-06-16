@@ -16,6 +16,8 @@ namespace FastD\Database\Schema\Structure;
  */
 class Field
 {
+    use Rename;
+
     /**
      * int
      */
@@ -386,23 +388,6 @@ class Field
     public function isIncrement()
     {
         return null !== $this->increment;
-    }
-
-    /**
-     * @param $name
-     * @return mixed|string
-     */
-    protected function rename($name)
-    {
-        if (strpos($name, '_')) {
-            $arr = explode('_', $name);
-            $name = array_shift($arr);
-            foreach ($arr as $value) {
-                $name .= ucfirst($value);
-            }
-        }
-
-        return $name;
     }
 
     /**

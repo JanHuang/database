@@ -41,6 +41,11 @@ interface DriverInterface
     public function getDbName();
 
     /**
+     * @return array
+     */
+    public function getConfig();
+
+    /**
      * @return \PDO
      */
     public function getPdo();
