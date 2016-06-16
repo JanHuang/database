@@ -13,9 +13,7 @@
 
 namespace FastD\Database\ORM;
 
-use FastD\Database\Params\Bind;
-use FastD\Database\Query\Mysql;
-use FastD\Database\Query\Paging\QueryPagination;
+use FastD\Database\ORM\Params\Bind;
 use FastD\Database\Query\QueryBuilder;
 
 /**

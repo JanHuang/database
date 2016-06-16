@@ -19,4 +19,9 @@ class TestModel extends \FastD\Database\ORM\Model
      */
     const TABLE = \Test\Fields\Test::TABLE;
 
+    /**
+     * @const mixed
+     */
+    const PRIMARY = null;
+
 }

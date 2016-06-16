@@ -12,7 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Params;
+namespace FastD\Database\ORM\Params;
 
 use FastD\Http\Request;
 

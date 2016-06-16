@@ -14,7 +14,7 @@
 
 namespace FastD\Database\ORM;
 
-use FastD\Database\Params\Bind;
+use FastD\Database\ORM\Params\Bind;
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\Query\QueryBuilder;
 
@@ -41,7 +41,7 @@ abstract class Entity implements \ArrayAccess
     /**
      * DB driver.
      *
-     * @var
+     * @var DriverInterface
      */
     protected $driver;
 
@@ -59,24 +59,23 @@ abstract class Entity implements \ArrayAccess
 
     /**
      * Entity constructor.
-     * @param array|null $condition
+     *
      * @param DriverInterface|null $driverInterface
+     * @param array|null $condition
      */
-    public function __construct(array $condition = null, DriverInterface $driverInterface = null)
+    public function __construct(DriverInterface $driverInterface, array $condition = null)
     {
         $this->condition = $condition;
 
         $this->driver = $driverInterface;
 
         if (null !== $condition) {
-            $this->row = $this->find();
+            $this->row = $this->find($this->condition, $this->getAlias());
             foreach ($this->getAlias() as $field => $alias) {
                 $method = 'set' . ucfirst($alias);
                 $this->$method(isset($this->row[$alias]) ? $this->row[$alias] : null);
             }
         }
-
-
     }
 
     /**
@@ -106,7 +105,7 @@ abstract class Entity implements \ArrayAccess
     /**
      * @return QueryBuilder
      */
-    public function createQueryBuilder()
+    public function getQueryBuilder()
     {
         return $this->driver->getQueryBuilder();
     }
@@ -120,7 +119,7 @@ abstract class Entity implements \ArrayAccess
     {
         return $this->driver
             ->query(
-                $this->createQueryBuilder()
+                $this->getQueryBuilder()
                     ->where($where)
                     ->fields($fields ?? $this->getAlias())
                     ->select()
@@ -149,10 +148,9 @@ abstract class Entity implements \ArrayAccess
             $values[$alias] = $value;
         }
 
-        // update
-        if (null !== $this->condition) {
+        if (null !== $this->condition && !empty($this->row)) {
             return $this->driver
-                ->query($this->createQueryBuilder()->update($data, $this->condition))
+                ->query($this->getQueryBuilder()->update($data, $this->condition))
                 ->setParameter($values)
                 ->execute()
                 ->getAffected()
@@ -160,7 +158,7 @@ abstract class Entity implements \ArrayAccess
         }
 
         return $this->driver
-            ->query($this->createQueryBuilder()->insert($data))
+            ->query($this->getQueryBuilder()->insert($data))
             ->setParameter($values)
             ->execute()
             ->getId()
@@ -223,6 +221,6 @@ abstract class Entity implements \ArrayAccess
      */
     public function toJson()
     {
-        return json_encode($this->row, JSON_UNESCAPED_UNICODE);
+        return json_encode($this->row, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Test\Entities;
 
-class TestEntity extends \FastD\Database\ORM\Entity
+class TestEntity extends \FastD\Database\ORM\Entity implements \ArrayAccess
 {
     /**
      * @var mixed

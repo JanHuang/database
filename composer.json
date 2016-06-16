@@ -28,7 +28,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "src/Database/Tests/Schema/Reflex"
+            "Test\\": "src/Database/Tests/Schema/Reflex"
         }
     },
     "config": {
