@@ -15,6 +15,7 @@ use FastD\Generator\Factory\GetSetter;
 use FastD\Generator\Factory\Obj;
 use FastD\Generator\Factory\Property;
 use FastD\Generator\Generator;
+use FastD\Database\Schema\Structure\Table;
 
 /**
  * 数据模型结构反射
@@ -33,26 +34,18 @@ class SchemaReflex
     const BASE_NAMESPACE = '\FastD\Database\ORM';
 
     /**
-     * @var Schema[]
+     * @var Table[]
      */
-    protected $schemas = [];
+    protected $tables = [];
 
     /**
      * SchemaReflex constructor.
      *
-     * @param Schema[] $schemas
+     * @param Table[] $tables
      */
-    public function __construct(array $schemas)
+    public function __construct(array $tables)
     {
-        $this->schemas = $schemas;
-    }
-
-    /**
-     * @return Schema[]
-     */
-    public function getSchemas()
-    {
-        return $this->schemas;
+        $this->tables = $tables;
     }
 
     /**
@@ -130,8 +123,8 @@ class SchemaReflex
 
         $files = [];
 
-        foreach ($this->getSchemas() as $schema) {
-            $name = ucfirst($this->rename($schema->getTable()->getTableName()));
+        foreach ($this->tables as $table) {
+            $name = ucfirst($this->rename($table->getTableName()));
 
             $file = $dir . '/' . $name . 'Entity.php';
 
@@ -142,7 +135,7 @@ class SchemaReflex
             $properties = [];
             $methods = [];
             
-            foreach ($schema->getFields() as $field) {
+            foreach ($table->getFields() as $field) {
                 $properties[$field->getAlias()] = new Property($field->getAlias());
                 $methods[] = new GetSetter($field->getAlias());
             }
@@ -169,8 +162,8 @@ class SchemaReflex
 
         $files = [];
 
-        foreach ($this->getSchemas() as $schema) {
-            $name = ucfirst($this->rename($schema->getTable()->getTableName()));
+        foreach ($this->tables as $table) {
+            $name = ucfirst($this->rename($table->getTableName()));
 
             $file = $dir . '/' . $name . 'Model.php';
 
@@ -197,14 +190,14 @@ class SchemaReflex
 
         $files = [];
         
-        foreach ($this->getSchemas() as $schema) {
-            $name = ucfirst($this->rename($schema->getTable()->getTableName()));
+        foreach ($this->tables as $table) {
+            $name = ucfirst($this->rename($table->getTableName()));
             $file = $dir . '/' . $name . '.php';
 
             $fields = [];
             $alias = [];
 
-            foreach ($schema->getTable()->getFields() as $field) {
+            foreach ($table->getFields() as $field) {
                 $fields[$field->getAlias()] = [
                     'alias'     => $field->getAlias(),
                     'name'      => $field->getName(),
@@ -227,7 +220,7 @@ class SchemaReflex
             $aliasConst->setValue($alias);
 
             $tableConst = new Property('TABLE', Property::PROPERTY_CONST);
-            $tableConst->setValue($schema->getTable()->getFullTableName());
+            $tableConst->setValue($table->getFullTableName());
 
             $field->setProperties([
                 $fieldsConst,

@@ -27,16 +27,14 @@ class SchemaParser extends Schema
     protected $driver;
 
     /**
-     * @var Schema[]
-     */
-    protected $schemas;
-
-    /**
-     * SchemaDriver constructor.
+     * SchemaParser constructor.
+     *
      * @param DriverInterface $driverInterface
      */
     public function __construct(DriverInterface $driverInterface)
     {
+        parent::__construct([]);
+
         $this->driver = $driverInterface;
 
         $this->reflexTableInDatabase();
@@ -48,22 +46,6 @@ class SchemaParser extends Schema
     public function getDbName()
     {
         return $this->driver->getDbName();
-    }
-
-    /**
-     * @return Schema[]
-     */
-    public function getSchemas()
-    {
-        return $this->schemas;
-    }
-
-    /**
-     * @return SchemaReflex
-     */
-    public function getSchemaReflex()
-    {
-        return new SchemaReflex($this->getSchemas());
     }
 
     /**
@@ -104,7 +86,7 @@ class SchemaParser extends Schema
                     $table->addField($this->parseTableSchemaFields($scheme));
                 }
                 
-                $this->schemas[$table->getFullTableName()] = SchemaBuilder::table($table);
+                $this->addTable($table);
             }
         }
     }

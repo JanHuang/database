@@ -13,14 +13,14 @@ namespace Database\Tests\ORM;
 use FastD\Database\Drivers\MySQLDriver;
 use FastD\Database\Query\QueryBuilder;
 use FastD\Database\Tests\Fixture_Database_TestCast;
-use Test\Entities\TestEntity;
+use Test\Rename\Dbunit\Entities\BaseEntity;
 
 class EntityTest extends Fixture_Database_TestCast
 {
     public function testEntityInit()
     {
-        $entity = new TestEntity(new MySQLDriver(static::CONNECTION));
-        
+        $entity = new BaseEntity(new MySQLDriver(static::CONNECTION));
+
         $this->assertInstanceOf(QueryBuilder::class, $entity->getQueryBuilder());
     }
 }

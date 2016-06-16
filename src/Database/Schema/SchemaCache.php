@@ -10,6 +10,7 @@
 
 namespace FastD\Database\Schema;
 
+use FastD\Database\Cache\CacheInterface;
 use FastD\Database\Schema\Structure\Table;
 use FastD\Database\Schema\Structure\Field;
 
@@ -17,7 +18,7 @@ use FastD\Database\Schema\Structure\Field;
  * Class SchemaCache
  * @package FastD\Database\Schema
  */
-class SchemaCache
+class SchemaCache implements CacheInterface
 {
     /**
      * Current cache.

@@ -43,6 +43,14 @@ abstract class Schema extends SchemaCache implements Iterator
     {
         return array_keys($this->tables);
     }
+
+    /**
+     * @return SchemaReflex
+     */
+    public function getSchemaReflex()
+    {
+        return new SchemaReflex($this->getTables());
+    }
     
     /**
      * @param Table[] $tables
@@ -83,11 +91,6 @@ abstract class Schema extends SchemaCache implements Iterator
     public function getTables()
     {
         return $this->tables;
-    }
-
-    public function getReflex()
-    {
-
     }
 
     /**
