@@ -10,7 +10,6 @@
 
 namespace FastD\Database\Schema;
 
-use FastD\Database\Cache\CacheInterface;
 use FastD\Database\Schema\Structure\Table;
 use FastD\Database\Schema\Structure\Field;
 
@@ -18,9 +17,11 @@ use FastD\Database\Schema\Structure\Field;
  * Class SchemaCache
  * @package FastD\Database\Schema
  */
-class SchemaCache implements CacheInterface
+class SchemaCache
 {
     /**
+     * Current cache.
+     *
      * @var Field[]
      */
     protected $fieldsCache = [];
@@ -36,49 +37,24 @@ class SchemaCache implements CacheInterface
     protected $table;
 
     /**
-     * SchemaCache constructor.
+     * Set current table and current cache file and cache fields.
+     *
      * @param Table $table
+     * @return $this
      */
-    public function __construct(Table $table)
+    public function setCurrentTable(Table $table)
     {
         $this->table = $table;
-        
-        $fieldsCacheDir = __DIR__ . '/fieldsCache';
 
-        $fieldsCacheFile = $fieldsCacheDir . DIRECTORY_SEPARATOR . '.table.' . $this->table->getFullTableName() . '.cache';
-
-        if (!file_exists($fieldsCacheDir)) {
-            mkdir($fieldsCacheDir, 0755, true);
-        }
-
-        if (file_exists($fieldsCacheFile)) {
-            try {
-                $this->fieldsCache = include $fieldsCacheFile;
-                $this->fieldsCache = unserialize($this->fieldsCache);
-            } catch (\Exception $e) {
-                $this->fieldsCache = [];
-            }
-        }
-
-        $this->fieldsCacheFile = $fieldsCacheFile;
-
-        unset($fieldsCacheDir, $fieldsCacheFile);
+        return $this;
     }
 
     /**
      * @return Table
      */
-    public function getTable()
+    public function getCurrentTable()
     {
         return $this->table;
-    }
-
-    /**
-     * @return Field[]
-     */
-    public function getFields()
-    {
-        return $this->table->getFields();
     }
 
     /**
@@ -116,11 +92,32 @@ class SchemaCache implements CacheInterface
      */
     public function getCache()
     {
+        $fieldsCacheDir = __DIR__ . '/fieldsCache';
+
+        $fieldsCacheFile = $fieldsCacheDir . DIRECTORY_SEPARATOR . '.table.' . $this->getCurrentTable()->getFullTableName() . '.cache';
+
+        if (!file_exists($fieldsCacheDir)) {
+            mkdir($fieldsCacheDir, 0755, true);
+        }
+
+        if (file_exists($fieldsCacheFile)) {
+            try {
+                $this->fieldsCache = include $fieldsCacheFile;
+                $this->fieldsCache = unserialize($this->fieldsCache);
+            } catch (\Exception $e) {
+                $this->fieldsCache = [];
+            }
+        }
+
+        $this->fieldsCacheFile = $fieldsCacheFile;
+
+        unset($fieldsCacheDir, $fieldsCacheFile);
+
         return $this->fieldsCache;
     }
 
     /**
-     *
+     * @return void
      */
     public function clearCache()
     {

@@ -11,54 +11,18 @@
 
 namespace FastD\Database\Tests\Schema;
 
-use FastD\Database\Schema\Schema;
-use FastD\Database\Schema\Structure\Table;
+use FastD\Database\Schema\SchemaBuilder;
 use FastD\Database\Schema\Structure\Field;
 use FastD\Database\Schema\Structure\Key;
+use FastD\Database\Schema\Structure\Table;
 
-class SchemaTest extends \PHPUnit_Framework_TestCase
+/**
+ * Class SchemaBuilderTest
+ * @package FastD\Database\Tests\Schema
+ */
+class SchemaBuilderTest extends \PHPUnit_Framework_TestCase
 {
     public function testTableCreateSchema()
-    {
-        $testTable = new Table('test');
-
-        $testTable->addField(new Field('name', Field::VARCHAR, 11), new Key(Key::INDEX));
-        $testTable->addField(new Field('age', Field::INT, 11));
-
-        $schema = Schema::table($testTable);
-        $this->assertEquals(<<<EOF
-CREATE TABLE `test` (
-`name` varchar(11)  NOT NULL DEFAULT ""  COMMENT "",
-`age` int(11)  NOT NULL DEFAULT "0"  COMMENT "",
-KEY `index_name` (`name`)
-) ENGINE InnoDB CHARSET utf8 COMMENT "";
-EOF
-            ,
-            $schema->create()
-        );
-
-        $testTable = new Table('test', '测试备注', true);
-
-        $testTable->addField(new Field('name', Field::VARCHAR, 11), new Key(Key::INDEX));
-        $testTable->addField(new Field('age', Field::INT, 11));
-        $testTable->addField(new Field('bir', Field::INT, 10));
-        $testTable->setEngine('myisam');
-        $testTable->setCharset('gb2312');
-
-        $this->assertEquals(<<<EOF
-CREATE TABLE `test` (
-`name` varchar(11)  NOT NULL DEFAULT ""  COMMENT "",
-`age` int(11)  NOT NULL DEFAULT "0"  COMMENT "",
-`bir` int(10)  NOT NULL DEFAULT "0"  COMMENT "",
-KEY `index_name` (`name`)
-) ENGINE myisam CHARSET gb2312 COMMENT "测试备注";
-EOF
-            ,
-            Schema::table($testTable)->create()
-        );
-    }
-
-    public function testTableCreateKeySchema()
     {
         $testTable = new Table('test', '测试');
 
@@ -69,6 +33,32 @@ EOF
         $testTable->addField($id);
         $testTable->addField(new Field('name', Field::VARCHAR, 10));
 
+        $schemaBuilder = new SchemaBuilder([$testTable]);
+
+        $this->assertEquals([$testTable->getFullTableName()], $schemaBuilder->getKeys());
+
+        foreach ($schemaBuilder as $schema) {
+            $schemaBuilder->table($schema->getFullTableName(), true)->create();
+            $schemaBuilder->table($schema->getFullTableName(), true)->update();
+            $schemaBuilder->table($schema->getFullTableName(), true)->drop();
+        }
+    }
+
+    public function testTableCreateKeySchema()
+    {
+        $builder = new SchemaBuilder();
+
+        $testTable = new Table('test', '测试');
+
+        $id = new Field('id', Field::INT, 11, false, '', '主键id');
+        $id->setKey(new Key(Key::PRIMARY));
+        $id->setIncrement(1);
+
+        $testTable->addField($id);
+        $testTable->addField(new Field('name', Field::VARCHAR, 10));
+
+        $builder->addTable($testTable);
+
         $this->assertEquals(<<<EOF
 CREATE TABLE `test` (
 `id` int(11)  NOT NULL DEFAULT "0" AUTO_INCREMENT COMMENT "主键id",
@@ -76,7 +66,7 @@ CREATE TABLE `test` (
 PRIMARY KEY (`id`)
 ) ENGINE InnoDB CHARSET utf8 COMMENT "测试";
 EOF
-            , Schema::table($testTable)->create()
+            , $builder->table($testTable->getFullTableName())->create()
         );
 
         $testTable = new Table('test', '测试');
@@ -86,6 +76,7 @@ EOF
 
         $testTable->addField($id);
         $testTable->addField(new Field('name', Field::VARCHAR, 10));
+        $builder->addTable($testTable);
 
         $this->assertEquals(<<<EOF
 CREATE TABLE `test` (
@@ -94,7 +85,7 @@ CREATE TABLE `test` (
 PRIMARY KEY (`id`)
 ) ENGINE InnoDB CHARSET utf8 COMMENT "测试";
 EOF
-            , Schema::table($testTable)->create()
+            , $builder->table($testTable->getFullTableName())->create()
         );
 
         $id = new Field('id', Field::INT, 11, false, '', '主键id');
@@ -107,6 +98,7 @@ EOF
         $testTable->addField($id);
         $testTable->addField($name);
         $testTable->addField($code);
+        $builder->addTable($testTable);
 
         $this->assertEquals(<<<EOF
 CREATE TABLE `test` (
@@ -118,35 +110,45 @@ KEY `index_name` (`name`),
 UNIQUE KEY `unique_code` (`code`)
 ) ENGINE InnoDB CHARSET utf8 COMMENT "测试";
 EOF
-            , Schema::table($testTable)->create()
+            , $builder->table($testTable->getFullTableName())->create()
         );
     }
 
     public function testTableAlterSchema()
     {
+        $builder = new SchemaBuilder();
+
         $testTable = new Table('test');
+
+        $builder->addTable($testTable);
 
         $testTable->addField(new Field('nickname', Field::VARCHAR, 11), new Key(Key::INDEX));
 
-        $this->assertEquals('', Schema::table($testTable)->update());
+        $this->assertEquals('', $builder->table($testTable->getFullTableName())->update());
 
         $testTable = new Table('test');
 
+        $builder->addTable($testTable);
+
         $testTable->addField(new Field('name', Field::VARCHAR, 11), new Key(Key::INDEX));
         // Cache success
-        $this->assertEquals(array_keys(Schema::table($testTable)->getCache()), ['name', 'age', 'bir', 'id', 'code', 'nickname']);
+        $this->assertEquals(array_keys($builder->table($testTable->getFullTableName())->getCache()), ['id', 'name', 'nickname']);
     }
 
     public function testTableDropSchema()
     {
+        $builder = new SchemaBuilder();
+
         $demoTable = new Table('demo');
 
-        $this->assertEquals(Schema::table($demoTable)->drop(), <<<EOF
+        $builder->addTable($demoTable);
+
+        $this->assertEquals($builder->table($demoTable->getFullTableName())->drop(), <<<EOF
 DROP TABLE `demo`;
 EOF
 );
 
-        $this->assertEquals(Schema::table($demoTable, true)->drop(), <<<EOF
+        $this->assertEquals($builder->table($demoTable->getFullTableName(), true)->drop(), <<<EOF
 DROP TABLE IF EXISTS `demo`;
 EOF
 );
@@ -154,10 +156,13 @@ EOF
 
     public function testMultiTableSchema()
     {
+        $builder = new SchemaBuilder();
+
         $demoTable = new Table('demo');
+        $builder->addTable($demoTable);
 
         $demoTable->addField(new Field('id', Field::INT, 10));
 
-        Schema::table($demoTable)->create();
+        $builder->table($demoTable->getFullTableName())->create();
     }
 }

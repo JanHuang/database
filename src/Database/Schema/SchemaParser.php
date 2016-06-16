@@ -19,7 +19,7 @@ use FastD\Database\Schema\Structure\Table;
  * Class SchemaDriver
  * @package FastD\Database\Schema
  */
-class SchemaDriver
+class SchemaParser extends Schema
 {
     /**
      * @var DriverInterface
@@ -104,7 +104,7 @@ class SchemaDriver
                     $table->addField($this->parseTableSchemaFields($scheme));
                 }
                 
-                $this->schemas[$table->getFullTableName()] = Schema::table($table);
+                $this->schemas[$table->getFullTableName()] = SchemaBuilder::table($table);
             }
         }
     }

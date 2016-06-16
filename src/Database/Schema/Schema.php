@@ -11,192 +11,138 @@
 namespace FastD\Database\Schema;
 
 use FastD\Database\Schema\Structure\Table;
+use Iterator;
 
 /**
- * Mysql Table Schema
+ * Table Schema
  *
  * Class Schema
  *
  * @package FastD\Database\Schema
  */
-class Schema extends SchemaCache
+abstract class Schema extends SchemaCache implements Iterator
 {
     /**
-     * @var bool
+     * @var array
      */
-    protected $force = false;
+    protected $tables = [];
 
     /**
      * Schema constructor.
-     *
+     * @param array $tables
+     */
+    public function __construct(array $tables = [])
+    {
+        $this->setTables($tables);
+    }
+
+    /**
+     * @return array
+     */
+    public function getKeys()
+    {
+        return array_keys($this->tables);
+    }
+    
+    /**
+     * @param Table[] $tables
+     * @return $this
+     */
+    public function setTables(array $tables)
+    {
+        foreach ($tables as $table) {
+            $this->tables[$table->getFullTableName()] = $table;
+        }
+
+        return $this;
+    }
+
+    /**
      * @param Table $table
-     * @param bool $force
+     * @return $this
      */
-    public function __construct(Table $table, $force = false)
+    public function addTable(Table $table)
     {
-        $this->force = $force;
+        $this->tables[$table->getFullTableName()] = $table;
 
-        parent::__construct($table);
+        return $this;
     }
 
     /**
-     * @return bool
+     * @param $name
+     * @return Table|null
      */
-    public function isForce()
+    public function getTable($name)
     {
-        return $this->force;
+         return isset($this->tables[$name]) ? $this->tables[$name] : null;
     }
 
     /**
-     * @param Table $table
-     * @param bool $force
-     * @return Schema
+     * @return array
      */
-    public static function table(Table $table, $force = false)
+    public function getTables()
     {
-        return new static($table, $force);
+        return $this->tables;
+    }
+
+    public function getReflex()
+    {
+
     }
 
     /**
-     * Return table create schema.
-     *
-     * @return string
+     * Return the current element
+     * @link http://php.net/manual/en/iterator.current.php
+     * @return Table Can return any type.
+     * @since 5.0.0
      */
-    public function create()
+    public function current()
     {
-        $fields = [];
-        $keys = [];
-
-        foreach ($this->getTable()->getFields() as $name => $field) {
-            $fields[] = implode(' ', [
-                '`' . $field->getName() . '`',
-                $field->getType() . '(' . $field->getLength() . ')',
-                ($field->isUnsigned()) ? 'UNSIGNED' : '',
-                ($field->isNullable() ? '' : ('NOT NULL DEFAULT "' . $field->getDefault() . '"')),
-                ($field->isIncrement()) ? 'AUTO_INCREMENT' : '',
-                'COMMENT "' . $field->getComment() . '"'
-            ]);
-
-            if (null !== $field->getKey()) {
-                if ($field->isPrimary()) {
-                    $keys[] = 'PRIMARY KEY (`' . $field->getName() . '`)';
-                } else if ($field->isUnique()) {
-                    $keys[] = 'UNIQUE KEY `unique_' . $field->getName() . '` (`' . $field->getName() . '`)';
-                } else if ($field->isIndex()) {
-                    $keys[] = 'KEY `index_' . $field->getName() . '` (`' . $field->getName() . '`)';
-                }
-            }
-
-            $this->setCacheField($name, $field);
-        }
-
-        $schema = $this->isForce() ? ('DROP TABLE IF EXISTS `' . $this->getTable()->getFullTableName() . '`;' . PHP_EOL . PHP_EOL) : '';
-        $schema .= 'CREATE TABLE `' . $this->getTable()->getFullTableName() . '` (';
-        $schema .= PHP_EOL . implode(',' . PHP_EOL, $fields) . (empty($keys) ? PHP_EOL : (',' . PHP_EOL . implode(',' . PHP_EOL, $keys) . PHP_EOL));
-        $schema .= ') ENGINE ' . $this->getTable()->getEngine() . ' CHARSET ' . $this->getTable()->getCharset() . ' COMMENT "' . $this->getTable()->getComment() . '";';
-
-        $this->saveCache();
-
-        return $schema;
+        return $this->tables[$this->key()];
     }
 
     /**
-     * Alter table.
-     *
-     * @return string
+     * Move forward to next element
+     * @link http://php.net/manual/en/iterator.next.php
+     * @return void Any returned value is ignored.
+     * @since 5.0.0
      */
-    public function update()
+    public function next()
     {
-        $add = [];
-        $change = [];
-        $drop = [];
-        $keys = [];
-
-        $cache = $this->getCache();
-
-        // Alter table add column.
-        foreach ($this->getTable()->getFields() as $name => $field) {
-            // ignore add field.
-            if (array_key_exists($field->getName(), $cache)) {
-                continue;
-            }
-            $add[] = implode(' ', [
-                'ALTER TABLE `' . $this->getTable()->getFullTableName() . '` ADD `' . $field->getName() . '`',
-                $field->getType() . '(' . $field->getLength() . ')',
-                ($field->isUnsigned()) ? 'UNSIGNED' : '',
-                ($field->isNullable() ? '' : ('NOT NULL DEFAULT "' . $field->getDefault() . '"')),
-                ($field->isPrimary()) ? 'AUTO_INCREMENT' : '',
-                'COMMENT "' . $field->getComment() . '";',
-            ]);
-            if (null !== $field->getKey()) {
-                $keys[] = implode(' ', [
-                    'ALTER TABLE `' . $this->getTable()->getFullTableName() . '` ADD ' . ($field->getKey()->isPrimary() ? 'PRIMARY KEY' : $field->getKey()->getKey()),
-                    '`index_' . $field->getName() . '` (' . $field->getName() . ');',
-                ]);
-            }
-
-            $this->setCacheField($name, $field);
-        }
-
-        // Alter table change column.
-        foreach ($this->getTable()->getAlterFields() as $name => $field) {
-            if (array_key_exists($name, $cache)) {
-                if (!$cache[$name]->equal($field)) {
-                    $change[] = implode(' ', [
-                        'ALTER TABLE `' . $this->getTable()->getFullTableName() . '` CHANGE `' . $name . '` `' . $field->getName() . '`',
-                        $field->getType() . '(' . $field->getLength() . ')',
-                        ($field->isUnsigned()) ? 'UNSIGNED' : '',
-                        ($field->isNullable() ? '' : ('NOT NULL DEFAULT "' . $field->getDefault() . '"')),
-                        ($field->isPrimary()) ? 'AUTO_INCREMENT' : '',
-                        'COMMENT "' . $field->getComment() . '";',
-                    ]);
-                    if (null !== $field->getKey()) {
-                        $keys[] = implode(' ', [
-                            'ALTER TABLE `' . $this->getTable()->getFullTableName() . '` ADD ' . ($field->getKey()->isPrimary() ? 'PRIMARY KEY' : $field->getKey()->getKey()),
-                            '`index_' . $field->getName() . '` (' . $field->getName() . ');',
-                        ]);
-                    }
-
-                    $this->setCacheField($name, $field);
-                }
-            }
-        }
-
-        // Alter table drop column and drop map key.
-        foreach ($this->getTable()->getDropFields() as $name => $field) {
-            if (!array_key_exists($name, $cache)) {
-                continue;
-            }
-            $drop[] = implode(' ', [
-                'ALTER TABLE `' . $this->getTable()->getFullTableName() . '`',
-                'DROP `' . $field . '`;',
-            ]);
-
-            $this->unsetCacheField($name);
-        }
-
-        $this->saveCache();
-
-        // Sync table and cache field.
-        $this->getTable()->setFields($this->fieldsCache);
-        
-        return implode(PHP_EOL, array_filter([
-            implode(PHP_EOL, $add),
-            implode(PHP_EOL, $change),
-            implode(PHP_EOL, $drop),
-            implode(PHP_EOL, $keys),
-        ]));
+        next($this->tables);
     }
 
     /**
-     * Drop table.
-     *
-     * @return string
+     * Return the key of the current element
+     * @link http://php.net/manual/en/iterator.key.php
+     * @return mixed scalar on success, or null on failure.
+     * @since 5.0.0
      */
-    public function drop()
+    public function key()
     {
-        $this->clearCache();
+        return key($this->tables);
+    }
 
-        return 'DROP TABLE ' . ($this->isForce() ? 'IF EXISTS ' : '') . '`' . $this->getTable()->getFullTableName() . '`;';
+    /**
+     * Checks if current position is valid
+     * @link http://php.net/manual/en/iterator.valid.php
+     * @return boolean The return value will be casted to boolean and then evaluated.
+     * Returns true on success or false on failure.
+     * @since 5.0.0
+     */
+    public function valid()
+    {
+        return isset($this->tables[$this->key()]);
+    }
+
+    /**
+     * Rewind the Iterator to the first element
+     * @link http://php.net/manual/en/iterator.rewind.php
+     * @return void Any returned value is ignored.
+     * @since 5.0.0
+     */
+    public function rewind()
+    {
+        reset($this->tables);
     }
 }

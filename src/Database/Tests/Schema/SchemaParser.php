@@ -10,11 +10,11 @@
 
 namespace Database\Tests\Schema;
 
-use FastD\Database\Schema\SchemaDriver;
+use FastD\Database\Schema\SchemaParser;
 use FastD\Database\Drivers\MySQLDriver;
 use FastD\Database\Tests\Fixture_Database_TestCast;
 
-class SchemaDriverTest extends Fixture_Database_TestCast
+class SchemaParserTest extends Fixture_Database_TestCast
 {
     const CONNECTION = [
         'database_host'      => '127.0.0.1',
@@ -27,25 +27,25 @@ class SchemaDriverTest extends Fixture_Database_TestCast
 
     public function testTableSchemaReflexRename()
     {
-        $driver = new MySQLDriver(self::CONNECTION);
+        /*$driver = new MySQLDriver(self::CONNECTION);
 
-        $schemaDriver = new SchemaDriver($driver);
+        $schemaDriver = new SchemaParser($driver);
 
         $schemaDriver->getSchemaReflex()->reflex(
             __DIR__ . '/Reflex/Rename/' . $schemaDriver->getDbName(),
             'Test\\Rename\\' . $schemaDriver->getDbName()
-        );
+        );*/
     }
 
     public function testTableSchemaReflex()
     {
-        $driver = new MySQLDriver(parent::CONNECTION);
+        /*$driver = new MySQLDriver(parent::CONNECTION);
 
-        $schemaDriver = new SchemaDriver($driver);
+        $schemaDriver = new SchemaParser($driver);
 
         $schemaDriver->getSchemaReflex()->reflex(
             __DIR__ . '/Reflex/' . $schemaDriver->getDbName(),
             'Test\\' . $schemaDriver->getDbName()
-        );
+        );*/
     }
 }
