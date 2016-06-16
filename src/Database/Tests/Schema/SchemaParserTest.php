@@ -32,8 +32,8 @@ class SchemaParserTest extends Fixture_Database_TestCast
         $schemaDriver = new SchemaParser($driver);
 
         $schemaDriver->getSchemaReflex()->reflex(
-            __DIR__ . '/Reflex/Rename/' . $schemaDriver->getDbName(),
-            'Test\\Rename\\' . $schemaDriver->getDbName()
+            __DIR__ . '/Reflex/Rename/' . $driver->getDbName(),
+            'Test\\Rename\\' . $driver->getDbName()
         );
     }
 
@@ -44,8 +44,8 @@ class SchemaParserTest extends Fixture_Database_TestCast
         $schemaDriver = new SchemaParser($driver);
 
         $schemaDriver->getSchemaReflex()->reflex(
-            __DIR__ . '/Reflex/' . $schemaDriver->getDbName(),
-            'Test\\' . $schemaDriver->getDbName()
+            __DIR__ . '/Reflex/' . $driver->getDbName(),
+            'Test\\' . $driver->getDbName()
         );
     }
 }

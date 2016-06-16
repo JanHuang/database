@@ -36,12 +36,6 @@ class SchemaBuilderTest extends \PHPUnit_Framework_TestCase
         $schemaBuilder = new SchemaBuilder([$testTable]);
 
         $this->assertEquals([$testTable->getFullTableName()], $schemaBuilder->getKeys());
-
-        foreach ($schemaBuilder as $schema) {
-            $schemaBuilder->table($schema->getFullTableName(), true)->create();
-            $schemaBuilder->table($schema->getFullTableName(), true)->update();
-            $schemaBuilder->table($schema->getFullTableName(), true)->drop();
-        }
     }
 
     public function testTableCreateKeySchema()
@@ -132,7 +126,7 @@ EOF
 
         $testTable->addField(new Field('name', Field::VARCHAR, 11), new Key(Key::INDEX));
         // Cache success
-        $this->assertEquals(array_keys($builder->table($testTable->getFullTableName())->getCache()), ['id', 'name', 'nickname']);
+        $this->assertEquals(array_keys($builder->table($testTable->getFullTableName())->getCache()), ['id', 'name', 'code', 'nickname']);
     }
 
     public function testTableDropSchema()

@@ -10,7 +10,6 @@
 
 namespace Database\Tests\ORM;
 
-use FastD\Database\Drivers\MySQLDriver;
 use FastD\Database\Query\QueryBuilder;
 use FastD\Database\Tests\Fixture_Database_TestCast;
 use Test\Rename\Dbunit\Entities\BaseEntity;
@@ -19,7 +18,10 @@ class EntityTest extends Fixture_Database_TestCast
 {
     public function testEntityInit()
     {
-        $entity = new BaseEntity(new MySQLDriver(static::CONNECTION));
+        $entity = new BaseEntity($this->getLocalDriver(), ['id' => 1]);
+
+        $this->assertEquals('joe', $entity->getName());
+        $this->assertEquals(json_encode($entity->toArray(), JSON_NUMERIC_CHECK), $entity->toJson());
 
         $this->assertInstanceOf(QueryBuilder::class, $entity->getQueryBuilder());
     }

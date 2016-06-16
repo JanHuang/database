@@ -10,8 +10,8 @@
 
 namespace Database\Fixtures;
 
-use FastD\Database\DriverInterface;
-use FastD\Database\Schema\Schema;
+use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\Schema\Structure\Table;
 
 /**
  * Interface FixtureInterface
@@ -22,7 +22,7 @@ interface FixtureInterface
     /**
      * Create schema
      *
-     * @return Schema
+     * @return Table
      */
     public function loadSchema();
 

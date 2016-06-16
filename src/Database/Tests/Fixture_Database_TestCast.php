@@ -1,20 +1,15 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: janhuang
- * Date: 16/2/17
- * Time: 下午10:08
- * Github: https://www.github.com/janhuang
- * Coding: https://www.coding.net/janhuang
- * SegmentFault: http://segmentfault.com/u/janhuang
- * Blog: http://segmentfault.com/blog/janhuang
- * Gmail: bboyjanhuang@gmail.com
- * WebSite: http://www.janhuang.me
+ *
+ * @author    jan huang <bboyjanhuang@gmail.com>
+ * @copyright 2016
+ *
+ * @link      https://www.github.com/janhuang
+ * @link      http://www.fast-d.cn/
  */
 
 namespace FastD\Database\Tests;
 
-use FastD\Database\Driver;
 use FastD\Database\Drivers\MySQLDriver;
 use PHPUnit_Extensions_Database_DB_IDatabaseConnection;
 
@@ -111,7 +106,7 @@ abstract class Fixture_Database_TestCast extends \PHPUnit_Extensions_Database_Te
     /**
      * Returns the test dataset.
      *
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
+     * @return \PHPUnit_Extensions_Database_DataSet_IDataSet
      */
     protected function getDataSet()
     {
@@ -120,9 +115,9 @@ abstract class Fixture_Database_TestCast extends \PHPUnit_Extensions_Database_Te
 
     /**
      * @param $config
-     * @return Driver
+     * @return MySQLDriver
      */
-    public function createDriver($config = null)
+    public function getLocalDriver(array $config = null)
     {
         return new MySQLDriver($config ?? static::CONNECTION);
     }

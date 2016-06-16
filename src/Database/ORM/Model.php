@@ -14,6 +14,10 @@ use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\ORM\Params\Bind;
 use FastD\Database\Query\QueryBuilder;
 
+/**
+ * Class Model
+ * @package FastD\Database\ORM
+ */
 abstract class Model
 {
     use Bind;
@@ -28,16 +32,11 @@ abstract class Model
     protected $driver;
 
     /**
-     * @var QueryBuilder
-     */
-    protected $queryBuilder;
-
-    /**
      * @param DriverInterface $driverInterface
      */
     public function __construct(DriverInterface $driverInterface)
     {
-        $this->setDriver($driverInterface);
+        $this->driver = $driverInterface;
     }
 
     /**
@@ -46,17 +45,6 @@ abstract class Model
     public function getDriver()
     {
         return $this->driver;
-    }
-
-    /**
-     * @param DriverInterface|null $driverInterface
-     * @return $this
-     */
-    public function setDriver(DriverInterface $driverInterface)
-    {
-        $this->driver = $driverInterface;
-
-        return $this;
     }
 
     /**
@@ -104,7 +92,7 @@ abstract class Model
     {
         return $this
             ->createQuery(
-                $this->queryBuilder
+                $this->getQueryBuilder()
                     ->where($where)
                     ->fields(array() === $field ? $this->getAlias() : $field)
                     ->select()
@@ -125,7 +113,8 @@ abstract class Model
     {
         return $this
             ->createQuery(
-                $this->queryBuilder
+                $this->getQueryBuilder()
+                    ->from($this->getTable())
                     ->where($where)
                     ->fields(array() === $field ? $this->getAlias() : $field)
                     ->select()
@@ -148,7 +137,8 @@ abstract class Model
         if (empty($where)) {
             return $this
                 ->createQuery(
-                    $this->queryBuilder
+                    $this->getQueryBuilder()
+                        ->from($this->getTable())
                         ->insert(array() === $data ? $this->data : $data)
                 )
                 ->setParameter([] === $params ? $this->params : $params)
@@ -159,7 +149,8 @@ abstract class Model
         return $this
             ->createQuery(
                 $this
-                    ->queryBuilder
+                    ->getQueryBuilder()
+                    ->from($this->getTable())
                     ->update(array() === $data ? $this->data : $data, $where)
             )
             ->setParameter([] === $params ? $this->params : $params)
@@ -183,7 +174,7 @@ abstract class Model
      */
     public function orderBy(array $orderBy)
     {
-        $this->queryBuilder->orderBy($orderBy);
+        $this->getQueryBuilder()->orderBy($orderBy);
 
         return $this;
     }
@@ -194,23 +185,11 @@ abstract class Model
      */
     public function where(array $where = [])
     {
-        $this->queryBuilder->where($where);
+        $this->getQueryBuilder()->where($where);
 
         return $this;
     }
-
-    /**
-     * @param $table
-     * @param null $alias
-     * @return $this
-     */
-    public function from($table, $alias = null)
-    {
-        $this->queryBuilder->from($table, $alias);
-
-        return $this;
-    }
-
+    
     /**
      * @param null $limit
      * @param null $offset
@@ -218,9 +197,18 @@ abstract class Model
      */
     public function limit($limit = null, $offset = null)
     {
-        $this->queryBuilder->limit($limit, $offset);
+        $this->getQueryBuilder()->limit($limit, $offset);
 
         return $this;
+    }
+
+    /**
+     * @param callable $callable
+     * @return mixed
+     */
+    public function transaction(callable $callable)
+    {
+        return $this->getDriver()->transaction($callable);
     }
 
     /**

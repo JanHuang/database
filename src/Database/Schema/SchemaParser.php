@@ -41,14 +41,6 @@ class SchemaParser extends Schema
     }
 
     /**
-     * @return string
-     */
-    public function getDbName()
-    {
-        return $this->driver->getDbName();
-    }
-
-    /**
      * @param $tables
      */
     protected function reflexTableSchema($tables)
@@ -83,10 +75,15 @@ class SchemaParser extends Schema
             if (!empty(($schemes = $this->parseTableSchema($table->getFullTableName())))) {
                 // Parse fields
                 foreach ($schemes as $scheme) {
-                    $table->addField($this->parseTableSchemaFields($scheme));
+                    $field = $this->parseTableSchemaFields($scheme);
+                    $table->addField($field);
+                    $this->setCacheField($field);
                 }
                 
                 $this->addTable($table);
+                // Save table cache.
+                $this->setCurrentTable($table);
+                $this->saveCache();
             }
         }
     }

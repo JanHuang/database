@@ -1,15 +1,11 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: janhuang
- * Date: 15/12/24
- * Time: 上午12:15
- * Github: https://www.github.com/janhuang
- * Coding: https://www.coding.net/janhuang
- * SegmentFault: http://segmentfault.com/u/janhuang
- * Blog: http://segmentfault.com/blog/janhuang
- * Gmail: bboyjanhuang@gmail.com
- * WebSite: http://www.janhuang.me
+ *
+ * @author    jan huang <bboyjanhuang@gmail.com>
+ * @copyright 2016
+ *
+ * @link      https://www.github.com/janhuang
+ * @link      http://www.fast-d.cn/
  */
 
 namespace FastD\Database\ORM\Params;
@@ -17,9 +13,9 @@ namespace FastD\Database\ORM\Params;
 use FastD\Http\Request;
 
 /**
- * Class RequestHandle
+ * Trait Bind
  *
- * @package FastD\Database\Params
+ * @package FastD\Database\ORM\Params
  */
 trait Bind
 {
@@ -40,7 +36,10 @@ trait Bind
     public function bindRequest(Request $request)
     {
         return $this->bindParams(
-            $request->isMethod('get') ? $request->query->all() : $request->request->all()
+            $request->isMethod('get')
+                ?
+                $request->query->all()
+                : $request->request->all()
         );
     }
 
@@ -58,12 +57,10 @@ trait Bind
         foreach ($params as $name => $value) {
             if (array_key_exists($name, static::FIELDS)) {
                 $field = static::FIELDS[$name];
-                // for entity
                 $method = 'set' . ucfirst($name);
                 if (method_exists($this, $method)) {
                     $this->$method($value);
                 }
-                // for repository
                 $this->data[$field['name']] = ':' . $name;
                 $this->params[$name] = $value;
             }

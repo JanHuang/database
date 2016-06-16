@@ -34,6 +34,8 @@ abstract class Schema extends SchemaCache implements Iterator
     public function __construct(array $tables = [])
     {
         $this->setTables($tables);
+
+        parent::__construct();
     }
 
     /**
@@ -86,7 +88,7 @@ abstract class Schema extends SchemaCache implements Iterator
     }
 
     /**
-     * @return array
+     * @return Table[]
      */
     public function getTables()
     {
@@ -101,7 +103,13 @@ abstract class Schema extends SchemaCache implements Iterator
      */
     public function current()
     {
-        return $this->tables[$this->key()];
+        $key = $this->key();
+
+        $table = $this->tables[$key];
+        
+        $this->setCurrentTable($table);
+
+        return $table;
     }
 
     /**

@@ -78,7 +78,11 @@ class SchemaBuilder extends Schema
                     $keys[] = 'KEY `index_' . $field->getName() . '` (`' . $field->getName() . '`)';
                 }
             }
+
+            $this->setCacheField($field);
         }
+
+        $this->saveCache();
 
         $schema = $this->isForce() ? ('DROP TABLE IF EXISTS `' . $this->getCurrentTable()->getFullTableName() . '`;' . PHP_EOL . PHP_EOL) : '';
         $schema .= 'CREATE TABLE `' . $this->getCurrentTable()->getFullTableName() . '` (';
@@ -123,7 +127,7 @@ class SchemaBuilder extends Schema
                 ]);
             }
 
-            $this->setCacheField($name, $field);
+            $this->setCacheField($field);
         }
 
         // Alter table change column.
@@ -145,7 +149,7 @@ class SchemaBuilder extends Schema
                         ]);
                     }
 
-                    $this->setCacheField($name, $field);
+                    $this->setCacheField($field);
                 }
             }
         }
@@ -183,6 +187,8 @@ class SchemaBuilder extends Schema
      */
     public function drop()
     {
+        $this->clearCache();
+
         return 'DROP TABLE ' . ($this->isForce() ? 'IF EXISTS ' : '') . '`' . $this->getCurrentTable()->getFullTableName() . '`;';
     }
 }

@@ -198,11 +198,11 @@ class MySQLDriver implements DriverInterface
     {
         $this->pdo->beginTransaction();
 
-        $callable();
+        $result = $callable($this, $this->getQueryBuilder());
 
         $this->pdo->commit();
 
-        return $this;
+        return $result;
     }
 
     /**

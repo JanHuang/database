@@ -48,11 +48,6 @@ abstract class Entity implements \ArrayAccess
     protected $condition = null;
 
     /**
-     * @var QueryBuilder
-     */
-    protected $queryBuilder;
-
-    /**
      * Entity constructor.
      *
      * @param DriverInterface|null $driverInterface
@@ -115,6 +110,7 @@ abstract class Entity implements \ArrayAccess
         return $this->driver
             ->query(
                 $this->getQueryBuilder()
+                    ->from($this->getTable())
                     ->where($where)
                     ->fields($fields ?? $this->getAlias())
                     ->select()
@@ -133,6 +129,7 @@ abstract class Entity implements \ArrayAccess
     {
         $data = [];
         $values = [];
+        
         foreach ($this->getAlias() as $field => $alias) {
             $method = 'get' . ucfirst($alias);
             $value = $this->$method();
@@ -145,7 +142,12 @@ abstract class Entity implements \ArrayAccess
 
         if (null !== $this->condition && !empty($this->row)) {
             return $this->driver
-                ->query($this->getQueryBuilder()->update($data, $this->condition))
+                ->query(
+                    $this
+                        ->getQueryBuilder()
+                        ->from($this->getTable())
+                        ->update($data, $this->condition)
+                )
                 ->setParameter($values)
                 ->execute()
                 ->getAffected()
@@ -153,7 +155,12 @@ abstract class Entity implements \ArrayAccess
         }
 
         return $this->driver
-            ->query($this->getQueryBuilder()->insert($data))
+            ->query(
+                $this
+                    ->getQueryBuilder()
+                    ->from($this->getTable())
+                    ->insert($data)
+            )
             ->setParameter($values)
             ->execute()
             ->getId()
