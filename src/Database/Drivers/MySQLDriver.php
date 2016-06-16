@@ -223,9 +223,10 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getLogs()
     {
+        return $this->queryBuilder->getLogs();
     }
 }

@@ -1,39 +1,26 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: janhuang
- * Date: 15/3/12
- * Time: 上午11:15
- * Github: https://www.github.com/janhuang
- * Coding: https://www.coding.net/janhuang
- * SegmentFault: http://segmentfault.com/u/janhuang
- * Blog: http://segmentfault.com/blog/janhuang
- * Gmail: bboyjanhuang@gmail.com
+ *
+ * @author    jan huang <bboyjanhuang@gmail.com>
+ * @copyright 2016
+ *
+ * @link      https://www.github.com/janhuang
+ * @link      http://www.fast-d.cn/
  */
 
 namespace FastD\Database\ORM;
 
+use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\ORM\Params\Bind;
 use FastD\Database\Query\QueryBuilder;
 
-/**
- * Class Repository
- *
- * @package FastD\Database\Repository
- */
 abstract class Model
 {
     use Bind;
     
     const FIELDS = [];
     const ALIAS = [];
-    const PRIMARY = '';
     const TABLE = '';
-
-    /**
-     * @var string
-     */
-    protected $entity;
 
     /**
      * @var DriverInterface
@@ -43,16 +30,14 @@ abstract class Model
     /**
      * @var QueryBuilder
      */
-    protected $query_builder;
+    protected $queryBuilder;
 
     /**
      * @param DriverInterface $driverInterface
      */
-    public function __construct(DriverInterface $driverInterface = null)
+    public function __construct(DriverInterface $driverInterface)
     {
         $this->setDriver($driverInterface);
-
-        $this->createQueryBuilder();
     }
 
     /**
@@ -67,11 +52,19 @@ abstract class Model
      * @param DriverInterface|null $driverInterface
      * @return $this
      */
-    public function setDriver(DriverInterface $driverInterface = null)
+    public function setDriver(DriverInterface $driverInterface)
     {
         $this->driver = $driverInterface;
 
         return $this;
+    }
+
+    /**
+     * @return QueryBuilder
+     */
+    public function getQueryBuilder()
+    {
+        return $this->driver->getQueryBuilder();
     }
 
     /**
@@ -101,14 +94,6 @@ abstract class Model
     }
 
     /**
-     * @return string
-     */
-    public function getPrimary()
-    {
-        return static::PRIMARY;
-    }
-
-    /**
      * Fetch one row.
      *
      * @param array $where
@@ -119,7 +104,7 @@ abstract class Model
     {
         return $this
             ->createQuery(
-                $this->query_builder
+                $this->queryBuilder
                     ->where($where)
                     ->fields(array() === $field ? $this->getAlias() : $field)
                     ->select()
@@ -140,7 +125,7 @@ abstract class Model
     {
         return $this
             ->createQuery(
-                $this->query_builder
+                $this->queryBuilder
                     ->where($where)
                     ->fields(array() === $field ? $this->getAlias() : $field)
                     ->select()
@@ -163,7 +148,7 @@ abstract class Model
         if (empty($where)) {
             return $this
                 ->createQuery(
-                    $this->query_builder
+                    $this->queryBuilder
                         ->insert(array() === $data ? $this->data : $data)
                 )
                 ->setParameter([] === $params ? $this->params : $params)
@@ -174,7 +159,7 @@ abstract class Model
         return $this
             ->createQuery(
                 $this
-                    ->query_builder
+                    ->queryBuilder
                     ->update(array() === $data ? $this->data : $data, $where)
             )
             ->setParameter([] === $params ? $this->params : $params)
@@ -189,7 +174,7 @@ abstract class Model
      */
     public function count(array $where = [])
     {
-        return (int)$this->where($where)->find(['count(1)' => 'total'])['total'];
+        return (int) $this->where($where)->find(['count(1)' => 'total'])['total'];
     }
 
     /**
@@ -198,7 +183,7 @@ abstract class Model
      */
     public function orderBy(array $orderBy)
     {
-        $this->query_builder->orderBy($orderBy);
+        $this->queryBuilder->orderBy($orderBy);
 
         return $this;
     }
@@ -209,7 +194,7 @@ abstract class Model
      */
     public function where(array $where = [])
     {
-        $this->query_builder->where($where);
+        $this->queryBuilder->where($where);
 
         return $this;
     }
@@ -221,7 +206,7 @@ abstract class Model
      */
     public function from($table, $alias = null)
     {
-        $this->query_builder->from($table, $alias);
+        $this->queryBuilder->from($table, $alias);
 
         return $this;
     }
@@ -233,7 +218,7 @@ abstract class Model
      */
     public function limit($limit = null, $offset = null)
     {
-        $this->query_builder->limit($limit, $offset);
+        $this->queryBuilder->limit($limit, $offset);
 
         return $this;
     }
@@ -254,7 +239,7 @@ abstract class Model
      */
     public function getErrors()
     {
-        return $this->driver->getError();
+        return $this->driver->getErrors();
     }
 
     /**
@@ -262,30 +247,6 @@ abstract class Model
      */
     public function getLogs()
     {
-        return $this->query_builder->getLogs();
-    }
-
-    /**
-     * @return $this
-     */
-    public function createQueryBuilder()
-    {
-        if (null === $this->query_builder) {
-            $this->query_builder = Mysql::singleton()->from($this->getTable());
-        }
-
-        return $this->query_builder;
-    }
-
-    /**
-     * @param      $page
-     * @param int  $showList
-     * @param int  $showPage
-     * @param null $lastId
-     * @return QueryPagination
-     */
-    public function pagination($page = 1, $showList = 25, $showPage = 5, $lastId = null)
-    {
-        return new QueryPagination($this, $page, $showList, $showPage, $lastId);
+        return $this->driver->getLogs();
     }
 }
