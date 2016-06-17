@@ -13,7 +13,7 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=7.0",
-        "fastd/generator": "~1.0.0",
+        "fastd/generator": "~1.1.0",
         "fastd/pagination": "~1.0.0"
     },
     "require-dev": {

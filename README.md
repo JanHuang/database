@@ -52,7 +52,9 @@
                                                         +--------------+
 ```
 
-### 1. 数据库配置
+### 1. 基础使用
+
+##### 1.1 配置
 
 ```php
 $fdb = new Fdb([
@@ -77,10 +79,23 @@ $fdb = new Fdb([
 
 获取驱动后可以进行最基础的操作, 因为驱动只是在 PDO 上封装了一层, 具体处理和 PDO 并无差别.
 
-#### 2. 自动构建
+##### 1.2 查询构建器
 
-最终生成目录结构:
+```php
+use FastD\Database\Query\MySQLQueryBuilder;
 
+$queryBuilder = new MySQLQueryBuilder();
+
+echo $queryBuilder->from('test')->select(); // SELECT * FROM `test`;
+```
+
+**查询构建器仅限用于简单查询,不提供复杂的查询**
+
+##### 1.3 数据库连接驱动
+
+```php
+
+```
 
 望大家多多指点啦.
 
