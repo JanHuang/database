@@ -29,23 +29,23 @@ class SchemaParserTest extends Fixture_Database_TestCast
     {
         $driver = new MySQLDriver(self::CONNECTION);
 
-        $schemaDriver = new SchemaParser($driver);
+        /*$schemaDriver = new SchemaParser($driver);
 
         $schemaDriver->getSchemaReflex()->reflex(
             __DIR__ . '/Reflex/Rename/' . $driver->getDbName(),
             'Test\\Rename\\' . $driver->getDbName()
-        );
+        );*/
     }
 
     public function testTableSchemaReflex()
     {
         $driver = new MySQLDriver(parent::CONNECTION);
 
-        $schemaDriver = new SchemaParser($driver);
+        /*$schemaDriver = new SchemaParser($driver);
 
         $schemaDriver->getSchemaReflex()->reflex(
             __DIR__ . '/Reflex/' . $driver->getDbName(),
             'Test\\' . $driver->getDbName()
-        );
+        );*/
     }
 }

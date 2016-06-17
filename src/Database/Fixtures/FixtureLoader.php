@@ -8,30 +8,27 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace Database\Fixtures;
+namespace FastD\Database\Fixtures;
 
-use FastD\Database\DriverInterface;
+use FastD\Database\Drivers\DriverInterface;
+use FastD\Database\Schema\SchemaBuilder;
+use FastD\Database\Schema\Structure\Table;
 
 /**
- * Class Fixture
+ * Class FixtureLoader
  * @package Database\Fixtures
  */
-class Fixture
+class FixtureLoader
 {
-    /**
-     * @var SchemaSet[]
-     */
-    protected $schemaSets = [];
-
-    /**
-     * @var DataSet[]
-     */
-    protected $dataSets = [];
-
     /**
      * @var DriverInterface
      */
     protected $driver;
+
+    /**
+     * @var FixtureInterface[]
+     */
+    protected $fixtures = [];
 
     /**
      * Fixture constructor.
@@ -43,41 +40,31 @@ class Fixture
     }
 
     /**
-     * @param SchemaSet $schemaSet
-     * @return $this
+     * @param FixtureInterface $fixtureInterface
      */
-    public function registerSchemaSet(SchemaSet $schemaSet)
+    public function registerFixture(FixtureInterface $fixtureInterface)
     {
-        $this->schemaSets[] = $schemaSet;
-
-        return $this;
+        $this->fixtures[] = $fixtureInterface;
     }
 
     /**
-     * @return DataSet[]
+     * @return void
      */
-    public function getSchemaSets()
+    public function runSchema()
     {
-        return $this->dataSets;
+        foreach ($this->fixtures as $fixture) {
+            $fixture->loadSchema();
+        }
     }
 
     /**
-     * @param DataSet $dataSet
-     * @return $this
+     * @return void
      */
-    public function registerDataSet(DataSet $dataSet)
+    public function runDataSet()
     {
-        $this->dataSets[] = $dataSet;
-
-        return $this;
-    }
-
-    /**
-     * @return DataSet[]
-     */
-    public function getDataSets()
-    {
-        return $this->dataSets;
+        foreach ($this->fixtures as $fixture) {
+            $fixture->loadDataSet($this->driver);
+        }
     }
 
     /**
@@ -85,12 +72,8 @@ class Fixture
      */
     public function run()
     {
-        foreach ($this->getSchemaSets() as $schemaSet) {
-            $schemaSet->run($this->driver);
-        }
-
-        foreach ($this->getDataSets() as $dataSet) {
-            $dataSet->run($this->driver);
-        }
+        $this->runSchema();
+        
+        $this->runDataSet();
     }
 }

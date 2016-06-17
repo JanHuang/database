@@ -30,23 +30,16 @@ class SchemaBuilder extends Schema
     }
 
     /**
-     * @param string $table
      * @param bool $force
-     * @return SchemaBuilder
+     * @return string
      */
-    public function table($table, $force = false)
+    public function update($force = false)
     {
-        $table = $this->getTable($table);
-
-        if (null === $table) {
-            throw new \InvalidArgumentException(sprintf('Not table "%s"', $table));
-        }
-
-        $this->setCurrentTable($table);
-
         $this->force = $force;
+        
+        $cache = $this->getCache();
 
-        return $this;
+        return empty($cache) ? $this->create() : $this->alter();
     }
 
     /**
@@ -54,7 +47,7 @@ class SchemaBuilder extends Schema
      *
      * @return string
      */
-    public function create()
+    protected function create()
     {
         $fields = [];
         $keys = [];
@@ -97,14 +90,14 @@ class SchemaBuilder extends Schema
      *
      * @return string
      */
-    public function update()
+    protected function alter()
     {
+        $cache = $this->getCache();
+
         $add = [];
         $change = [];
         $drop = [];
         $keys = [];
-
-        $cache = $this->getCache();
 
         // Alter table add column.
         foreach ($this->getCurrentTable()->getFields() as $name => $field) {
@@ -183,11 +176,14 @@ class SchemaBuilder extends Schema
     /**
      * Drop table.
      *
+     * @param bool $force
      * @return string
      */
-    public function drop()
+    public function drop($force = false)
     {
         $this->clearCache();
+        
+        $this->force = $force;
 
         return 'DROP TABLE ' . ($this->isForce() ? 'IF EXISTS ' : '') . '`' . $this->getCurrentTable()->getFullTableName() . '`;';
     }

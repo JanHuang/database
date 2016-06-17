@@ -85,6 +85,14 @@ class SchemaCache implements CacheInterface
     }
 
     /**
+     * @return bool
+     */
+    public function hasCacheField()
+    {
+        return file_exists($this->fieldsCacheFile);
+    }
+
+    /**
      * @param Field $field
      * @return $this
      */

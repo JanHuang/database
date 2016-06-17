@@ -58,6 +58,7 @@ class MySQLDriver implements DriverInterface
      */
     public function __construct(array $config)
     {
+        // Can throw "PDOException".
         $this->pdo = new \PDO(
             sprintf(
                 'mysql:host=%s;port=%s;dbname=%s;charset=%s',

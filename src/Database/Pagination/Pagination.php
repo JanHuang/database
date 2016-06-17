@@ -12,12 +12,11 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Query\Paging;
+namespace FastD\Database\Pagination;
 
 /**
- * Class QueryPagination
- *
- * @package FastD\Database\Query\Pagination
+ * Class Pagination
+ * @package FastD\Database\Pagination
  */
 class Pagination extends \FastD\Pagination\Pagination
 {

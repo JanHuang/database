@@ -10,7 +10,7 @@
 
 namespace Database\Tests\Fixtures;
 
-use Database\Fixtures\Fixture;
+use FastD\Database\Fixtures\FixtureLoader;
 use FastD\Database\Tests\Fixture_Database_TestCast;
 
 class FixtureTest extends Fixture_Database_TestCast
@@ -23,7 +23,8 @@ class FixtureTest extends Fixture_Database_TestCast
         'database_pwd' => '123456'
     ];
 
-    public function testDataSet()
+    public function testFixtures()
     {
+        $fixture = new FixtureLoader($this->getLocalDriver());
     }
 }
