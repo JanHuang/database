@@ -12,6 +12,7 @@ namespace Database\Tests\Fixtures;
 
 use FastD\Database\Fixtures\FixtureLoader;
 use FastD\Database\Tests\Fixture_Database_TestCast;
+use FastD\Database\Tests\Fixtures\DemoFixture;
 
 class FixtureTest extends Fixture_Database_TestCast
 {
@@ -26,5 +27,9 @@ class FixtureTest extends Fixture_Database_TestCast
     public function testFixtures()
     {
         $fixture = new FixtureLoader($this->getLocalDriver());
+
+        $fixture->registerFixture(new DemoFixture());
+
+        $fixture->run();
     }
 }

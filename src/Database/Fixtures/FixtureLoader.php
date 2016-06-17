@@ -31,12 +31,19 @@ class FixtureLoader
     protected $fixtures = [];
 
     /**
+     * @var SchemaBuilder
+     */
+    protected $schemaBuilder;
+
+    /**
      * Fixture constructor.
      * @param DriverInterface $driverInterface
      */
     public function __construct(DriverInterface $driverInterface)
     {
         $this->driver = $driverInterface;
+
+        $this->schemaBuilder = new SchemaBuilder();
     }
 
     /**
@@ -45,6 +52,10 @@ class FixtureLoader
     public function registerFixture(FixtureInterface $fixtureInterface)
     {
         $this->fixtures[] = $fixtureInterface;
+
+        if ($fixtureInterface->loadSchema() instanceof Table) {
+            $this->schemaBuilder->addTable($fixtureInterface->loadSchema());
+        }
     }
 
     /**
@@ -52,8 +63,9 @@ class FixtureLoader
      */
     public function runSchema()
     {
-        foreach ($this->fixtures as $fixture) {
-            $fixture->loadSchema();
+        foreach ($this->schemaBuilder as $table) {
+            $sql = $this->schemaBuilder->update();
+            $this->driver->query($sql)->execute()->getAll();
         }
     }
 

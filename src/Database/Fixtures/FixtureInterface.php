@@ -8,7 +8,7 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace Database\Fixtures;
+namespace FastD\Database\Fixtures;
 
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\Schema\Structure\Table;
