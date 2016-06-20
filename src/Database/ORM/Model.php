@@ -93,6 +93,7 @@ abstract class Model
         return $this
             ->createQuery(
                 $this->getQueryBuilder()
+                    ->from($this->getTable())
                     ->where($where)
                     ->fields(array() === $field ? $this->getAlias() : $field)
                     ->select()
