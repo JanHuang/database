@@ -86,7 +86,9 @@ use FastD\Database\Query\MySQLQueryBuilder;
 
 $queryBuilder = new MySQLQueryBuilder();
 
-echo $queryBuilder->from('test')->select(); // SELECT * FROM `test`;
+echo $queryBuilder->from('test'); // SELECT * FROM `test`;
+echo $queryBuilder->select(['name'])->from('test'); // SELECT `name` FROM `test`
+echo $queryBuilder->select(['name'])->from('test')->where(['name' => 'jan']); // SELECT `name` FROM `test` WHERE `name` = 'jan';
 ```
 
 **查询构建器仅限用于简单查询,不提供复杂的查询**
@@ -94,8 +96,16 @@ echo $queryBuilder->from('test')->select(); // SELECT * FROM `test`;
 ##### 1.3 数据库连接驱动
 
 ```php
-
+$fdb->getDriver('read'); // return DriverInterface.
 ```
+
+##### 1.4 模型
+
+
+
+##### 1.5 实体
+
+##### 1.6 Schema构建与数据填充
 
 望大家多多指点啦.
 
