@@ -18,5 +18,8 @@ class ModelTest extends Fixture_Database_TestCast
     public function testModel()
     {
         $model = new BaseModel($this->getLocalDriver());
+
+        $this->assertEquals(2, $model->count());
+        $this->assertEquals(1, $model->count(['name' => 'janhuang']));
     }
 }

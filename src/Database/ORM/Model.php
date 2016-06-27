@@ -166,7 +166,17 @@ abstract class Model
      */
     public function count(array $where = [])
     {
-        return (int) $this->where($where)->find(['count(1)' => 'total'])['total'];
+        return (int) $this
+            ->createQuery(
+                $this->getQueryBuilder()
+                    ->from($this->getTable())
+                    ->where($where)
+                    ->fields(['count(1)' => 'total'])
+                    ->select()
+            )
+            ->execute()
+            ->getOne('total')
+            ;
     }
 
     /**
