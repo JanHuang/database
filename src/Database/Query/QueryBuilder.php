@@ -99,7 +99,12 @@ abstract class QueryBuilder
     /**
      * @const int
      */
-    const BUILDER_DELETE = 3;
+    const BUILDER_SELECT = 3;
+
+    /**
+     * @var int
+     */
+    protected $type;
     
     /**
      * Query select where condition.
@@ -108,14 +113,6 @@ abstract class QueryBuilder
      * @return $this
      */
     abstract public function where(array $where);
-
-    /**
-     * Query fields.
-     *
-     * @param array $field
-     * @return $this
-     */
-    abstract public function fields(array $field);
 
     /**
      * Select join.
@@ -181,10 +178,9 @@ abstract class QueryBuilder
 
     /**
      * @param array $data
-     * @param array $where
      * @return $this
      */
-    abstract public function update(array $data, array $where = []);
+    abstract public function update(array $data);
 
     /**
      * @param array $data
@@ -201,4 +197,12 @@ abstract class QueryBuilder
      * @return array
      */
     abstract public function getLogs();
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getSql();
+    }
 }

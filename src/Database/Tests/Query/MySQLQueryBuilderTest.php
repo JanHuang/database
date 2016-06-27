@@ -18,6 +18,8 @@ class MySQLQueryBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $queryBuilder = new MySQLQueryBuilder();
         
-        $this->assertEquals($queryBuilder->from('test')->select(), 'SELECT * FROM `test`;');
+        $this->assertEquals($queryBuilder->from('test'), 'SELECT * FROM `test`;');
+
+        $this->assertEquals($queryBuilder->select(['name'])->from('test'), 'SELECT `name` FROM `test`;');
     }
 }

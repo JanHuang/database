@@ -93,10 +93,9 @@ abstract class Model
         return $this
             ->createQuery(
                 $this->getQueryBuilder()
+                    ->select(array() === $field ? $this->getAlias() : $field)
                     ->from($this->getTable())
                     ->where($where)
-                    ->fields(array() === $field ? $this->getAlias() : $field)
-                    ->select()
             )
             ->execute()
             ->getOne()
@@ -115,10 +114,9 @@ abstract class Model
         return $this
             ->createQuery(
                 $this->getQueryBuilder()
+                    ->select(array() === $field ? $this->getAlias() : $field)
                     ->from($this->getTable())
                     ->where($where)
-                    ->fields(array() === $field ? $this->getAlias() : $field)
-                    ->select()
             )
             ->execute()
             ->getAll()
@@ -139,8 +137,8 @@ abstract class Model
             return $this
                 ->createQuery(
                     $this->getQueryBuilder()
-                        ->from($this->getTable())
                         ->insert(array() === $data ? $this->data : $data)
+                        ->from($this->getTable())
                 )
                 ->setParameter([] === $params ? $this->params : $params)
                 ->execute()
@@ -151,8 +149,9 @@ abstract class Model
             ->createQuery(
                 $this
                     ->getQueryBuilder()
+                    ->update(array() === $data ? $this->data : $data)
                     ->from($this->getTable())
-                    ->update(array() === $data ? $this->data : $data, $where)
+                    ->where($where)
             )
             ->setParameter([] === $params ? $this->params : $params)
             ->execute()
@@ -169,10 +168,9 @@ abstract class Model
         return (int) $this
             ->createQuery(
                 $this->getQueryBuilder()
+                    ->select(['count(1)' => 'total'])
                     ->from($this->getTable())
                     ->where($where)
-                    ->fields(['count(1)' => 'total'])
-                    ->select()
             )
             ->execute()
             ->getOne('total')

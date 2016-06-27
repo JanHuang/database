@@ -120,38 +120,7 @@ class MySQLQueryBuilder extends QueryBuilder
 
         return $this;
     }
-
-    /**
-     * @param array $fields
-     * @return $this
-     */
-    public function fields(array $fields)
-    {
-        $this->fields = '';
-
-        foreach ($fields as $name => $alias) {
-            if (is_integer($name)) {
-                if (false === strpos($alias, '(')) {
-                    $alias = '`' . $alias . '`,';
-                }
-                $str = $alias;
-            } else {
-                if (false === strpos($name, '(')) {
-                    $alias = '`'. $name . '` AS `' . $alias . '`,';
-                } else {
-                    $alias = $name . ' AS `' . $alias . '`,';
-                }
-                $str = $alias;
-            }
-
-            $this->fields .= $str;
-        }
-
-        $this->fields = trim($this->fields, ',');
-
-        return $this;
-    }
-
+    
     /**
      * @param array $having
      * @return $this
@@ -260,59 +229,61 @@ class MySQLQueryBuilder extends QueryBuilder
 
     /**
      * @param array $fields
-     * @return string
+     * @return $this
      */
     public function select(array $fields = [])
     {
-        if (!empty($fields)) {
-            $this->fields($fields);
+        $this->fields = '';
+
+        foreach ($fields as $name => $alias) {
+            if (is_integer($name)) {
+                if (false === strpos($alias, '(')) {
+                    $alias = '`' . $alias . '`,';
+                }
+                $str = $alias;
+            } else {
+                if (false === strpos($name, '(')) {
+                    $alias = '`'. $name . '` AS `' . $alias . '`,';
+                } else {
+                    $alias = $name . ' AS `' . $alias . '`,';
+                }
+                $str = $alias;
+            }
+
+            $this->fields .= $str;
         }
 
-        $this->sql = 'SELECT ' . $this->fields . ' FROM ' . $this->table . $this->where . $this->like . $this->group . $this->having . $this->order . $this->limit . ';';
+        $this->fields = trim($this->fields, ',');
 
-        return $this->getSql();
+        $this->type = static::BUILDER_SELECT;
+
+        return $this;
     }
 
     /**
      * @param array $data
-     * @param array $where
-     * @return string
+     * @return $this
      */
-    public function update(array $data, array $where = [])
+    public function update(array $data)
     {
-        $this->data($data, self::BUILDER_UPDATE);
+        $this->data($data, static::BUILDER_UPDATE);
 
-        $this->where($where);
+        $this->type = static::BUILDER_UPDATE;
 
-        $this->sql = 'UPDATE ' . $this->table . ' SET ' . $this->value . $this->where . $this->limit . ';';
-
-        return $this->getSql();
-    }
-
-    /**
-     * @param array $where
-     * @return string
-     */
-    public function delete(array $where)
-    {
-        $this->where($where);
-
-        $this->sql = 'DELETE FROM ' . $this->table . $this->where . $this->limit . ';';
-
-        return $this->getSql();
+        return $this;
     }
 
     /**
      * @param array $data
-     * @return string
+     * @return $this
      */
     public function insert(array $data)
     {
-        $this->data($data, self::BUILDER_INSERT);
+        $this->data($data, static::BUILDER_INSERT);
 
-        $this->sql = 'INSERT INTO ' . $this->table . $this->keys . ' VALUES ' . $this->value . ';';
+        $this->type = static::BUILDER_INSERT;
 
-        return $this->getSql();
+        return $this;
     }
 
     /**
@@ -320,7 +291,17 @@ class MySQLQueryBuilder extends QueryBuilder
      */
     public function getSql()
     {
-        $sql = $this->sql;
+        switch ($this->type) {
+            case static::BUILDER_INSERT:
+                $sql = 'INSERT INTO ' . $this->table . $this->keys . ' VALUES ' . $this->value . ';';
+                break;
+            case static::BUILDER_UPDATE:
+                $sql = 'UPDATE ' . $this->table . ' SET ' . $this->value . $this->where . $this->limit . ';';
+                break;
+            case static::BUILDER_SELECT:
+            default:
+                $sql = 'SELECT ' . $this->fields . ' FROM ' . $this->table . $this->where . $this->like . $this->group . $this->having . $this->order . $this->limit . ';';
+        }
 
         $this->fields   = '*';
         $this->where    = null;

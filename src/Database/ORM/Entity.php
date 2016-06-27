@@ -21,7 +21,7 @@ use FastD\Database\Query\QueryBuilder;
 abstract class Entity implements \ArrayAccess
 {
     use Bind;
-    
+
     const FIELDS = [];
     const ALIAS = [];
     const TABLE = null;
@@ -110,14 +110,12 @@ abstract class Entity implements \ArrayAccess
         return $this->driver
             ->query(
                 $this->getQueryBuilder()
+                    ->select($fields ?? $this->getAlias())
                     ->from($this->getTable())
                     ->where($where)
-                    ->fields($fields ?? $this->getAlias())
-                    ->select()
             )
             ->execute()
-            ->getOne()
-        ;
+            ->getOne();
     }
 
     /**
@@ -129,7 +127,7 @@ abstract class Entity implements \ArrayAccess
     {
         $data = [];
         $values = [];
-        
+
         foreach ($this->getAlias() as $field => $alias) {
             $method = 'get' . ucfirst($alias);
             $value = $this->$method();
@@ -145,26 +143,25 @@ abstract class Entity implements \ArrayAccess
                 ->query(
                     $this
                         ->getQueryBuilder()
+                        ->update($data)
                         ->from($this->getTable())
-                        ->update($data, $this->condition)
+                        ->where($this->condition)
                 )
                 ->setParameter($values)
                 ->execute()
-                ->getAffected()
-                ;
+                ->getAffected();
         }
 
         return $this->driver
             ->query(
                 $this
                     ->getQueryBuilder()
-                    ->from($this->getTable())
                     ->insert($data)
+                    ->from($this->getTable())
             )
             ->setParameter($values)
             ->execute()
-            ->getId()
-            ;
+            ->getId();
     }
 
     /**
