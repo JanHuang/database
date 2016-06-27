@@ -146,7 +146,7 @@ class MySQLDriver implements DriverInterface
     public function getOne($field = null)
     {
         $row = $this->statement->fetch(PDO::FETCH_ASSOC);
-
+        
         return null === $field ? $row : $row[$field];
     }
 

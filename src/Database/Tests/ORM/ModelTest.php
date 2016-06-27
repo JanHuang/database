@@ -10,8 +10,20 @@
 
 namespace Database\Tests\ORM;
 
+use FastD\Database\ORM\Model;
 use FastD\Database\Tests\Fixture_Database_TestCast;
 use Test\Dbunit\Models\BaseModel;
+use Test\Rename\Dbunit\Fields\Demo;
+
+class TestModel extends Model
+{
+
+}
+
+class DemoModel extends Model
+{
+    const TABLE = 'base';
+}
 
 class ModelTest extends Fixture_Database_TestCast
 {
@@ -21,5 +33,28 @@ class ModelTest extends Fixture_Database_TestCast
 
         $this->assertEquals(2, $model->count());
         $this->assertEquals(1, $model->count(['name' => 'janhuang']));
+    }
+
+    public function testBaseModel()
+    {
+        $testModel = new TestModel($this->getLocalDriver());
+
+        $this->assertEmpty($testModel->findAll());
+
+        $this->assertFalse($testModel->find());
+
+        $this->assertEquals(0, $testModel->save(['name' => 'janhuang']));
+        $this->assertEquals(0, $testModel->save(['name' => 'janhuang'], ['id' => 1]));
+    }
+
+    public function testTableModel()
+    {
+        $model = new DemoModel($this->getLocalDriver());
+
+        $model->findAll();
+
+        $this->assertEquals($model->getLogs(), [
+            'SELECT * FROM `base`;'
+        ]);
     }
 }
