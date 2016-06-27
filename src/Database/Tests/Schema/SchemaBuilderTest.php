@@ -85,7 +85,7 @@ EOF
         $testTable = new Table('test');
 
         $builder->addTable($testTable);
-
+        
         $this->assertEquals($builder->setCurrentTable($testTable)->drop(), 'DROP TABLE `' . $testTable->getFullTableName() . '`;');
         $this->assertEquals($builder->setCurrentTable($testTable)->drop(true), 'DROP TABLE IF EXISTS `' . $testTable->getFullTableName() . '`;');
     }
