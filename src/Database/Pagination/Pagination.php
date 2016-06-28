@@ -14,6 +14,8 @@
 
 namespace FastD\Database\Pagination;
 
+use FastD\Database\ORM\Model;
+
 /**
  * Class Pagination
  * @package FastD\Database\Pagination
@@ -21,124 +23,26 @@ namespace FastD\Database\Pagination;
 class Pagination extends \FastD\Pagination\Pagination
 {
     /**
-     * @var array
-     */
-    protected $fields = [];
-
-    /**
-     * @var string
-     */
-    protected $table;
-
-    /**
-     * @var array
-     */
-    protected $orderBy = [];
-
-    /**
-     * @var array
-     */
-    protected $where = [];
-
-    /**
-     * @var null|int
-     */
-    protected $lastId;
-
-    /**
      * @var null|array
      */
     protected $result;
 
     /**
-     * QueryPagination constructor.
-     * @param Repository $repository
+     * Pagination constructor.
+     * @param Model $model
      * @param int $currentPage
      * @param int $showList
      * @param int $showPage
      */
-    public function __construct(Repository $repository, $currentPage = 1, $showList = 25, $showPage = 5)
+    public function __construct(Model $model, $currentPage = 1, $showList = 25, $showPage = 5)
     {
-        parent::__construct($repository->count(), $currentPage, $showList, $showPage);
+        parent::__construct($model->count(), $currentPage, $showList, $showPage);
 
-        $this->setResult($repository->limit($this->getShowList(), $this->getOffset())->findAll());
-    }
+        $offset = ($currentPage - 1) * $showList;
 
-    /**
-     * @return int|null
-     */
-    public function getLastId()
-    {
-        return $this->lastId;
-    }
+        $sql = 'SELECT * FROM `' . $model->getTable() . '` INNER JOIN (SELECT id FROM `' . $model->getTable() . '` LIMIT ' . $offset . ',' . $showList . ') t2 USING (id);';
 
-    /**
-     * @param int $lastId
-     * @return $this
-     */
-    public function setLastId($lastId)
-    {
-        $this->lastId = $lastId;
-
-        return $this;
-    }
-
-    /**
-     * @param array $fields
-     * @return $this
-     */
-    public function fields(array $fields)
-    {
-        $this->fields = $fields;
-
-        return $this;
-    }
-
-    /**
-     * @param $table
-     * @return $this
-     */
-    public function table($table)
-    {
-        $this->table = $table;
-
-        return $this;
-    }
-
-    /**
-     * @param array $where
-     * @return $this
-     */
-    public function where(array $where)
-    {
-        $where = array_merge($this->where, $where);
-
-        $this->where = [];
-        $this->where['AND'] = $where;
-
-        return $this;
-    }
-
-    /**
-     * @param array $orderBy
-     * @return $this
-     */
-    public function orderBy(array $orderBy)
-    {
-        $this->orderBy = $orderBy;
-
-        return $this;
-    }
-
-    /**
-     * @param array $result
-     * @return $this
-     */
-    public function setResult(array $result)
-    {
-        $this->result = $result;
-
-        return $this;
+        $this->result = $model->createQuery($sql)->execute()->getAll();
     }
 
     /**
