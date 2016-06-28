@@ -29,4 +29,15 @@ class PaginationTest extends Fixture_Database_TestCast
 
         $this->assertEquals('joe', $pagination->getResult()[0]['name']);
     }
+
+    public function testPaginationInModel()
+    {
+        $model = new DemoModel($this->getLocalDriver());
+
+        $pagination = $model->pagination(1, 1);
+
+        $this->assertEquals(2, $pagination->getTotalPages());
+
+        $this->assertEquals('joe', $pagination->getResult()[0]['name']);
+    }
 }

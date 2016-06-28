@@ -12,6 +12,7 @@ namespace FastD\Database\ORM;
 
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\ORM\Params\Bind;
+use FastD\Database\Pagination\Pagination;
 use FastD\Database\Query\QueryBuilder;
 
 /**
@@ -175,6 +176,17 @@ abstract class Model
             ->execute()
             ->getOne('total')
             ;
+    }
+
+    /**
+     * @param int $page
+     * @param int $showList
+     * @param int $showPage
+     * @return Pagination
+     */
+    public function pagination($page = 1, $showList = 25, $showPage = 5)
+    {
+        return new Pagination($this, $page, $showList, $showPage);
     }
 
     /**
