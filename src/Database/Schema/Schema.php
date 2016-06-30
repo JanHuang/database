@@ -74,6 +74,8 @@ abstract class Schema extends SchemaCache implements Iterator
     public function addTable(Table $table)
     {
         $this->tables[$table->getFullTableName()] = $table;
+        
+        $this->setCurrentTable($table);
 
         return $this;
     }

@@ -32,7 +32,7 @@ class SchemaBuilderTest extends \PHPUnit_Framework_TestCase
 
         $builder->addTable($testTable);
 
-        $schema = $builder->setCurrentTable($testTable)->update();
+        $schema = $builder->update();
 
         if (!$builder->hasCacheField()) {
             $this->assertEquals(<<<EOF
