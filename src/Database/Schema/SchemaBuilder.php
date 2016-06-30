@@ -57,7 +57,8 @@ class SchemaBuilder extends Schema
                 '`' . $field->getName() . '`',
                 $field->getType() . '(' . $field->getLength() . ')',
                 ($field->isUnsigned()) ? 'UNSIGNED' : '',
-                ($field->isNullable() ? '' : ('NOT NULL DEFAULT "' . $field->getDefault() . '"')),
+                ($field->isNullable() ? '' : ('NOT NULL')),
+                (!$field->isIncrement() ? 'DEFAULT "' . $field->getDefault() . '"' : '') ,
                 ($field->isIncrement()) ? 'AUTO_INCREMENT' : '',
                 'COMMENT "' . $field->getComment() . '"'
             ]);
