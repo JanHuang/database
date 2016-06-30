@@ -55,10 +55,6 @@ class SchemaReflex
      */
     protected function getReflexDir($dir, $type)
     {
-        $dir = implode(DIRECTORY_SEPARATOR, array_map(function ($v) {
-            return ucfirst($v);
-        }, explode(DIRECTORY_SEPARATOR, $dir)));
-
         return str_replace('//', '/', ($dir . DIRECTORY_SEPARATOR . $type));
     }
 
@@ -120,7 +116,7 @@ class SchemaReflex
     public function reflexEntities($dir = __DIR__, $namespace = null)
     {
         $dir = $this->getReflexDir($dir, self::REFLEX_ENTITIES);
-
+        
         $files = [];
 
         foreach ($this->tables as $table) {

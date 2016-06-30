@@ -44,7 +44,7 @@ class SchemaParserTest extends Fixture_Database_TestCast
         $schemaDriver = new SchemaParser($driver);
 
         $schemaDriver->getSchemaReflex()->reflex(
-            __DIR__ . '/Reflex/' . $driver->getDbName(),
+            __DIR__ . '/Reflex/' . ucfirst($driver->getDbName()),
             'Test\\' . $driver->getDbName()
         );
     }

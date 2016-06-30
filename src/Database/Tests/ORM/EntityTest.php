@@ -34,8 +34,13 @@ class EntityTest extends Fixture_Database_TestCast
         $entity->setName('jan');
         $entity->setContent('hello world');
 
-        echo $entity->save();
+        $this->assertEquals(3, $entity->save());
 
-        var_dump($entity->toArray());
+        $this->assertEquals([
+            'name' => 'jan',
+            'content' => 'hello world',
+            'id' => 3,
+            'createAt' => time(),
+        ], $entity->toArray());
     }
 }

@@ -109,7 +109,8 @@ class SchemaBuilder extends Schema
                 'ALTER TABLE `' . $this->getCurrentTable()->getFullTableName() . '` ADD `' . $field->getName() . '`',
                 $field->getType() . '(' . $field->getLength() . ')',
                 ($field->isUnsigned()) ? 'UNSIGNED' : '',
-                ($field->isNullable() ? '' : ('NOT NULL DEFAULT "' . $field->getDefault() . '"')),
+                ($field->isNullable() ? '' : ('NOT NULL')),
+                ((!empty($field->getDefault()) && !$field->isIncrement()) ? 'DEFAULT "' . $field->getDefault() . '"' : '') ,
                 ($field->isPrimary()) ? 'AUTO_INCREMENT' : '',
                 'COMMENT "' . $field->getComment() . '";',
             ]);
