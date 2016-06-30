@@ -25,4 +25,17 @@ class EntityTest extends Fixture_Database_TestCast
 
         $this->assertInstanceOf(QueryBuilder::class, $entity->getQueryBuilder());
     }
+
+    public function testEntitySave()
+    {
+        $entity = new BaseEntity($this->getLocalDriver());
+
+        $entity->setCreateAt(time());
+        $entity->setName('jan');
+        $entity->setContent('hello world');
+
+        echo $entity->save();
+
+        var_dump($entity->toArray());
+    }
 }

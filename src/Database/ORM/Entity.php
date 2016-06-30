@@ -60,11 +60,8 @@ abstract class Entity implements \ArrayAccess
         $this->driver = $driverInterface;
 
         if (null !== $condition) {
+            $this->bindParams($condition);
             $this->row = $this->find($this->condition, $this->getAlias());
-            foreach ($this->getAlias() as $field => $alias) {
-                $method = 'set' . ucfirst($alias);
-                $this->$method(isset($this->row[$alias]) ? $this->row[$alias] : null);
-            }
         }
     }
 
@@ -107,7 +104,7 @@ abstract class Entity implements \ArrayAccess
      */
     public function find(array $where = [], array $fields = null)
     {
-        return $this->driver
+        $row = $this->driver
             ->query(
                 $this->getQueryBuilder()
                     ->select($fields ?? $this->getAlias())
@@ -116,6 +113,16 @@ abstract class Entity implements \ArrayAccess
             )
             ->execute()
             ->getOne();
+
+        if (!empty($row)) {
+            foreach ($this->getAlias() as $field => $alias) {
+                $method = 'set' . ucfirst($alias);
+                $this->$method(isset($row[$alias]) ? $row[$alias] : null);
+            }
+            $this->row = $row;
+        }
+
+        return $row;
     }
 
     /**
@@ -139,7 +146,7 @@ abstract class Entity implements \ArrayAccess
         }
 
         if (null !== $this->condition && !empty($this->row)) {
-            return $this->driver
+            $id = $this->driver
                 ->query(
                     $this
                         ->getQueryBuilder()
@@ -150,18 +157,29 @@ abstract class Entity implements \ArrayAccess
                 ->setParameter($values)
                 ->execute()
                 ->getAffected();
+        } else {
+            $id = $this->driver
+                ->query(
+                    $this
+                        ->getQueryBuilder()
+                        ->insert($data)
+                        ->from($this->getTable())
+                )
+                ->setParameter($values)
+                ->execute()
+                ->getId();
+            if (method_exists($this, 'setId')) {
+                $this->setId($id);
+            }
         }
 
-        return $this->driver
-            ->query(
-                $this
-                    ->getQueryBuilder()
-                    ->insert($data)
-                    ->from($this->getTable())
-            )
-            ->setParameter($values)
-            ->execute()
-            ->getId();
+        if (!empty($id)) {
+            foreach ($this->getAlias() as $alias) {
+                $this->row[$alias] = $this->$alias;
+            }
+        }
+
+        return $id;
     }
 
     /**
