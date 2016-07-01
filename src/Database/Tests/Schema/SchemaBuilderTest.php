@@ -28,7 +28,7 @@ class SchemaBuilderTest extends \PHPUnit_Framework_TestCase
 
         $testTable = new Table('test');
 
-        $testTable->addField(new Field('id', Field::INT, 10));
+        $testTable->addField(new Field('id', Field::INT, 10), new Key(Key::PRIMARY));
 
         $builder->addTable($testTable);
 
@@ -37,7 +37,7 @@ class SchemaBuilderTest extends \PHPUnit_Framework_TestCase
         if (!$builder->hasCacheField()) {
             $this->assertEquals(<<<EOF
 CREATE TABLE `test` (
-`id` int(10)  NOT NULL DEFAULT "0"  COMMENT ""
+`id` int(10) UNSIGNED NOT NULL   COMMENT ""
 ) ENGINE InnoDB CHARSET utf8 COMMENT "";
 EOF
             , $schema);
