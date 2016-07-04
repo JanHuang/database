@@ -69,7 +69,7 @@ class SchemaCache implements CacheInterface
             } catch (\Exception $e) {
                 $this->fieldsCache = [];
             }
-        }else if(!is_null($this->table) && $this->table !== $table->getTableName()) {
+        }else if(!is_null($this->table) && $this->table->getTableName() !== $table->getTableName()) {
             $this->fieldsCache = [];
         }
 
