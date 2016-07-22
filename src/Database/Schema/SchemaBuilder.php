@@ -58,7 +58,7 @@ class SchemaBuilder extends Schema
                 $field->getType() . '(' . $field->getLength() . ')',
                 ($field->isUnsigned()) ? 'UNSIGNED' : '',
                 ($field->isNullable() ? '' : ('NOT NULL')),
-                (!$field->isIncrement() ? 'DEFAULT "' . $field->getDefault() . '"' : '') ,
+                (!$field->isIncrement() && !$field->isUnique() && !$field->isPrimary() ? 'DEFAULT "' . $field->getDefault() . '"' : '') ,
                 ($field->isIncrement()) ? 'AUTO_INCREMENT' : '',
                 'COMMENT "' . $field->getComment() . '"'
             ]);
@@ -111,7 +111,7 @@ class SchemaBuilder extends Schema
                 $field->getType() . '(' . $field->getLength() . ')',
                 ($field->isUnsigned()) ? 'UNSIGNED' : '',
                 ($field->isNullable() ? '' : ('NOT NULL')),
-                ((!empty($field->getDefault()) && !$field->isIncrement()) ? 'DEFAULT "' . $field->getDefault() . '"' : '') ,
+                ((!empty($field->getDefault()) && !$field->isIncrement() && !$field->isUnique() && !$field->isPrimary()) ? 'DEFAULT "' . $field->getDefault() . '"' : '') ,
                 ($field->isPrimary()) ? 'AUTO_INCREMENT' : '',
                 'COMMENT "' . $field->getComment() . '";',
             ]);
@@ -133,7 +133,8 @@ class SchemaBuilder extends Schema
                         'ALTER TABLE `' . $this->getCurrentTable()->getFullTableName() . '` CHANGE `' . $name . '` `' . $field->getName() . '`',
                         $field->getType() . '(' . $field->getLength() . ')',
                         ($field->isUnsigned()) ? 'UNSIGNED' : '',
-                        ($field->isNullable() ? '' : ('NOT NULL DEFAULT "' . $field->getDefault() . '"')),
+                        ($field->isNullable() ? '' : ('NOT NULL')),
+                        ((!empty($field->getDefault()) && !$field->isIncrement() && !$field->isUnique() && !$field->isPrimary()) ? 'DEFAULT "' . $field->getDefault() . '"' : '') ,
                         ($field->isPrimary()) ? 'AUTO_INCREMENT' : '',
                         'COMMENT "' . $field->getComment() . '";',
                     ]);
