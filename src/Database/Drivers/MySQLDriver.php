@@ -72,6 +72,7 @@ class MySQLDriver implements DriverInterface
         );
 
         $this->pdo->setAttribute(PDO::ATTR_TIMEOUT, $config['database_timeout'] ?? DriverInterface::DEFAULT_TIMEOUT);
+        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
 
         $this->dbName = $config['database_name'];
 
@@ -146,7 +147,7 @@ class MySQLDriver implements DriverInterface
     public function getOne($field = null)
     {
         $row = $this->statement->fetch(PDO::FETCH_ASSOC);
-        
+
         return null === $field ? $row : $row[$field];
     }
 
@@ -203,13 +204,12 @@ class MySQLDriver implements DriverInterface
 
         try {
             $result = $callable($this, $this->getQueryBuilder());
+            if (false !== $result) {
+                $this->pdo->commit();
+            } else {
+                $this->pdo->rollBack();
+            }
         } catch (\Exception $e) {
-            $this->pdo->rollBack();
-        }
-
-        if (false !== $result) {
-            $this->pdo->commit();
-        } else {
             $this->pdo->rollBack();
         }
 
