@@ -10,6 +10,7 @@
 
 namespace FastD\Database\ORM;
 
+use ArrayAccess;
 use FastD\Database\ORM\Params\Bind;
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\Query\QueryBuilder;
@@ -18,7 +19,7 @@ use FastD\Database\Query\QueryBuilder;
  * Class Entity
  * @package FastD\Database\ORM
  */
-abstract class Entity
+abstract class Entity implements ArrayAccess
 {
     use Bind;
 
@@ -212,5 +213,37 @@ abstract class Entity
     public function toJson()
     {
         return json_encode($this->row, JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
+    }
+
+    /**
+     * @param mixed $offset
+     * @return bool
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->row[$offset]);
+    }
+    /**
+     * @param mixed $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
+    {
+        return $this->row[$offset];
+    }
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->row[$offset] = $value;
+    }
+    /**
+     * @param mixed $offset
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->row[$offset]);
     }
 }
