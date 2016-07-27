@@ -11,7 +11,7 @@
 namespace Database\Tests\Drivers;
 
 use FastD\Database\Drivers\MySQLDriver;
-use FastD\Database\Tests\Fixture_Database_TestCast;
+use Tests\Fixture_Database_TestCast;
 
 class MySQLDriverTest extends Fixture_Database_TestCast
 {

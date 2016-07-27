@@ -12,7 +12,7 @@ namespace Database\Tests\Pagination;
 
 use FastD\Database\ORM\Model;
 use FastD\Database\Pagination\Pagination;
-use FastD\Database\Tests\Fixture_Database_TestCast;
+use Tests\Fixture_Database_TestCast;
 
 class DemoModel extends Model
 {

@@ -8,7 +8,7 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace FastD\Database\Tests;
+namespace Tests;
 
 use FastD\Database\Drivers\MySQLDriver;
 use PHPUnit_Extensions_Database_DB_IDatabaseConnection;

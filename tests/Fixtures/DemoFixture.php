@@ -8,13 +8,13 @@
  * @link      http://www.fast-d.cn/
  */
 
-namespace FastD\Database\Tests\Fixtures;
+namespace Tests\Fixtures;
 
 use FastD\Database\Fixtures\FixtureInterface;
 use FastD\Database\Drivers\DriverInterface;
 use FastD\Database\Schema\Structure\Field;
 use FastD\Database\Schema\Structure\Table;
-use Test\Rename\Dbunit\Entities\BaseEntity;
+use Test\Dbunit\Entities\BaseEntity;
 
 class DemoFixture implements FixtureInterface
 {

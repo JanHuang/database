@@ -10,7 +10,7 @@
 
 namespace Database\Tests\ORM;
 
-use FastD\Database\Tests\Fixture_Database_TestCast;
+use Tests\Fixture_Database_TestCast;
 use Test\Dbunit\Models\BaseModel;
 use Test\Dbunit\Entities\BaseEntity;
 

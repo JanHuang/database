@@ -11,7 +11,7 @@
 namespace Database\Tests\ORM;
 
 use FastD\Database\ORM\Model;
-use FastD\Database\Tests\Fixture_Database_TestCast;
+use Tests\Fixture_Database_TestCast;
 use Test\Dbunit\Models\BaseModel;
 use Test\Rename\Dbunit\Fields\Demo;
 

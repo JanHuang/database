@@ -11,8 +11,8 @@
 namespace Database\Tests\ORM;
 
 use FastD\Database\Query\QueryBuilder;
-use FastD\Database\Tests\Fixture_Database_TestCast;
-use Test\Rename\Dbunit\Entities\BaseEntity;
+use Tests\Fixture_Database_TestCast;
+use Test\Dbunit\Entities\BaseEntity;
 
 class EntityTest extends Fixture_Database_TestCast
 {

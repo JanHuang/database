@@ -199,9 +199,19 @@ class MySQLDriver implements DriverInterface
     {
         $this->pdo->beginTransaction();
 
-        $result = $callable($this, $this->getQueryBuilder());
+        $result = false;
 
-        $this->pdo->commit();
+        try {
+            $result = $callable($this, $this->getQueryBuilder());
+        } catch (\Exception $e) {
+            $this->pdo->rollBack();
+        }
+
+        if (false !== $result) {
+            $this->pdo->commit();
+        } else {
+            $this->pdo->rollBack();
+        }
 
         return $result;
     }

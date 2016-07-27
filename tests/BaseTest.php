@@ -12,7 +12,7 @@
  * WebSite: http://www.janhuang.me
  */
 
-namespace FastD\Database\Tests;
+namespace Tests;
 
 use PHPUnit_Extensions_Database_DataSet_IDataSet;
 

@@ -18,7 +18,7 @@ use FastD\Database\Query\QueryBuilder;
  * Class Entity
  * @package FastD\Database\ORM
  */
-abstract class Entity implements \ArrayAccess
+abstract class Entity
 {
     use Bind;
 
@@ -63,6 +63,14 @@ abstract class Entity implements \ArrayAccess
             $this->bindParams($condition);
             $this->row = $this->find($this->condition, $this->getAlias());
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->driver->getErrors();
     }
 
     /**
@@ -180,41 +188,6 @@ abstract class Entity implements \ArrayAccess
         }
 
         return $id;
-    }
-
-    /**
-     * @param mixed $offset
-     * @return bool
-     */
-    public function offsetExists($offset)
-    {
-        return isset($this->row[$offset]);
-    }
-
-    /**
-     * @param mixed $offset
-     * @return mixed
-     */
-    public function offsetGet($offset)
-    {
-        return $this->row[$offset];
-    }
-
-    /**
-     * @param mixed $offset
-     * @param mixed $value
-     */
-    public function offsetSet($offset, $value)
-    {
-        $this->row[$offset] = $value;
-    }
-
-    /**
-     * @param mixed $offset
-     */
-    public function offsetUnset($offset)
-    {
-        unset($this->row[$offset]);
     }
 
     /**

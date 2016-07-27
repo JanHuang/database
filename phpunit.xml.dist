@@ -12,7 +12,7 @@
     </php>
     <testsuites>
         <testsuite name="Fdb Tests">
-            <directory>./src/Database/Tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 </phpunit>
