@@ -14,12 +14,12 @@
     "require": {
         "php": ">=7.0",
         "fastd/generator": "~1.1.0",
-        "fastd/pagination": "~1.0.0"
+        "fastd/pagination": "~1.0.0",
+        "fastd/query-builder": "~1.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "5.0",
-        "phpunit/dbunit": "~2.0",
-        "fastd/http": "~2.0.0@beta"
+        "phpunit/dbunit": "~2.0"
     },
     "autoload": {
         "psr-4": {
