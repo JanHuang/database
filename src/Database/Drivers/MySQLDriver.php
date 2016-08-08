@@ -10,12 +10,13 @@
 
 namespace FastD\Database\Drivers;
 
-use FastD\Database\ORM\Model;
+use Database\Exceptions\ModelNotFoundException;
 use FastD\Database\Query\MySQLQueryBuilder;
 use FastD\Database\Query\QueryBuilder;
-use InvalidArgumentException;
+use FastD\Database\ORM\Model;
 use PDOException;
 use PDOStatement;
+use Exception;
 use PDO;
 
 /**
@@ -75,6 +76,7 @@ class MySQLDriver implements DriverInterface
 
         $this->pdo->setAttribute(PDO::ATTR_TIMEOUT, isset($config['database_timeout']) ? $config['database_timeout'] : DriverInterface::DEFAULT_TIMEOUT);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
 
         $this->dbName = $config['database_name'];
 
@@ -193,30 +195,24 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
-     * Transaction callable function.
-     *
      * @param callable $callable
      * @return mixed
+     * @throws Exception
      */
     public function transaction(callable $callable)
     {
-        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
-
         $this->pdo->beginTransaction();
 
         try {
-            if (false !== ($result = $callable($this, $this->getQueryBuilder()))) {
+            if (false != ($result = $callable($this, $this->getQueryBuilder()))) {
                 $this->pdo->commit();
                 return $result;
             }
+            throw new PDOException('Transaction execution error.');
+        } catch (Exception $e) {
             $this->pdo->rollBack();
-        } catch (PDOException $e) {
-            $this->pdo->rollBack();
+            throw $e;
         }
-
-        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
-
-        return false;
     }
 
     /**
@@ -224,13 +220,14 @@ class MySQLDriver implements DriverInterface
      *
      * @param string $model
      * @return Model
+     * @throws ModelNotFoundException
      */
     public function getModel($model)
     {
         $model = str_replace(':', '\\', $model);
 
         if (!class_exists($model)) {
-            throw new InvalidArgumentException(sprintf('Repository class ["%s"] is not found.', $model));
+            throw new ModelNotFoundException($model);
         }
 
         return new $model($this);
