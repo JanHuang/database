@@ -19,12 +19,24 @@ class MySQLDriverTest extends Fixture_Database_TestCast
 {
     public function testDriverConnection()
     {
-        $driver = new MySQLDriver(self::CONNECTION);
+        $driver = new MySQLDriver([
+            'database_host'      => '127.0.0.1',
+            'database_port'      => '3306',
+            'database_name'      => 'test',
+            'database_user'      => 'root',
+            'database_pwd'       => '123456'
+        ]);
 
-        $result = $driver->transaction(function (DriverInterface $driver) {
-            $driver->query('drop table test;')->execute();
-            $driver->query('update test set id = 1;')->execute();
-            throw new Exception('test');
-        });
+        try {
+            $result = $driver->transaction(function (DriverInterface $driver) {
+                $driver->query('drop table test;')->execute();
+                throw new Exception('test');
+            });
+            var_dump($result);
+        } catch (Exception $e) {
+            echo 'rollback';
+        }
+
+        //
     }
 }

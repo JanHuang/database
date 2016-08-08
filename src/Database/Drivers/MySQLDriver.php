@@ -14,7 +14,6 @@ use Database\Exceptions\ModelNotFoundException;
 use FastD\Database\Query\MySQLQueryBuilder;
 use FastD\Database\Query\QueryBuilder;
 use FastD\Database\ORM\Model;
-use PDOException;
 use PDOStatement;
 use Exception;
 use PDO;
@@ -62,7 +61,7 @@ class MySQLDriver implements DriverInterface
     public function __construct(array $config)
     {
         // Can throw "PDOException".
-        $this->pdo = new \PDO(
+        $this->pdo = new PDO(
             sprintf(
                 'mysql:host=%s;port=%s;dbname=%s;charset=%s',
                 $config['database_host'],
@@ -204,11 +203,9 @@ class MySQLDriver implements DriverInterface
         $this->pdo->beginTransaction();
 
         try {
-            if (false != ($result = $callable($this, $this->getQueryBuilder()))) {
-                $this->pdo->commit();
-                return $result;
-            }
-            throw new PDOException('Transaction execution error.');
+            $result = $callable($this, $this->getQueryBuilder());
+            $this->pdo->commit();
+            return $result;
         } catch (Exception $e) {
             $this->pdo->rollBack();
             throw $e;
