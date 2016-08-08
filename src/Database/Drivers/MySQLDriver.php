@@ -65,14 +65,13 @@ class MySQLDriver implements DriverInterface
                 $config['database_host'],
                 $config['database_port'],
                 $config['database_name'],
-                $config['database_charset'] ?? DriverInterface::DEFAULT_CHARSET
+                isset($config['database_charset']) ? $config['database_charset'] ? DriverInterface::DEFAULT_CHARSET
             ),
             $config['database_user'],
             $config['database_pwd']
         );
 
-        $this->pdo->setAttribute(PDO::ATTR_TIMEOUT, $config['database_timeout'] ?? DriverInterface::DEFAULT_TIMEOUT);
-        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
+        $this->pdo->setAttribute(PDO::ATTR_TIMEOUT, isset($config['database_timeout']) ? $config['database_timeout'] : DriverInterface::DEFAULT_TIMEOUT);
 
         $this->dbName = $config['database_name'];
 
@@ -200,20 +199,16 @@ class MySQLDriver implements DriverInterface
     {
         $this->pdo->beginTransaction();
 
-        $result = false;
-
         try {
-            $result = $callable($this, $this->getQueryBuilder());
-            if (false !== $result) {
-                $this->pdo->commit();
-            } else {
+            if (false === ($result = $callable($this, $this->getQueryBuilder()))) {
                 $this->pdo->rollBack();
             }
+            return $result;
         } catch (\Exception $e) {
             $this->pdo->rollBack();
         }
 
-        return $result;
+        return false;
     }
 
     /**
