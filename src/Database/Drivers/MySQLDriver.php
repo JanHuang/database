@@ -75,7 +75,6 @@ class MySQLDriver implements DriverInterface
 
         $this->pdo->setAttribute(PDO::ATTR_TIMEOUT, isset($config['database_timeout']) ? $config['database_timeout'] : DriverInterface::DEFAULT_TIMEOUT);
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
 
         $this->dbName = $config['database_name'];
 
