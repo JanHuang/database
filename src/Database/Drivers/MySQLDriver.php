@@ -13,6 +13,8 @@ namespace FastD\Database\Drivers;
 use FastD\Database\ORM\Model;
 use FastD\Database\Query\MySQLQueryBuilder;
 use FastD\Database\Query\QueryBuilder;
+use InvalidArgumentException;
+use PDOException;
 use PDOStatement;
 use PDO;
 
@@ -72,6 +74,7 @@ class MySQLDriver implements DriverInterface
         );
 
         $this->pdo->setAttribute(PDO::ATTR_TIMEOUT, isset($config['database_timeout']) ? $config['database_timeout'] : DriverInterface::DEFAULT_TIMEOUT);
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $this->dbName = $config['database_name'];
 
@@ -197,16 +200,21 @@ class MySQLDriver implements DriverInterface
      */
     public function transaction(callable $callable)
     {
+        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
+
         $this->pdo->beginTransaction();
 
         try {
-            if (false === ($result = $callable($this, $this->getQueryBuilder()))) {
-                $this->pdo->rollBack();
+            if (false !== ($result = $callable($this, $this->getQueryBuilder()))) {
+                $this->pdo->commit();
+                return $result;
             }
-            return $result;
-        } catch (\Exception $e) {
+            $this->pdo->rollBack();
+        } catch (PDOException $e) {
             $this->pdo->rollBack();
         }
+
+        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, true);
 
         return false;
     }
@@ -222,7 +230,7 @@ class MySQLDriver implements DriverInterface
         $model = str_replace(':', '\\', $model);
 
         if (!class_exists($model)) {
-            throw new \InvalidArgumentException(sprintf('Repository class ["%s"] is not found.', $model));
+            throw new InvalidArgumentException(sprintf('Repository class ["%s"] is not found.', $model));
         }
 
         return new $model($this);
