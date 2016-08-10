@@ -17,7 +17,7 @@ use Test\Rename\Dbunit\Fields\Demo;
 
 class TestModel extends Model
 {
-
+    const TABLE = 'demo';
 }
 
 class DemoModel extends Model
@@ -38,10 +38,6 @@ class ModelTest extends Fixture_Database_TestCast
     public function testBaseModel()
     {
         $testModel = new TestModel($this->getLocalDriver());
-
-        $this->assertEmpty($testModel->findAll());
-
-        $this->assertFalse($testModel->find());
 
         $this->assertEquals(0, $testModel->save(['name' => 'janhuang']));
         $this->assertEquals(0, $testModel->save(['name' => 'janhuang'], ['id' => 1]));

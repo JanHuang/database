@@ -65,7 +65,7 @@ class FixtureLoader
     {
         foreach ($this->schemaBuilder as $table) {
             $sql = $this->schemaBuilder->update();
-            $this->driver->query($sql)->execute()->getAll();
+            $this->driver->query($sql)->execute();
         }
     }
 

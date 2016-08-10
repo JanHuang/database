@@ -10,10 +10,12 @@
 
 namespace FastD\Database\Drivers;
 
-use FastD\Database\ORM\Model;
+use Database\Exceptions\ModelNotFoundException;
 use FastD\Database\Query\MySQLQueryBuilder;
 use FastD\Database\Query\QueryBuilder;
+use FastD\Database\ORM\Model;
 use PDOStatement;
+use Exception;
 use PDO;
 
 /**
@@ -59,20 +61,20 @@ class MySQLDriver implements DriverInterface
     public function __construct(array $config)
     {
         // Can throw "PDOException".
-        $this->pdo = new \PDO(
+        $this->pdo = new PDO(
             sprintf(
                 'mysql:host=%s;port=%s;dbname=%s;charset=%s',
                 $config['database_host'],
                 $config['database_port'],
                 $config['database_name'],
-                $config['database_charset'] ?? DriverInterface::DEFAULT_CHARSET
+                isset($config['database_charset']) ? $config['database_charset'] : DriverInterface::DEFAULT_CHARSET
             ),
             $config['database_user'],
             $config['database_pwd']
         );
 
-        $this->pdo->setAttribute(PDO::ATTR_TIMEOUT, $config['database_timeout'] ?? DriverInterface::DEFAULT_TIMEOUT);
-        $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, false);
+        $this->pdo->setAttribute(PDO::ATTR_TIMEOUT, isset($config['database_timeout']) ? $config['database_timeout'] : DriverInterface::DEFAULT_TIMEOUT);
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $this->dbName = $config['database_name'];
 
@@ -191,29 +193,22 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
-     * Transaction callable function.
-     *
      * @param callable $callable
      * @return mixed
+     * @throws Exception
      */
     public function transaction(callable $callable)
     {
         $this->pdo->beginTransaction();
 
-        $result = false;
-
         try {
             $result = $callable($this, $this->getQueryBuilder());
-            if (false !== $result) {
-                $this->pdo->commit();
-            } else {
-                $this->pdo->rollBack();
-            }
-        } catch (\Exception $e) {
+            $this->pdo->commit();
+            return $result;
+        } catch (Exception $e) {
             $this->pdo->rollBack();
+            throw $e;
         }
-
-        return $result;
     }
 
     /**
@@ -221,13 +216,14 @@ class MySQLDriver implements DriverInterface
      *
      * @param string $model
      * @return Model
+     * @throws ModelNotFoundException
      */
     public function getModel($model)
     {
         $model = str_replace(':', '\\', $model);
 
         if (!class_exists($model)) {
-            throw new \InvalidArgumentException(sprintf('Repository class ["%s"] is not found.', $model));
+            throw new ModelNotFoundException($model);
         }
 
         return new $model($this);
