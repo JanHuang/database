@@ -20,7 +20,7 @@ trait Rename
 {
     /**
      * @param $name
-     * @return mixed|string
+     * @return string
      */
     protected function rename($name)
     {
@@ -33,5 +33,16 @@ trait Rename
         }
 
         return $name;
+    }
+
+    /**
+     * @param $name
+     * @return string
+     */
+    protected function splitName($name)
+    {
+        return preg_replace_callback('([A-Z])', function ($matches) {
+            return '_' . strtolower($matches[0]);
+        }, $name);
     }
 }

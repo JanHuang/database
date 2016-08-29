@@ -26,6 +26,7 @@ abstract class Entity implements ArrayAccess
     const FIELDS = [];
     const ALIAS = [];
     const TABLE = null;
+    const INCREMENT = null;
 
     /**
      * Query result row.
@@ -64,6 +65,14 @@ abstract class Entity implements ArrayAccess
             $this->bindParams($condition);
             $this->row = $this->find($this->condition, $this->getAlias());
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasError()
+    {
+        return 0 !== (int) $this->driver->getErrorCode();
     }
 
     /**
@@ -177,12 +186,13 @@ abstract class Entity implements ArrayAccess
                 ->setParameter($values)
                 ->execute()
                 ->getId();
-            if (method_exists($this, 'setId')) {
-                $this->setId($id);
-            }
         }
 
-        if (!empty($id)) {
+        if (!$this->hasError()) {
+            if (!empty(static::INCREMENT)) {
+                $increment = 'set' . ucfirst(static::INCREMENT);
+                $this->$increment($id);
+            }
             foreach ($this->getAlias() as $alias) {
                 $this->row[$alias] = $this->$alias;
             }

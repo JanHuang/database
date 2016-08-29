@@ -112,6 +112,11 @@ interface DriverInterface
     public function getQueryBuilder();
 
     /**
+     * @return string
+     */
+    public function getErrorCode();
+
+    /**
      * @return array
      */
     public function getErrors();

@@ -11,11 +11,14 @@
 namespace Database\Tests\ORM;
 
 use FastD\Database\Query\QueryBuilder;
+use FastD\Database\Schema\Structure\Rename;
 use Tests\Fixture_Database_TestCast;
 use Test\Dbunit\Entities\BaseEntity;
 
 class EntityTest extends Fixture_Database_TestCast
 {
+    use Rename;
+
     public function testEntityInit()
     {
         $entity = new BaseEntity($this->getLocalDriver(), ['id' => 1]);
@@ -41,6 +44,20 @@ class EntityTest extends Fixture_Database_TestCast
             'content' => 'hello world',
             'id' => 3,
             'createAt' => time(),
+        ], $entity->toArray());
+    }
+
+    public function testEntityFind()
+    {
+        $entity = new BaseEntity($this->getLocalDriver(), [
+            'createAt' => 1272100523
+        ]);
+
+        $this->assertEquals([
+            'name' => 'joe',
+            'content' => 'Hello buddy!',
+            'id' => 1,
+            'createAt' => '1272100523',
         ], $entity->toArray());
     }
 }

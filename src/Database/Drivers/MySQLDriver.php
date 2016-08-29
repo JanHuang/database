@@ -230,6 +230,14 @@ class MySQLDriver implements DriverInterface
     }
 
     /**
+     * @return string
+     */
+    public function getErrorCode()
+    {
+        return null === $this->statement ? $this->pdo->errorCode() : $this->statement->errorCode();
+    }
+
+    /**
      * @return array
      */
     public function getErrors()
