@@ -65,5 +65,7 @@ trait Bind
                 $this->params[$name] = $value;
             }
         }
+
+        return $this->data;
     }
 }

@@ -92,6 +92,9 @@ class SchemaReflex
      */
     protected function getFieldsConstants($namespace)
     {
+        $increment = new Property('INCREMENT', Property::PROPERTY_CONST);
+        $increment->setValue('\\' . $namespace . '::INCREMENT');
+
         $fields = new Property('FIELDS', Property::PROPERTY_CONST);
         $fields->setValue('\\' . $namespace . '::FIELDS');
 
@@ -105,6 +108,7 @@ class SchemaReflex
             'FIELDS'    => $fields,
             'ALIAS'     => $alias,
             'TABLE'     => $table,
+            'INCREMENT' => $increment,
         ];
     }
 
@@ -139,7 +143,9 @@ class SchemaReflex
             $entity->setProperties($properties, true);
             $entity->setMethods($methods, true);
 
-            $entity->setProperties($this->getFieldsConstants($this->getReflexNamespace($namespace, self::REFLEX_FIELDS) . '\\' . $name));
+            $entity->setProperties(
+                $this->getFieldsConstants($this->getReflexNamespace($namespace, self::REFLEX_FIELDS) . '\\' . $name)
+            );
 
             $files[$file] = $entity->save($file);
         }
@@ -193,6 +199,8 @@ class SchemaReflex
             $fields = [];
             $alias = [];
 
+            $incrementConst = new Property('INCREMENT', Property::PROPERTY_CONST);
+
             foreach ($table->getFields() as $field) {
                 $fields[$field->getAlias()] = [
                     'alias'     => $field->getAlias(),
@@ -205,6 +213,9 @@ class SchemaReflex
                 ];
 
                 $alias[$field->getName()] = $field->getAlias();
+                if ($field->isIncrement()) {
+                    $incrementConst->setValue($field->getName());
+                }
             }
 
             $field = new Generator($name, $this->getReflexNamespace($namespace, self::REFLEX_FIELDS), Obj::OBJECT_CLASS);
@@ -221,7 +232,8 @@ class SchemaReflex
             $field->setProperties([
                 $fieldsConst,
                 $aliasConst,
-                $tableConst
+                $tableConst,
+                $incrementConst,
             ], true);
 
             $files[$file] = $field->save($file);

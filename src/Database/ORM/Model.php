@@ -26,6 +26,7 @@ abstract class Model
     const FIELDS = [];
     const ALIAS = [];
     const TABLE = '';
+    const INCREMENT = null;
 
     /**
      * @var DriverInterface
@@ -128,11 +129,11 @@ abstract class Model
      * Save row into table.
      *
      * @param array $data
-     * @param array $where
      * @param array $params
+     * @param array $where
      * @return bool|int
      */
-    public function save(array $data = [], array $where = [], array $params = [])
+    public function save(array $data = [], array $params = [], array $where = [])
     {
         if (empty($where)) {
             return $this

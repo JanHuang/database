@@ -9,6 +9,7 @@
  */
 
 namespace FastD\Database\Query;
+use FastD\Database\Schema\Structure\Rename;
 
 /**
  * Class QueryBuilder
@@ -16,6 +17,8 @@ namespace FastD\Database\Query;
  */
 abstract class QueryBuilder
 {
+    use Rename;
+    
     /**
      * @var string
      */

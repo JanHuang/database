@@ -46,7 +46,7 @@ class MySQLQueryBuilder extends QueryBuilder
             if (0 !== strpos($value, ':')) {
                 $value = '\'' . $value . '\'';
             }
-            $where[] = '`' . $key . '`' . $assign . $value;
+            $where[] = '`' . $this->splitName($key) . '`' . $assign . $value;
         }
 
         if ('' !== $joint) {
