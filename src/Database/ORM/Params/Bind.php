@@ -31,7 +31,7 @@ trait Bind
 
     /**
      * @param Request $request
-     * @return array
+     * @return $this
      */
     public function bindRequest(Request $request)
     {
@@ -45,7 +45,7 @@ trait Bind
 
     /**
      * @param array $params
-     * @return array Return request handle parameters.
+     * @return $this
      * @throws \Exception
      */
     public function bindParams(array $params)
@@ -66,6 +66,6 @@ trait Bind
             }
         }
 
-        return $this->data;
+        return $this;
     }
 }
