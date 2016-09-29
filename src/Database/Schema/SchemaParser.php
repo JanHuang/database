@@ -1,6 +1,5 @@
 <?php
 /**
- *
  * @author    jan huang <bboyjanhuang@gmail.com>
  * @copyright 2016
  *
@@ -30,14 +29,15 @@ class SchemaParser extends Schema
      * SchemaParser constructor.
      *
      * @param DriverInterface $driverInterface
+     * @param $onlyMatch
      */
-    public function __construct(DriverInterface $driverInterface)
+    public function __construct(DriverInterface $driverInterface, $onlyMatch = false)
     {
         parent::__construct([]);
 
         $this->driver = $driverInterface;
 
-        $this->reflexTableInDatabase();
+        $this->reflexTableInDatabase($onlyMatch);
     }
 
     /**
@@ -71,7 +71,7 @@ class SchemaParser extends Schema
             $table = new Table($name);
             $table->setPrefix($prefix);
             $table->setSuffix($suffix);
-            
+
             if (!empty(($schemes = $this->parseTableSchema($table->getFullTableName())))) {
                 // Parse fields
                 foreach ($schemes as $scheme) {
@@ -79,7 +79,7 @@ class SchemaParser extends Schema
                     $table->addField($field);
                     $this->setCacheField($field);
                 }
-                
+
                 $this->addTable($table);
                 // Save table cache.
                 $this->setCurrentTable($table);
@@ -158,14 +158,27 @@ WHERE
     }
 
     /**
+     * @param $onlyMatch
      * @return void
      */
-    protected function reflexTableInDatabase()
+    protected function reflexTableInDatabase($onlyMatch = false)
     {
         $tables = $this->driver
             ->query('SHOW TABLES;')
             ->execute()
             ->getAll();
+
+        if ($onlyMatch) {
+            $prefix = $this->driver->getConfig()['database_prefix'];
+            if (!empty($prefix)) {
+                foreach ($tables as $key => $table) {
+                    $table = array_values($table)[0];
+                    if ($prefix !== substr($table, 0, strlen($prefix))) {
+                        unset($tables[$key]);
+                    }
+                }
+            }
+        }
 
         $this->reflexTableSchema($tables);
     }
