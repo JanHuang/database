@@ -186,16 +186,17 @@ abstract class Entity implements ArrayAccess
                 ->setParameter($values)
                 ->execute()
                 ->getId();
+
+            if (!$this->hasError()) {
+                if (!empty(static::INCREMENT)) {
+                    $increment = 'set' . ucfirst(static::INCREMENT);
+                    $this->$increment($id);
+                }
+            }
         }
 
-        if (!$this->hasError()) {
-            if (!empty(static::INCREMENT)) {
-                $increment = 'set' . ucfirst(static::INCREMENT);
-                $this->$increment($id);
-            }
-            foreach ($this->getAlias() as $alias) {
-                $this->row[$alias] = $this->$alias;
-            }
+        foreach ($this->getAlias() as $alias) {
+            $this->row[$alias] = $this->$alias;
         }
 
         return $id;

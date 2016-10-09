@@ -25,8 +25,28 @@ class EntityTest extends Fixture_Database_TestCast
 
         $this->assertEquals('joe', $entity->getName());
         $this->assertEquals(json_encode($entity->toArray(), JSON_NUMERIC_CHECK), $entity->toJson());
+        $this->assertEquals(1, $entity->getId());
 
         $this->assertInstanceOf(QueryBuilder::class, $entity->getQueryBuilder());
+    }
+
+    public function testAddEntity()
+    {
+        $entity = new BaseEntity($this->getLocalDriver());
+        $entity->setCreateAt(time());
+        $entity->setName('jan');
+        $entity->setContent('hello world');
+
+        $this->assertEquals(3, $entity->save());
+    }
+
+    public function testUpdateEntity()
+    {
+        $entity = new BaseEntity($this->getLocalDriver(), ['id' => 2]);
+        $entity->setCreateAt(time());
+
+        $this->assertEquals(1, $entity->save());
+        $this->assertEquals(2, $entity->getId());
     }
 
     public function testEntitySave()
