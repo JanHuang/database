@@ -34,4 +34,15 @@ class ParamsTest extends Fixture_Database_TestCast
 
         $this->assertEquals('janhuang', $entity->getName());
     }
+
+    public function testParamRenameBind()
+    {
+        $entity = new BaseEntity($this->getLocalDriver());
+
+        $entity->bindParams([
+            'create_at' => 0
+        ]);
+
+
+    }
 }

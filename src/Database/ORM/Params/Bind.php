@@ -10,6 +10,7 @@
 
 namespace FastD\Database\ORM\Params;
 
+use FastD\Database\Schema\Structure\Rename;
 use FastD\Http\Request;
 
 /**
@@ -19,6 +20,8 @@ use FastD\Http\Request;
  */
 trait Bind
 {
+    use Rename;
+
     /**
      * @var array
      */
@@ -55,6 +58,9 @@ trait Bind
         }
 
         foreach ($params as $name => $value) {
+            if (strpos($name, '_')) {
+                $name = $this->rename($name);
+            }
             if (array_key_exists($name, static::FIELDS)) {
                 $field = static::FIELDS[$name];
                 $method = 'set' . ucfirst($name);
