@@ -189,7 +189,7 @@ abstract class Entity implements ArrayAccess
 
             if (!$this->hasError()) {
                 if (!empty(static::INCREMENT)) {
-                    $increment = 'set' . ucfirst(static::INCREMENT);
+                    $increment = 'set' . ucfirst($this->rename(static::INCREMENT));
                     $this->$increment($id);
                 }
             }
